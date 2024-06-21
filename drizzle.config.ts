@@ -12,7 +12,6 @@ export default defineConfig({
   schema: "./lib/supabase/schema.ts",
   out: "./migrations",
   dbCredentials: {
-    url: process.env.DATABASE_URL, // Supabase url from .env
+    url: process.env.DATABASE_URL || "", // Supabase url from .env
   },
-  schemaFilter: ["public"],
 });

@@ -4,12 +4,12 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 
 config({ path: ".env" });
-if (!process.env.SUPABASE_URL) {
-  console.log("🔴 Cannot find supabase url");
+if (!process.env.DATABASE_URL) {
+  console.log("🔴 No database url");
 }
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL || "";
 
-const client = postgres(connectionString as string);
+const client = postgres(connectionString, { max: 1 });
 const db = drizzle(client);
 const migrateDb = async () => {
   try {
@@ -19,7 +19,7 @@ const migrateDb = async () => {
 
     console.log("🟢 Successfully migrated client");
   } catch (error) {
-    console.log("🔴 Failed to migrate client", error);
+    console.log("🔴 Failed to migrate client,", error);
   }
 };
 

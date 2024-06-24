@@ -1,16 +1,14 @@
-import { FC } from "react";
-
 interface TitleSectionProps {
   title: string;
   subheading?: string;
   pill: string;
 }
 
-export const TitleSection: FC<TitleSectionProps> = ({
+export const TitleSection = ({
   title,
   subheading,
   pill,
-}) => {
+}: TitleSectionProps) => {
   return (
     <>
       <section className="flex flex-col gap-4 justify-center items-start md:items-center">

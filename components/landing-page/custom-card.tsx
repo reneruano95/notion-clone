@@ -8,13 +8,13 @@ type CustomCardProps = CardProps & {
   cardFooter?: React.ReactNode;
 };
 
-const CustomCard: React.FC<CustomCardProps> = ({
+const CustomCard = ({
   className,
   cardHeader,
   cardContent,
   cardFooter,
   ...props
-}) => {
+}: CustomCardProps) => {
   return (
     <Card className={cn("w-[380px]", className)} {...props}>
       <CardHeader>{cardHeader}</CardHeader>

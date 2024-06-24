@@ -18,13 +18,7 @@ const CustomCard = ({
   return (
     <Card className={cn("w-[380px]", className)} {...props}>
       <CardHeader>{cardHeader}</CardHeader>
-      <CardContent
-        className="grid
-        gap-4
-      "
-      >
-        {cardContent}
-      </CardContent>
+      <CardContent className="grid gap-4">{cardContent}</CardContent>
       <CardFooter>{cardFooter}</CardFooter>
     </Card>
   );

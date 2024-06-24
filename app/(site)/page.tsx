@@ -31,6 +31,7 @@ export default function HomePage() {
           <div className="bottom-0 top-[50%] bg-gradient-to-t dark:from-background left-0 right-0 absolute z-10"></div>
         </div>
       </section>
+
       <section className="relative">
         <div
           className="overflow-hidden
@@ -60,8 +61,8 @@ export default function HomePage() {
           before:absolute
         "
         >
-          {[...Array(2)].map((arr) => (
-            <div key={arr} className="flex flex-nowrap animate-slide ">
+          {[...Array(2)].map((arr, index) => (
+            <div key={index} className="flex flex-nowrap animate-slide">
               {CLIENTS.map((client) => (
                 <div
                   key={client.alt}
@@ -79,6 +80,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
       <section className="mt-10 px-4 sm:px-6 pb-10">
         <TitleSection
           title="The Perfect Plan For You"
@@ -97,11 +99,7 @@ export default function HomePage() {
                 }
               )}
               cardHeader={
-                <CardTitle
-                  className="text-2xl
-                  font-semibold
-              "
-                >
+                <CardTitle className="text-2xl font-semibold">
                   {card.planType === PRICING_PLANS.pro && (
                     <>
                       <div className="hidden dark:block w-full blur-[120px] rounded-full h-32 absolute bg-brand-primaryPurple/80 -z-10 top-0" />
@@ -118,19 +116,17 @@ export default function HomePage() {
               cardContent={
                 <CardContent className="p-0">
                   <span className="font-normal text-2xl">${card.price}</span>
-                  {+card.price > 0 ? (
+                  {+card.price > 0 && (
                     <span className="dark:text-washed-purple-800 ml-1">
                       /mo
                     </span>
-                  ) : (
-                    ""
                   )}
                   <p className="dark:text-washed-purple-800">
                     {card.description}
                   </p>
                   <Button
                     variant="btn-primary"
-                    className="whitespace-nowrap w-full mt-4"
+                    className="whitespace-nowrap w-full mt-4 hover:opacity-80"
                   >
                     {card.planType === PRICING_PLANS.pro
                       ? "Go Pro"

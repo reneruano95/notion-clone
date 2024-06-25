@@ -14,7 +14,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import useTogglePassword from "@/lib/hooks/useTogglePassword";
@@ -84,12 +83,9 @@ export const SignUpForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 max-w-md">
         <div className="mb-6">
           <Link href="/" className=" w-full flex justify-left items-center">
-            <NotebookPen className="text-brand-primary h-10 w-10" />
-            <span
-              className="font-semibold
-          dark:text-white text-4xl first-letter:ml-2"
-            >
-              cypress.
+            <NotebookPen className="text-brand-primary h-10 w-10 mr-2" />
+            <span className="font-semibold dark:text-white text-4xl">
+              notion.
             </span>
           </Link>
           <FormDescription className="text-foreground/60 mt-2">
@@ -254,7 +250,7 @@ export const SignUpForm = () => {
         <div className="mt-4 text-center text-sm text-foreground/60">
           Already have an account?{" "}
           <Link href="/sign-in" className="underline text-primary">
-            Sign in
+            Sign In
           </Link>
         </div>
 

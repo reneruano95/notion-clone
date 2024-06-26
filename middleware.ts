@@ -12,8 +12,9 @@ export async function middleware(request: NextRequest) {
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/sign") &&
-    !request.nextUrl.pathname.startsWith("/")
+    !request.nextUrl.pathname.endsWith("/")
   ) {
+    console.log("🔴 Redirecting to sign-in");
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 

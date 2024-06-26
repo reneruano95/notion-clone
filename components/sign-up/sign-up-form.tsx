@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Eye, EyeOff, NotebookPen } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,8 @@ import useTogglePassword from "@/lib/hooks/useTogglePassword";
 import { Loader } from "../global/loader";
 import { cn, isEmpty } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { signUp } from "@/lib/server-actions/auth-actions";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z
   .object({
@@ -51,9 +54,11 @@ const signUpSchema = z
     }
   });
 
-type SignUpFormValues = z.infer<typeof signUpSchema>;
+export type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export const SignUpForm = () => {
+  const router = useRouter();
+
   const {
     showPassword,
     showPasswordHandler,
@@ -74,8 +79,18 @@ export const SignUpForm = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = (values: SignUpFormValues) => {
-    console.log(values);
+  const onSubmit: SubmitHandler<SignUpFormValues> = async (formData) => {
+    const { error } = await signUp(formData);
+
+    if (error) {
+      toast.error(
+        error.message ? error.message : "Something went wrong. Please try again"
+      );
+      form.reset();
+    } else {
+      toast.success("Sign in successful");
+    }
+    router.replace("/dashboard");
   };
 
   return (

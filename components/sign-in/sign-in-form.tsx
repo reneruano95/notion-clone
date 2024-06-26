@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Eye, EyeOff, NotebookPen } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +22,7 @@ import useTogglePassword from "@/lib/hooks/useTogglePassword";
 import { Loader } from "../global/loader";
 import { cn, isEmpty } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { signIn } from "@/lib/server-actions/auth-actions";
 
 const signInSchema = z.object({
   email: z.string().describe("Email").email("Invalid email address."),
@@ -29,9 +32,10 @@ const signInSchema = z.object({
     .min(6, "Password must be at least 6 characters."),
 });
 
-type SignInFormValues = z.infer<typeof signInSchema>;
+export type SignInFormValues = z.infer<typeof signInSchema>;
 
 export const SignInForm = () => {
+  const router = useRouter();
   const { showPassword, showPasswordHandler } = useTogglePassword();
 
   const form = useForm<SignInFormValues>({
@@ -44,8 +48,18 @@ export const SignInForm = () => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = (values: SignInFormValues) => {
-    console.log(values);
+  const onSubmit: SubmitHandler<SignInFormValues> = async (formData) => {
+    const { error } = await signIn(formData);
+
+    if (error) {
+      toast.error(
+        error.message ? error.message : "Something went wrong. Please try again"
+      );
+      form.reset();
+    } else {
+      toast.success("Sign in successful");
+    }
+    router.replace("/dashboard");
   };
 
   return (

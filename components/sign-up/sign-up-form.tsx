@@ -84,13 +84,18 @@ export const SignUpForm = () => {
 
     if (error) {
       toast.error(
-        error.message ? error.message : "Something went wrong. Please try again"
+        error.message
+          ? error.message
+          : error.code
+          ? `${error.code}. Please try again`
+          : "Something went wrong. Please try again"
       );
+
       form.reset();
     } else {
       toast.success("Sign in successful");
+      router.push("/dashboard");
     }
-    router.replace("/dashboard");
   };
 
   return (

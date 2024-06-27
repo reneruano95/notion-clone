@@ -58,8 +58,8 @@ export const SignInForm = () => {
       form.reset();
     } else {
       toast.success("Sign in successful");
+      router.push("/dashboard");
     }
-    router.replace("/dashboard");
   };
 
   return (

@@ -23,7 +23,7 @@ export default function HomePage() {
             variant="btn-secondary"
             className="w-full rounded-[10px] p-6 text-2xl bg-background"
           >
-            Get Cypress Free
+            Get Started for Free
           </Button>
         </div>
         <div className="mt-[-20px]  md:w-[750px] md:mt-[-80px] lg:w-full lg:mt-[-120px] flex justify-center items-center relative">

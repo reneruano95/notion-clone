@@ -9,13 +9,16 @@ export async function middleware(request: NextRequest) {
     error,
   } = await supabase.auth.getUser();
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/sign") &&
-    !request.nextUrl.pathname.endsWith("/")
-  ) {
-    console.log("🔴 Redirecting to sign-in");
-    return NextResponse.redirect(new URL("/sign-in", request.url));
+  if (request.nextUrl.pathname.startsWith("/dashboard")) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+  }
+
+  if (["/sign-in", "/sign-up"].includes(request.nextUrl.pathname)) {
+    if (user) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 
   return response;

@@ -5,10 +5,10 @@ import { SignInFormValues } from "@/components/sign-in/sign-in-form";
 import { createServerClient } from "@/lib/supabase/server";
 import { SignUpFormValues } from "@/components/sign-up/sign-up-form";
 
-export async function signIn({
+export const signIn = async ({
   email,
   password,
-}: SignInFormValues): Promise<AuthTokenResponsePassword> {
+}: SignInFormValues): Promise<AuthTokenResponsePassword> => {
   const supabase = createServerClient();
 
   const response = await supabase.auth.signInWithPassword({
@@ -17,11 +17,11 @@ export async function signIn({
   });
 
   return JSON.parse(JSON.stringify(response));
-}
+};
 
-export async function signUp(
+export const signUp = async (
   formData: SignUpFormValues
-): Promise<AuthResponse> {
+): Promise<AuthResponse> => {
   const supabase = createServerClient();
 
   const { firstName, lastName, email, password } = formData;
@@ -39,4 +39,4 @@ export async function signUp(
   });
 
   return JSON.parse(JSON.stringify(response));
-}
+};

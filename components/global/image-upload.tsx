@@ -44,6 +44,7 @@ export const ImageUpload = ({
       onChange(filePath);
     } catch (error) {
       console.log("error uploading image", error);
+
       toast.error("An error occurred while uploading the image", {
         duration: 3000,
       });

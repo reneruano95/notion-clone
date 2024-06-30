@@ -331,7 +331,7 @@ export type Database = {
           banner_url: string;
           created_at: string;
           data: string;
-          icon_id: string;
+          emoji: string;
           id: string;
           in_trash: string;
           logo: string;
@@ -342,7 +342,7 @@ export type Database = {
           banner_url: string;
           created_at?: string;
           data: string;
-          icon_id: string;
+          emoji: string;
           id?: string;
           in_trash: string;
           logo: string;
@@ -353,14 +353,22 @@ export type Database = {
           banner_url?: string;
           created_at?: string;
           data?: string;
-          icon_id?: string;
+          emoji?: string;
           id?: string;
           in_trash?: string;
           logo?: string;
           title?: string;
           workspace_owner_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "workspaces_workspace_owner_id_fkey";
+            columns: ["workspace_owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          }
+        ];
       };
     };
     Views: {

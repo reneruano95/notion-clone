@@ -46,7 +46,10 @@ export const uploadImage = async ({
 
   const { error } = await supabase.storage
     .from(bucketName)
-    .upload(`${user.id}/${filePath}`, file);
+    .upload(`${user.id}/${filePath}`, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
 
   return filePath;
 };

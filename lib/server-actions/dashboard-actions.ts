@@ -35,3 +35,10 @@ export const getUserSubscriptionStatus = async (
 
   return response;
 };
+
+export const createWorkspace = async (workspace: Tables<"workspaces">) => {
+  const supabase = createServerClient();
+  const response = await supabase.from("workspaces").insert(workspace).select();
+
+  return response;
+};

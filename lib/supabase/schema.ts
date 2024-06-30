@@ -17,9 +17,13 @@ export const workspaces = pgTable("workspaces", {
   })
     .defaultNow()
     .notNull(),
-  workspaceOwnerId: uuid("workspace_owner_id").notNull(),
+  workspaceOwnerId: uuid("workspace_owner_id")
+    .notNull()
+    .references(() => users.id, {
+      onDelete: "cascade",
+    }),
   title: text("title").notNull(),
-  iconId: uuid("icon_id").notNull(),
+  emoji: text("emoji").notNull(),
   data: text("data").notNull(),
   inTrash: text("in_trash").notNull(),
   logo: text("logo").notNull(),

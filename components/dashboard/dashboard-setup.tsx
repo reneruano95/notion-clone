@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   Card,
@@ -27,6 +28,10 @@ import { Input } from "@/components/ui/input";
 import { EmojiPicker } from "../global/emoji-picker";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { ImageUpload } from "../global/image-upload";
+import { Loader } from "../global/loader";
+import { createWorkspace } from "@/lib/server-actions/dashboard-actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const createWorkspaceSchema = z.object({
   workspaceName: z
@@ -47,6 +52,7 @@ interface DashboardSetupProps {
 }
 
 export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
+  const router = useRouter();
   const [selectedEmoji, setSelectedEmoji] = useState<string>("👋");
 
   const form = useForm<CreateWorkspaceFormValues>({
@@ -57,8 +63,42 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
     },
   });
 
+  const isLoading = form.formState.isSubmitting;
+
   const onSubmit = async (values: CreateWorkspaceFormValues) => {
     console.log("onSubmit", values);
+    try {
+      const newWorkspace: Tables<"workspaces"> = {
+        id: uuidv4(),
+        banner_url: "",
+        created_at: new Date().toISOString(),
+        emoji: selectedEmoji,
+        data: "",
+        in_trash: "",
+        title: values.workspaceName,
+        logo: values.workspaceLogo,
+        workspace_owner_id: user.id,
+      };
+
+      const { data, error: createWorkspaceError } = await createWorkspace(
+        newWorkspace
+      );
+
+      if (createWorkspaceError) {
+        throw createWorkspaceError;
+      }
+
+      toast.success(`${newWorkspace.title} has been created successfully.`);
+
+      router.replace(`/dashboard/${newWorkspace.id}`);
+    } catch (error) {
+      console.log("error creating workspace", error);
+      toast.error(
+        "An error occurred while creating the workspace. Please try again."
+      );
+    } finally {
+      form.reset();
+    }
   };
 
   return (
@@ -93,7 +133,7 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
                       <FormControl>
                         <Input placeholder="" {...field} />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-xs" />
                     </FormItem>
                   )}
                 />
@@ -118,12 +158,22 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
                         Upload an image that represents your workspace.
                       </FormDescription>
                     )}
-                    <FormMessage />
+                    {subscription?.status !== "active" && (
+                      <FormDescription className="text-muted-foreground block !mt-0">
+                        To customize your workspace, you need to be on a Pro
+                        Plan
+                      </FormDescription>
+                    )}
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
+              <div className="self-end">
+                <Button type="submit" disabled={isLoading}>
+                  {!isLoading ? "Create Workspace" : <Loader />}
+                </Button>
+              </div>
             </div>
-            <Button type="submit">Submit</Button>
           </form>
         </Form>
       </CardContent>

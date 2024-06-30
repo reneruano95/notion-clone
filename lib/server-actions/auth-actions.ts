@@ -40,3 +40,13 @@ export const signUp = async (
 
   return JSON.parse(JSON.stringify(response));
 };
+
+export const signOut = async () => {
+  const supabase = createServerClient();
+  await supabase.auth.signOut();
+};
+
+export const getUser = async () => {
+  const supabase = createServerClient();
+  return await supabase.auth.getUser();
+};

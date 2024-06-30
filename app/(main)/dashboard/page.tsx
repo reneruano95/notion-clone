@@ -2,23 +2,34 @@ import { redirect } from "next/navigation";
 import { toast } from "sonner";
 
 import { DashboardSetup } from "@/components/dashboard/dashboard-setup";
-import { getWorkspacesByUserId } from "@/lib/server-actions/dashboard-actions";
+import {
+  getUserSubscriptionStatus,
+  getWorkspacesByUserId,
+} from "@/lib/server-actions/dashboard-actions";
+import { getUser } from "@/lib/server-actions/auth-actions";
 
 export default async function DashboardPage() {
-  const { data: workspace, error } = await getWorkspacesByUserId();
+  const {
+    data: { user },
+  } = await getUser();
 
-  if (error) {
-    console.log(error.message);
-  }
+  if (!user) return redirect("/sign-in");
 
-  if (workspace) {
-    console.log([workspace].length);
+  const { data: workspace, error: workspaceError } =
+    await getWorkspacesByUserId(user.id);
+
+  const { data: subscription, error: subscriptionError } =
+    await getUserSubscriptionStatus(user.id);
+
+  if (workspaceError || subscriptionError) {
+    console.log("subscription error", subscriptionError);
+    console.log("workspace error", workspaceError);
   }
 
   if (!workspace) {
     return (
       <div className="bg-background h-screen w-screen flex justify-center items-center">
-        <DashboardSetup />
+        <DashboardSetup user={user} subscription={subscription} />
       </div>
     );
   }

@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 import {
   Card,
@@ -30,8 +32,6 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { ImageUpload } from "../global/image-upload";
 import { Loader } from "../global/loader";
 import { createWorkspace } from "@/lib/server-actions/dashboard-actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 const createWorkspaceSchema = z.object({
   workspaceName: z

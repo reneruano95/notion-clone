@@ -4,5 +4,5 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, params }: LayoutProps) {
-  return <main className="flex overflow-hidden h-screen">{children}</main>;
+  return <main className="">{children}</main>;
 }

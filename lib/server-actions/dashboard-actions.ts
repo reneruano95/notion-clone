@@ -1,10 +1,6 @@
 "use server";
 
-import {
-  PostgrestError,
-  PostgrestResponse,
-  PostgrestSingleResponse,
-} from "@supabase/supabase-js";
+import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
 import { Tables } from "../supabase/supabase.types";
@@ -16,18 +12,25 @@ export const createWorkspace = async (workspace: Tables<"workspaces">) => {
   return response;
 };
 
-export const getWorkspacesByUserId = async (
-  userId: string
-): Promise<PostgrestSingleResponse<Tables<"workspaces">>> => {
+export const getWorkspacesByUserId = async (userId: string) => {
   const supabase = createServerClient();
+  try {
+    const response = await supabase
+      .from("workspaces")
+      .select("*")
+      .eq("workspace_owner_id", userId)
+      .single();
 
-  const response = await supabase
-    .from("workspaces")
-    .select("*")
-    .eq("workspace_owner_id", userId)
-    .single();
-
-  return response;
+    return {
+      data: response.data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
 };
 
 export const getUserSubscriptionStatus = async (userId: string) => {
@@ -37,7 +40,7 @@ export const getUserSubscriptionStatus = async (userId: string) => {
       .from("subscriptions")
       .select("*")
       .eq("user_id", userId)
-      .select();
+      .single();
 
     return {
       data: response.data,

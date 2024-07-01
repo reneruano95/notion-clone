@@ -1,8 +1,7 @@
 interface LayoutProps {
   children: React.ReactNode;
-  params: { workspace_id: string };
 }
 
-export default function Layout({ children, params }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
   return <main className="flex overflow-hidden h-screen">{children}</main>;
 }

@@ -21,6 +21,7 @@ export default async function DashboardPage() {
   const { data: subscription, error: subscriptionError } =
     await getUserSubscriptionStatus(user.id);
 
+  // TODO: Add error handling
   if (workspaceError || subscriptionError) {
     console.log("subscription error", subscriptionError);
     console.log("workspace error", workspaceError);

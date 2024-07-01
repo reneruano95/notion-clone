@@ -30,18 +30,25 @@ export const getWorkspacesByUserId = async (
   return response;
 };
 
-export const getUserSubscriptionStatus = async (
-  userId: string
-): Promise<PostgrestSingleResponse<Tables<"subscriptions">>> => {
+export const getUserSubscriptionStatus = async (userId: string) => {
   const supabase = createServerClient();
+  try {
+    const response = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", userId)
+      .select();
 
-  const response = await supabase
-    .from("subscriptions")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
-
-  return response;
+    return {
+      data: response.data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
 };
 
 export const getFoldersByWorkspaceId = async (workspaceId: string) => {

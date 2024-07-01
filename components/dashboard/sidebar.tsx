@@ -25,7 +25,6 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
     params.workspace_id
   );
 
-  // TODO: Add error handling
   if (subscriptionError || foldersError) {
     console.log("subscription error", subscriptionError);
     console.log("folders error", foldersError);

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/lib/providers/next-theme-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import db from "@/lib/supabase/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // console.log(db);
   return (
     <html lang="en">
       <body className={inter.className}>

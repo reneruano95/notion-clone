@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS "collaborators" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"workspace_id" uuid NOT NULL,
+	"user_id" uuid NOT NULL
+);
+--> statement-breakpoint
+ALTER TABLE "workspaces" RENAME COLUMN "icon_id" TO "emoji";--> statement-breakpoint
+ALTER TABLE "workspaces" ALTER COLUMN "emoji" SET DATA TYPE text;--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "collaborators" ADD CONSTRAINT "collaborators_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "collaborators" ADD CONSTRAINT "collaborators_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_workspace_owner_id_users_id_fk" FOREIGN KEY ("workspace_owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;

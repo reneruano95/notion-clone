@@ -11,6 +11,7 @@ import {
   bigint,
   integer,
 } from "drizzle-orm/pg-core";
+import { emit } from "process";
 
 export const aal_level = pgEnum("aal_level", ["aal1", "aal2", "aal3"]);
 export const code_challenge_method = pgEnum("code_challenge_method", [
@@ -89,7 +90,7 @@ export const workspaces = pgTable("workspaces", {
     .notNull(),
   workspace_owner_id: uuid("workspace_owner_id").notNull(),
   title: text("title").notNull(),
-  icon_id: uuid("icon_id").notNull(),
+  emoji: uuid("emoji").notNull(),
   data: text("data").notNull(),
   in_trash: text("in_trash").notNull(),
   logo: text("logo").notNull(),

@@ -5,8 +5,6 @@ CREATE TABLE IF NOT EXISTS "collaborators" (
 	"user_id" uuid NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "workspaces" RENAME COLUMN "icon_id" TO "emoji";--> statement-breakpoint
-ALTER TABLE "workspaces" ALTER COLUMN "emoji" SET DATA TYPE text;--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "collaborators" ADD CONSTRAINT "collaborators_workspace_id_workspaces_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspaces"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION

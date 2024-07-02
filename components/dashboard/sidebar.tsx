@@ -28,6 +28,8 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
   if (subscriptionError || foldersError) {
     console.log("subscription error", subscriptionError);
     console.log("folders error", foldersError);
+
+    redirect("/dashboard");
   }
 
   return <div>Sidebar</div>;

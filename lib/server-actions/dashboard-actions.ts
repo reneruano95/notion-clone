@@ -87,7 +87,8 @@ export const getPrivateWorkspacesByUserId = async (userId: string) => {
       .or("workspaces_id.eq.id", {
         referencedTable: "workspaces",
       })
-      .eq("workspaces.workspace_owner_id", userId);
+      .eq("workspaces.workspace_owner_id", userId)
+      .returns<Tables<"workspaces">[]>();
 
     return {
       data: response.data,
@@ -109,7 +110,8 @@ export const getCollaboratingWorkspacesByUserId = async (userId: string) => {
       .select("workspaces!inner(*)")
       .eq("users.id", "collaborators.user_id")
       .eq("collaborators.workspaces_id", "workspaces.id")
-      .eq("users.id", userId);
+      .eq("users.id", userId)
+      .returns<Tables<"workspaces">[]>();
 
     return {
       data: response.data,
@@ -133,7 +135,8 @@ export const getSharedWorkspacesByUserId = async (userId: string) => {
         referencedTable: "workspaces",
       })
       .eq("workspaces.workspace_owner_id", userId)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .returns<Tables<"workspaces">[]>();
 
     return {
       data: response.data,

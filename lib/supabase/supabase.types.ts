@@ -9,6 +9,42 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      collaborators: {
+        Row: {
+          created_at: string;
+          id: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          user_id: string;
+          workspace_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          user_id?: string;
+          workspace_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collaborators_user_id_users_id_fk";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "collaborators_workspace_id_workspaces_id_fk";
+            columns: ["workspace_id"];
+            isOneToOne: false;
+            referencedRelation: "workspaces";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       customers: {
         Row: {
           id: string;
@@ -363,6 +399,13 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "workspaces_workspace_owner_id_fkey";
+            columns: ["workspace_owner_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "workspaces_workspace_owner_id_users_id_fk";
             columns: ["workspace_owner_id"];
             isOneToOne: false;
             referencedRelation: "users";

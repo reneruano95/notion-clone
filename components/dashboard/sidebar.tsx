@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 
 import { getUser } from "@/lib/server-actions/auth-actions";
 import {
+  getCollaboratingWorkspacesByUserId,
   getFoldersByWorkspaceId,
+  getPrivateWorkspacesByUserId,
+  getSharedWorkspacesByUserId,
   getUserSubscriptionStatus,
 } from "@/lib/server-actions/dashboard-actions";
 
@@ -32,5 +35,12 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
     redirect("/dashboard");
   }
 
-  return <div>Sidebar</div>;
+  const [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces] =
+    await Promise.all([
+      getPrivateWorkspacesByUserId(user.id),
+      getCollaboratingWorkspacesByUserId(user.id),
+      getSharedWorkspacesByUserId(user.id),
+    ]);
+
+  return <aside>Sidebar</aside>;
 };

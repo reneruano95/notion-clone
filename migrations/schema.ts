@@ -1,17 +1,16 @@
-import { sql } from "drizzle-orm";
 import {
   pgTable,
+  foreignKey,
   pgEnum,
   uuid,
   timestamp,
   text,
-  foreignKey,
   jsonb,
   boolean,
   bigint,
   integer,
 } from "drizzle-orm/pg-core";
-import { emit } from "process";
+import { sql } from "drizzle-orm";
 
 export const aal_level = pgEnum("aal_level", ["aal1", "aal2", "aal3"]);
 export const code_challenge_method = pgEnum("code_challenge_method", [
@@ -83,18 +82,17 @@ export const equality_op = pgEnum("equality_op", [
   "in",
 ]);
 
-export const workspaces = pgTable("workspaces", {
+export const collaborators = pgTable("collaborators", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
     .defaultNow()
     .notNull(),
-  workspace_owner_id: uuid("workspace_owner_id").notNull(),
-  title: text("title").notNull(),
-  emoji: uuid("emoji").notNull(),
-  data: text("data").notNull(),
-  in_trash: text("in_trash").notNull(),
-  logo: text("logo").notNull(),
-  banner_url: text("banner_url").notNull(),
+  workspace_id: uuid("workspace_id")
+    .notNull()
+    .references(() => workspaces.id, { onDelete: "cascade" }),
+  user_id: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 
 export const users = pgTable(
@@ -127,6 +125,24 @@ export const customers = pgTable("customers", {
   stripe_customer_id: text("stripe_customer_id"),
 });
 
+export const workspaces = pgTable("workspaces", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+  workspace_owner_id: uuid("workspace_owner_id")
+    .notNull()
+    .references(() => users.id)
+    .references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  emoji: text("emoji").notNull(),
+  data: text("data").notNull(),
+  in_trash: text("in_trash").notNull(),
+  logo: text("logo").notNull(),
+  banner_url: text("banner_url").notNull(),
+  is_private: boolean("is_private").notNull(),
+});
+
 export const products = pgTable("products", {
   id: text("id").primaryKey().notNull(),
   active: boolean("active"),
@@ -153,47 +169,64 @@ export const prices = pgTable("prices", {
 
 export const subscriptions = pgTable("subscriptions", {
   id: text("id").primaryKey().notNull(),
-  userId: uuid("user_id").notNull(),
+  user_id: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
   status: subscription_status("status"),
   metadata: jsonb("metadata"),
-  priceId: text("price_id").references(() => prices.id),
+  price_id: text("price_id").references(() => prices.id),
   quantity: integer("quantity"),
-  cancelAtPeriodEnd: boolean("cancel_at_period_end"),
+  cancel_at_period_end: boolean("cancel_at_period_end"),
   created: timestamp("created", { withTimezone: true, mode: "string" })
-    .default(sql`now()`)
+    .defaultNow()
     .notNull(),
-  currentPeriodStart: timestamp("current_period_start", {
+  current_period_start: timestamp("current_period_start", {
     withTimezone: true,
     mode: "string",
   })
-    .default(sql`now()`)
+    .defaultNow()
     .notNull(),
-  currentPeriodEnd: timestamp("current_period_end", {
+  current_period_end: timestamp("current_period_end", {
     withTimezone: true,
     mode: "string",
   })
-    .default(sql`now()`)
+    .defaultNow()
     .notNull(),
-  endedAt: timestamp("ended_at", {
+  ended_at: timestamp("ended_at", {
     withTimezone: true,
     mode: "string",
-  }).default(sql`now()`),
-  cancelAt: timestamp("cancel_at", {
+  }).defaultNow(),
+  cancel_at: timestamp("cancel_at", {
     withTimezone: true,
     mode: "string",
-  }).default(sql`now()`),
-  canceledAt: timestamp("canceled_at", {
+  }).defaultNow(),
+  canceled_at: timestamp("canceled_at", {
     withTimezone: true,
     mode: "string",
-  }).default(sql`now()`),
-  trialStart: timestamp("trial_start", {
+  }).defaultNow(),
+  trial_start: timestamp("trial_start", {
     withTimezone: true,
     mode: "string",
-  }).default(sql`now()`),
-  trialEnd: timestamp("trial_end", {
+  }).defaultNow(),
+  trial_end: timestamp("trial_end", {
     withTimezone: true,
     mode: "string",
-  }).default(sql`now()`),
+  }).defaultNow(),
+});
+
+export const folders = pgTable("folders", {
+  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+  title: text("title").notNull(),
+  emoji: text("emoji").notNull(),
+  data: text("data").notNull(),
+  in_trash: text("in_trash").notNull(),
+  banner_url: text("banner_url").notNull(),
+  workspace_id: uuid("workspace_id")
+    .notNull()
+    .references(() => workspaces.id, { onDelete: "cascade" }),
 });
 
 export const files = pgTable("files", {
@@ -202,7 +235,7 @@ export const files = pgTable("files", {
     .defaultNow()
     .notNull(),
   title: text("title").notNull(),
-  icon_id: uuid("icon_id").notNull(),
+  emoji: text("emoji").notNull(),
   data: text("data").notNull(),
   in_trash: text("in_trash").notNull(),
   banner_url: text("banner_url").notNull(),
@@ -212,19 +245,4 @@ export const files = pgTable("files", {
   folder_id: uuid("folder_id")
     .notNull()
     .references(() => folders.id, { onDelete: "cascade" }),
-});
-
-export const folders = pgTable("folders", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .defaultNow()
-    .notNull(),
-  title: text("title").notNull(),
-  icon_id: uuid("icon_id").notNull(),
-  data: text("data").notNull(),
-  in_trash: text("in_trash").notNull(),
-  banner_url: text("banner_url").notNull(),
-  workspace_id: uuid("workspace_id")
-    .notNull()
-    .references(() => workspaces.id, { onDelete: "cascade" }),
 });

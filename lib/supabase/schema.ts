@@ -28,6 +28,7 @@ export const workspaces = pgTable("workspaces", {
   inTrash: text("in_trash").notNull(),
   logo: text("logo").notNull(),
   bannerUrl: text("banner_url").notNull(),
+  isPrivate: boolean("is_private").notNull(),
 });
 
 export const folders = pgTable("folders", {
@@ -39,7 +40,7 @@ export const folders = pgTable("folders", {
     .defaultNow()
     .notNull(),
   title: text("title").notNull(),
-  iconId: uuid("icon_id").notNull(),
+  emoji: text("emoji").notNull(),
   data: text("data").notNull(),
   inTrash: text("in_trash").notNull(),
   bannerUrl: text("banner_url").notNull(),
@@ -59,7 +60,7 @@ export const files = pgTable("files", {
     .defaultNow()
     .notNull(),
   title: text("title").notNull(),
-  iconId: uuid("icon_id").notNull(),
+  emoji: uuid("emoji").notNull(),
   data: text("data").notNull(),
   inTrash: text("in_trash").notNull(),
   bannerUrl: text("banner_url").notNull(),

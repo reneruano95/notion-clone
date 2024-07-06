@@ -48,7 +48,7 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
   if (collaboratingWorkspaces) {
     // console.log("data private workspaces", privateWorkspaces.data);
     // console.log("data collaborating workspaces", collaboratingWorkspaces.data);
-    console.log("data shared workspaces", sharedWorkspaces.data);
+    // console.log("data shared workspaces", sharedWorkspaces.data);
   }
 
   if (

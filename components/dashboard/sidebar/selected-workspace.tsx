@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { Tables } from "@/lib/supabase/supabase.types";
 import { getImageUrl } from "@/lib/server-actions/images-actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SelectedWorkspaceProps {
   workspace: Tables<"workspaces">;
@@ -14,14 +15,16 @@ export const SelectedWorkspace = ({
   workspace,
   onClick,
 }: SelectedWorkspaceProps) => {
-  const [workspaceLogo, setWorkspaceLogo] = useState("/public/cypresslogo.svg");
+  const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState(
+    "/public/cypresslogo.svg"
+  );
 
   useEffect(() => {
     if (workspace.logo) {
       getImageUrl({
         bucketName: "workspaces-logos",
         filePath: workspace.logo,
-      }).then(setWorkspaceLogo);
+      }).then(setWorkspaceLogoUrl);
     }
   }, [workspace]);
 
@@ -31,20 +34,16 @@ export const SelectedWorkspace = ({
       onClick={() => {
         if (onClick) onClick();
       }}
-      className="flex rounded-md hover:bg-muted transition-all flex-row p-2 gap-4 justify-center cursor-pointer items-center my-2"
+      className="flex rounded-md hover:bg-muted transition-all p-2 flex-row gap-2 justify-center cursor-pointer items-center my-2"
     >
-      <Image
-        src={workspaceLogo}
-        alt="workspace logo"
-        width={26}
-        height={26}
-        objectFit="cover"
-      />
-      <div className="flex flex-col">
-        <p className="text-lg w-[170px] overflow-hidden overflow-ellipsis whitespace-nowrap">
-          {workspace.title}
-        </p>
-      </div>
+      <Avatar className="w-8 h-8">
+        <AvatarImage src={workspaceLogoUrl} />
+        <AvatarFallback>{workspace.title[0]}</AvatarFallback>
+      </Avatar>
+
+      <p className="text-lg w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
+        {workspace.title}
+      </p>
     </Link>
   );
 };

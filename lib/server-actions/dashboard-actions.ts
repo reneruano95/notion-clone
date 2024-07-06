@@ -4,7 +4,6 @@ import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
 import { Tables } from "../supabase/supabase.types";
-import { or } from "drizzle-orm";
 
 export const createWorkspace = async (workspace: Tables<"workspaces">) => {
   const supabase = createServerClient();
@@ -82,13 +81,11 @@ export const getPrivateWorkspacesByUserId = async (userId: string) => {
 
   try {
     const response = await supabase
-      .from("collaborators")
-      .select("workspaces!inner(*)")
-      .or("workspaces_id.eq.id", {
-        referencedTable: "workspaces",
-      })
-      .eq("workspaces.workspace_owner_id", userId)
-      .returns<Tables<"workspaces">[]>();
+      .from("workspaces")
+      .select("*")
+      .filter("workspace_owner_id", "eq", userId)
+      .filter("is_private", "eq", true)
+      .select();
 
     return {
       data: response.data,
@@ -106,12 +103,11 @@ export const getCollaboratingWorkspacesByUserId = async (userId: string) => {
   const supabase = createServerClient();
   try {
     const response = await supabase
-      .from("collaborators")
-      .select("workspaces!inner(*)")
-      .eq("users.id", "collaborators.user_id")
-      .eq("collaborators.workspaces_id", "workspaces.id")
-      .eq("users.id", userId)
-      .returns<Tables<"workspaces">[]>();
+      .from("workspaces")
+      .select("*")
+      .filter("workspace_owner_id", "neq", userId)
+      .filter("is_private", "eq", false)
+      .select();
 
     return {
       data: response.data,
@@ -129,14 +125,11 @@ export const getSharedWorkspacesByUserId = async (userId: string) => {
   const supabase = createServerClient();
   try {
     const response = await supabase
-      .from("collaborators")
-      .select("workspaces!inner(*)")
-      .or("workspaces_id.eq.id", {
-        referencedTable: "workspaces",
-      })
-      .eq("workspaces.workspace_owner_id", userId)
-      .order("created_at", { ascending: false })
-      .returns<Tables<"workspaces">[]>();
+      .from("workspaces")
+      .select("*")
+      .filter("workspace_owner_id", "eq", userId)
+      .filter("is_private", "eq", false)
+      .select();
 
     return {
       data: response.data,

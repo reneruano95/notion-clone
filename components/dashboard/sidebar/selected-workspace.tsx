@@ -19,7 +19,7 @@ export const SelectedWorkspace = ({
   useEffect(() => {
     if (workspace.logo) {
       getImageUrl({
-        bucketName: "workspace-logos",
+        bucketName: "workspaces-logos",
         filePath: workspace.logo,
       }).then(setWorkspaceLogo);
     }

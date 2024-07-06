@@ -45,14 +45,23 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
       getSharedWorkspacesByUserId(user.id),
     ]);
 
+  if (collaboratingWorkspaces) {
+    // console.log("data private workspaces", privateWorkspaces.data);
+    // console.log("data collaborating workspaces", collaboratingWorkspaces.data);
+    console.log("data shared workspaces", sharedWorkspaces.data);
+  }
+
   if (
     privateWorkspaces.error ||
     collaboratingWorkspaces.error ||
     sharedWorkspaces.error
   ) {
-    console.log("privateWorkspaces error", privateWorkspaces.error);
-    console.log("collaboratingWorkspaces error", collaboratingWorkspaces.error);
-    console.log("sharedWorkspaces error", sharedWorkspaces.error);
+    console.log("data private workspaces error", privateWorkspaces.error);
+    console.log(
+      "data collaborating workspaces error",
+      collaboratingWorkspaces.error
+    );
+    console.log("data shared workspaces error", sharedWorkspaces.error);
   }
 
   let defaultValue: Tables<"workspaces"> | undefined;

@@ -73,8 +73,8 @@ export type Database = {
           banner_url: string;
           created_at: string;
           data: string;
+          emoji: string;
           folder_id: string;
-          icon_id: string;
           id: string;
           in_trash: string;
           title: string;
@@ -84,8 +84,8 @@ export type Database = {
           banner_url: string;
           created_at?: string;
           data: string;
+          emoji: string;
           folder_id: string;
-          icon_id: string;
           id?: string;
           in_trash: string;
           title: string;
@@ -95,8 +95,8 @@ export type Database = {
           banner_url?: string;
           created_at?: string;
           data?: string;
+          emoji?: string;
           folder_id?: string;
-          icon_id?: string;
           id?: string;
           in_trash?: string;
           title?: string;
@@ -124,7 +124,7 @@ export type Database = {
           banner_url: string;
           created_at: string;
           data: string;
-          icon_id: string;
+          emoji: string;
           id: string;
           in_trash: string;
           title: string;
@@ -134,7 +134,7 @@ export type Database = {
           banner_url: string;
           created_at?: string;
           data: string;
-          icon_id: string;
+          emoji: string;
           id?: string;
           in_trash: string;
           title: string;
@@ -144,7 +144,7 @@ export type Database = {
           banner_url?: string;
           created_at?: string;
           data?: string;
-          icon_id?: string;
+          emoji?: string;
           id?: string;
           in_trash?: string;
           title?: string;
@@ -370,6 +370,7 @@ export type Database = {
           emoji: string;
           id: string;
           in_trash: string;
+          is_private: boolean;
           logo: string;
           title: string;
           workspace_owner_id: string;
@@ -381,6 +382,7 @@ export type Database = {
           emoji: string;
           id?: string;
           in_trash: string;
+          is_private: boolean;
           logo: string;
           title: string;
           workspace_owner_id: string;
@@ -392,6 +394,7 @@ export type Database = {
           emoji?: string;
           id?: string;
           in_trash?: string;
+          is_private?: boolean;
           logo?: string;
           title?: string;
           workspace_owner_id?: string;

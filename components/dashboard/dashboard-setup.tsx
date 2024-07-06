@@ -37,11 +37,11 @@ const createWorkspaceSchema = z.object({
   workspaceName: z
     .string()
     .describe(" Workspace name")
-    .min(1, "Workspace name is required."),
+    .min(1, "Your workspace name must be at least 1 character long"),
   workspaceLogo: z
     .string()
     .describe("Workspace logo")
-    .min(1, "Workspace logo is required"),
+    .min(1, "You need to upload a workspace logo"),
 });
 
 export type CreateWorkspaceFormValues = z.infer<typeof createWorkspaceSchema>;
@@ -53,7 +53,7 @@ interface DashboardSetupProps {
 
 export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
   const router = useRouter();
-  const [selectedEmoji, setSelectedEmoji] = useState<string>("👋");
+  const [selectedEmoji, setSelectedEmoji] = useState<string>("🖥️");
 
   const form = useForm<CreateWorkspaceFormValues>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -78,6 +78,7 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
         title: values.workspaceName,
         logo: values.workspaceLogo,
         workspace_owner_id: user.id,
+        is_private: true,
       };
 
       const { data, error: createWorkspaceError } = await createWorkspace(
@@ -113,7 +114,7 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
 
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="text-5xl">
@@ -126,14 +127,18 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
                   control={form.control}
                   name="workspaceName"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="w-full space-y-1">
                       <FormLabel className="text-sm text-muted-foreground">
-                        Workspace Name
+                        Name
                       </FormLabel>
                       <FormControl>
                         <Input placeholder="" {...field} />
                       </FormControl>
-                      <FormMessage className="text-xs" />
+                      {form.formState.errors.workspaceName ? (
+                        <FormMessage />
+                      ) : (
+                        <FormDescription>Your workspace name</FormDescription>
+                      )}
                     </FormItem>
                   )}
                 />
@@ -142,10 +147,10 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
                 control={form.control}
                 name="workspaceLogo"
                 render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel className="text-sm text-muted-foreground">
-                      Workspace Logo
-                    </FormLabel>
+                  <FormItem className="w-full space-y-1">
+                    {/* <FormLabel className="text-sm text-muted-foreground">
+                      Logo
+                    </FormLabel> */}
                     <FormControl>
                       <ImageUpload
                         bucketName="workspaces-logos"
@@ -153,7 +158,9 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
                         onChange={field.onChange}
                       />
                     </FormControl>
-                    {!field.value && (
+                    {form.formState.errors.workspaceLogo ? (
+                      <FormMessage />
+                    ) : (
                       <FormDescription>
                         Upload an image that represents your workspace.
                       </FormDescription>
@@ -164,7 +171,6 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
                         Plan
                       </FormDescription>
                     )}
-                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />

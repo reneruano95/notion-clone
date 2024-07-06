@@ -1,7 +1,7 @@
 import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { CloudUpload, X } from "lucide-react";
+import { CloudUpload, ImageUp, X } from "lucide-react";
 
 import { getImageUrl, uploadImage } from "@/lib/server-actions/images-actions";
 import { Loader } from "./loader";
@@ -53,7 +53,7 @@ export const ImageUpload = ({
 
   if (isPending) {
     return (
-      <div className="w-full h-32 flex items-center justify-center">
+      <div className="w-full h-28 flex items-center justify-center">
         <Loader />
         <p className="sr-only">Uploading...</p>
       </div>
@@ -62,7 +62,7 @@ export const ImageUpload = ({
 
   if (value) {
     return (
-      <div className="w-full h-32">
+      <div className="w-full h-28">
         {imageUrl && (
           <div className="relative h-full w-fit mx-auto">
             <Image
@@ -85,7 +85,7 @@ export const ImageUpload = ({
   }
 
   return (
-    <div className="w-full h-32">
+    <div className="w-full h-28">
       <input
         type="file"
         id="custom-input"
@@ -95,11 +95,11 @@ export const ImageUpload = ({
       />
       <label
         htmlFor="custom-input"
-        className="flex flex-col justify-center items-center w-full h-full text-muted-foreground py-2 px-4 rounded-md border-2 border-dashed border-muted-foreground font-semibold cursor-pointer"
+        className="flex flex-col justify-center items-center w-full h-full text-muted-foreground text-center text-sm py-2 px-4 rounded-md border-2 border-dashed border-muted-foreground font-semibold cursor-pointer"
       >
-        <CloudUpload className="w-6 h-6 mb-3" />
-        <p className="mb-2 text-xs">Click to upload</p>
-        <p className="text-xs">SVG, PNG, JPG or GIF</p>
+        <ImageUp className="w-6 h-6" />
+        <p>Click to upload your workspace logo</p>
+        <p>SVG, PNG, JPG or GIF</p>
       </label>
     </div>
   );

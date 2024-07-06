@@ -86,9 +86,9 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
     >
       <div>
         <WorkspaceDropdown
-          privateWorkspaces={privateWorkspaces.data}
-          collaboratingWorkspaces={collaboratingWorkspaces.data}
-          sharedWorkspaces={sharedWorkspaces.data}
+          privateWorkspaces={privateWorkspaces?.data || []}
+          collaboratingWorkspaces={collaboratingWorkspaces?.data || []}
+          sharedWorkspaces={sharedWorkspaces.data || []}
           defaultValue={defaultValue}
         />
       </div>

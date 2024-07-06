@@ -88,7 +88,7 @@ export const getPrivateWorkspacesByUserId = async (userId: string) => {
       .select();
 
     return {
-      data: response.data,
+      data: response.data || [],
       error: null,
     };
   } catch (error) {
@@ -110,7 +110,7 @@ export const getCollaboratingWorkspacesByUserId = async (userId: string) => {
       .select();
 
     return {
-      data: response.data,
+      data: response.data || [],
       error: null,
     };
   } catch (error) {
@@ -132,7 +132,7 @@ export const getSharedWorkspacesByUserId = async (userId: string) => {
       .select();
 
     return {
-      data: response.data,
+      data: response.data || [],
       error: null,
     };
   } catch (error) {

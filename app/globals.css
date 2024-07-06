@@ -12,8 +12,8 @@ body {
   width: 4px;
 }
 
-/* Track
-::-webkit-scrollbar-track {
+/* Track */
+/* ::-webkit-scrollbar-track {
   background: #f1f1f1;
 } */
 
@@ -21,8 +21,6 @@ body {
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background: #888;
 }
 

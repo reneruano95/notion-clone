@@ -32,7 +32,7 @@ export const SelectedWorkspace = ({
       onClick={() => {
         if (onClick) onClick();
       }}
-      className="flex rounded-md hover:bg-muted transition-all p-2 flex-row gap-2 justify-center cursor-pointer items-center my-2"
+      className="flex rounded-md hover:bg-muted transition-all p-2 gap-2 justify-center cursor-pointer items-center my-2"
     >
       <Avatar className="w-8 h-8">
         <AvatarImage src={workspaceLogoUrl} />

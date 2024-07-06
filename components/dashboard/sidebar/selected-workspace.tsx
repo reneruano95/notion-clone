@@ -15,9 +15,7 @@ export const SelectedWorkspace = ({
   workspace,
   onClick,
 }: SelectedWorkspaceProps) => {
-  const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState(
-    "/public/cypresslogo.svg"
-  );
+  const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState("");
 
   useEffect(() => {
     if (workspace.logo) {

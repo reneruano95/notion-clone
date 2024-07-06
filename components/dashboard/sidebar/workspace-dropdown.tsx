@@ -6,6 +6,7 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { SelectedWorkspace } from "./selected-workspace";
 import { CustomDialogTrigger } from "@/components/global/custom-dialog-trigger";
 import { WorkspaceCreator } from "@/components/global/workspace-creator";
+import { SquarePlus } from "lucide-react";
 
 interface WorkspaceDropdownProps {
   privateWorkspaces: Tables<"workspaces">[] | null;
@@ -39,7 +40,7 @@ export const WorkspaceDropdown = ({
       </div>
 
       {isOpen && (
-        <div className="origin-top-right absolute w-full rounded-md shadow-md z-50 h-[220px] bg-black/10 backdrop-blur-lg group  border-[1px] border-muted">
+        <div className="origin-top-right absolute w-full rounded-md shadow-md z-50 h-[220px] bg-black/10 backdrop-blur-lg group overflow-y-auto  border-[1px] border-muted">
           <div className="rounded-md flex flex-col">
             <div className="!p-2">
               {!!privateWorkspaces?.length && (
@@ -81,6 +82,7 @@ export const WorkspaceDropdown = ({
                   ))}
                 </>
               )}
+              <hr />
             </div>
 
             <CustomDialogTrigger
@@ -88,11 +90,9 @@ export const WorkspaceDropdown = ({
               content={<WorkspaceCreator />}
               description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
             >
-              <div className="flex transition-all hover:bg-muted justify-center items-center gap-2 p-2 w-full">
-                <article className="text-slate-500 rounded-full bg-slate-800  w-4  h-4  flex  items-center  justify-center">
-                  +
-                </article>
-                Create workspace
+              <div className="flex rounded transition-all hover:bg-muted justify-center items-center gap-2 p-2 mx-2 mb-2">
+                <SquarePlus className="w-6 h-6" />
+                <p className="text-lg">Create Workspace</p>
               </div>
             </CustomDialogTrigger>
           </div>

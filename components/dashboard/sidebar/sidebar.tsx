@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { WorkspaceDropdown } from "./workspace-dropdown";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { PlanUsage } from "./plan-usage";
+import { NativeNavigation } from "./native-navigation";
 
 interface SidebarProps {
   params: { workspace_id: string };
@@ -97,6 +98,7 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
           foldersLength={folders?.length || 0}
           subscription={subscription}
         />
+        <NativeNavigation myWorkspaceId={params.workspace_id} />
       </div>
     </aside>
   );

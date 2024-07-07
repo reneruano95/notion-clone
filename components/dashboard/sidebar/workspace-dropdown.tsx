@@ -8,7 +8,7 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { SelectedWorkspace } from "./selected-workspace";
 import { CustomDialogTrigger } from "@/components/global/custom-dialog-trigger";
 import { WorkspaceCreator } from "@/components/global/workspace-creator";
-import { useWorkspaceStore } from "@/lib/providers/store-provider";
+import { useAppsStore } from "@/lib/providers/store-provider";
 
 interface WorkspaceDropdownProps {
   privateWorkspaces: Tables<"workspaces">[] | [];
@@ -28,7 +28,7 @@ export const WorkspaceDropdown = ({
   const [selectedOption, setSelectedOption] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { workspaces, setWorkspaces } = useWorkspaceStore((store) => store);
+  const { workspaces, setWorkspaces } = useAppsStore((store) => store);
 
   useEffect(() => {
     if (!workspaces.length) {

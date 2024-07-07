@@ -3,44 +3,36 @@
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { useStore } from "zustand";
 
-import {
-  type WorkspaceStore,
-  createCounterStore,
-} from "@/lib/stores/workspace-store";
+import { type AppStore, createAppStore } from "@/lib/stores/app-store";
 
-export type WorkspaceStoreApi = ReturnType<typeof createCounterStore>;
+export type StoreApi = ReturnType<typeof createAppStore>;
 
-export const WorkspaceStoreContext = createContext<
-  WorkspaceStoreApi | undefined
->(undefined);
+export const AppStoreContext = createContext<StoreApi | undefined>(undefined);
 
-export interface WorkspaceStoreProviderProps {
+export interface AppStoreProviderProps {
   children: ReactNode;
 }
 
-export const WorkspaceStoreProvider = ({
-  children,
-}: WorkspaceStoreProviderProps) => {
-  const storeRef = useRef<WorkspaceStoreApi>();
+export const AppStoreProvider = ({ children }: AppStoreProviderProps) => {
+  const storeRef = useRef<StoreApi>();
+
   if (!storeRef.current) {
-    storeRef.current = createCounterStore();
+    storeRef.current = createAppStore();
   }
 
   return (
-    <WorkspaceStoreContext.Provider value={storeRef.current}>
+    <AppStoreContext.Provider value={storeRef.current}>
       {children}
-    </WorkspaceStoreContext.Provider>
+    </AppStoreContext.Provider>
   );
 };
 
-export const useWorkspaceStore = <T,>(
-  selector: (store: WorkspaceStore) => T
-): T => {
-  const workspaceStoreContext = useContext(WorkspaceStoreContext);
+export const useAppsStore = <T,>(selector: (store: AppStore) => T): T => {
+  const appStoreContext = useContext(AppStoreContext);
 
-  if (!workspaceStoreContext) {
-    throw new Error(`useCounterStore must be used within CounterStoreProvider`);
+  if (!appStoreContext) {
+    throw new Error(`useAppStore must be used within AppStoreProvider`);
   }
 
-  return useStore(workspaceStoreContext, selector);
+  return useStore(appStoreContext, selector);
 };

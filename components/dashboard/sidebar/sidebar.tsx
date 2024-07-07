@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { WorkspaceDropdown } from "./workspace-dropdown";
 import { Tables } from "@/lib/supabase/supabase.types";
+import { PlanUsage } from "./plan-usage";
 
 interface SidebarProps {
   params: { workspace_id: string };
@@ -91,6 +92,10 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
           collaboratingWorkspaces={collaboratingWorkspaces?.data || []}
           sharedWorkspaces={sharedWorkspaces.data || []}
           defaultValue={defaultValue}
+        />
+        <PlanUsage
+          foldersLength={folders?.length || 0}
+          subscription={subscription}
         />
       </div>
     </aside>

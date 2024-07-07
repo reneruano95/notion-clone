@@ -145,7 +145,7 @@ export const getSharedWorkspacesByUserId = async (userId: string) => {
 
 export const addCollaborators = async (
   workspaceId: string,
-  newCollaborators: User[]
+  newCollaborators: Tables<"users">[]
 ) => {
   const supabase = createServerClient();
 
@@ -204,6 +204,26 @@ export const removeCollaborators = async (
 
     return {
       data: null,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const getUsersFromSearch = async (email: string) => {
+  const supabase = createServerClient();
+  try {
+    const response = await supabase
+      .from("users")
+      .select("*")
+      .ilike("email", `%${email}%`)
+      .select();
+    return {
+      data: response.data,
       error: null,
     };
   } catch (error) {

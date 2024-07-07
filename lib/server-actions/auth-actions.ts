@@ -4,6 +4,7 @@ import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
 import { SignInFormValues } from "@/components/sign-in/sign-in-form";
 import { createServerClient } from "@/lib/supabase/server";
 import { SignUpFormValues } from "@/components/sign-up/sign-up-form";
+import { createBrowserClient } from "../supabase/client";
 
 export const signIn = async ({
   email,
@@ -48,5 +49,6 @@ export const signOut = async () => {
 
 export const getUser = async () => {
   const supabase = createServerClient();
+
   return await supabase.auth.getUser();
 };

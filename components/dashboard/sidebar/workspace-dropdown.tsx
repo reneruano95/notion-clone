@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
+import { SquarePlus } from "lucide-react";
 
 import { Tables } from "@/lib/supabase/supabase.types";
 import { SelectedWorkspace } from "./selected-workspace";
 import { CustomDialogTrigger } from "@/components/global/custom-dialog-trigger";
 import { WorkspaceCreator } from "@/components/global/workspace-creator";
-import { SquarePlus } from "lucide-react";
 import { useWorkspaceStore } from "@/lib/providers/store-provider";
 
 interface WorkspaceDropdownProps {
@@ -14,6 +15,7 @@ interface WorkspaceDropdownProps {
   collaboratingWorkspaces: Tables<"workspaces">[] | [];
   sharedWorkspaces: Tables<"workspaces">[] | [];
   defaultValue: Tables<"workspaces"> | undefined;
+  user: User;
 }
 
 export const WorkspaceDropdown = ({
@@ -21,6 +23,7 @@ export const WorkspaceDropdown = ({
   collaboratingWorkspaces,
   sharedWorkspaces,
   defaultValue,
+  user,
 }: WorkspaceDropdownProps) => {
   const [selectedOption, setSelectedOption] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +63,9 @@ export const WorkspaceDropdown = ({
         {selectedOption ? (
           <SelectedWorkspace workspace={selectedOption} />
         ) : (
-          "Select Workspace"
+          <p className="flex rounded-md hover:bg-muted transition-all p-2 gap-2 justify-center cursor-pointer items-center my-2">
+            Select a workspace
+          </p>
         )}
       </div>
 
@@ -76,7 +81,7 @@ export const WorkspaceDropdown = ({
                     <SelectedWorkspace
                       key={option.id}
                       workspace={option}
-                      onClick={handleSelect}
+                      onClick={() => handleSelect(option)}
                     />
                   ))}
                 </>
@@ -89,7 +94,7 @@ export const WorkspaceDropdown = ({
                     <SelectedWorkspace
                       key={option.id}
                       workspace={option}
-                      onClick={handleSelect}
+                      onClick={() => handleSelect(option)}
                     />
                   ))}
                 </>
@@ -102,7 +107,7 @@ export const WorkspaceDropdown = ({
                     <SelectedWorkspace
                       key={option.id}
                       workspace={option}
-                      onClick={handleSelect}
+                      onClick={() => handleSelect(option)}
                     />
                   ))}
                 </>
@@ -112,7 +117,7 @@ export const WorkspaceDropdown = ({
 
             <CustomDialogTrigger
               title="Create A Workspace"
-              content={<WorkspaceCreator />}
+              content={<WorkspaceCreator user={user} />}
               description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
             >
               <div className="flex rounded transition-all hover:bg-muted justify-center items-center p-2 gap-2 mx-2 mb-2">

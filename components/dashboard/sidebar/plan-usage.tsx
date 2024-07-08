@@ -6,7 +6,7 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { MAX_FOLDERS_FREE_PLAN } from "@/lib/constants";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import { Progress } from "@/components/ui/progress";
-import CypressDiamondIcon from "@/components/icons/cypressDiamongIcon";
+import CypressDiamondIcon from "@/components/icons/cypressDiamondIcon";
 
 interface PlanUsageProps {
   foldersLength: number;

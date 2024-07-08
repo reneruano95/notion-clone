@@ -13,6 +13,8 @@ import { WorkspaceDropdown } from "./workspace-dropdown";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { PlanUsage } from "./plan-usage";
 import { NativeNavigation } from "./native-navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { FoldersDropdownList } from "./folders-dropdown-list";
 
 interface SidebarProps {
   params: { workspace_id: string };
@@ -99,6 +101,14 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
           subscription={subscription}
         />
         <NativeNavigation myWorkspaceId={params.workspace_id} />
+
+        <ScrollArea className="overflow-auto relative h-[450px]">
+          <div className="pointer-events-none w-full absolute bottom-0 h-20 bg-gradient-to-t from-background to-transparent z-40" />
+          <FoldersDropdownList
+            workspaceFolders={folders || []}
+            workspaceId={params.workspace_id}
+          />
+        </ScrollArea>
       </div>
     </aside>
   );

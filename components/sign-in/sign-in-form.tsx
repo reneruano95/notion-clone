@@ -56,7 +56,8 @@ export const SignInForm = () => {
         error.message ? error.message : "Something went wrong. Please try again"
       );
       form.reset();
-    } else {
+    }
+    if (!error) {
       toast.success("Sign in successful");
       router.push("/dashboard");
     }

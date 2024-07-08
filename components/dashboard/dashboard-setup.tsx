@@ -32,6 +32,7 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { ImageUpload } from "../global/image-upload";
 import { Loader } from "../global/loader";
 import { createWorkspace } from "@/lib/server-actions/dashboard-actions";
+import { useAppsStore } from "@/lib/providers/store-provider";
 
 const createWorkspaceSchema = z.object({
   workspaceName: z
@@ -53,6 +54,8 @@ interface DashboardSetupProps {
 
 export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
   const router = useRouter();
+  const { addWorkspace } = useAppsStore((store) => store);
+
   const [selectedEmoji, setSelectedEmoji] = useState<string>("🖥️");
 
   const form = useForm<CreateWorkspaceFormValues>({
@@ -88,6 +91,11 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
       if (createWorkspaceError) {
         throw createWorkspaceError;
       }
+
+      addWorkspace({
+        ...newWorkspace,
+        folders: [],
+      });
 
       toast.success(`${newWorkspace.title} has been created successfully.`);
 

@@ -1,31 +1,34 @@
 import { createStore } from "zustand/vanilla";
 import { Tables } from "../supabase/supabase.types";
 
+type appFoldersType = Tables<"folders"> & { file: Tables<"files">[] | [] };
+type appWorkspacesType = Tables<"workspaces"> & {
+  folders: appFoldersType[] | [];
+};
 export type AppState = {
-  workspaces: Tables<"workspaces">[] | [];
-  folders: Tables<"folders">[] | [];
+  appWorkspaces: appWorkspacesType[] | [];
 };
 
 export type AppStoreActions = {
-  addWorkspace: (workspace: Tables<"workspaces">) => void;
+  addWorkspace: (workspace: appWorkspacesType) => void;
   deleteWorkspace: (workspaceId: string) => void;
-  updateWorkspace: (workspace: Partial<Tables<"workspaces">>) => void;
-  setWorkspaces: (workspaces: Tables<"workspaces">[]) => void;
+  updateWorkspace: (workspace: Partial<appWorkspacesType>) => void;
+  setWorkspaces: (workspaces: appWorkspacesType[] | []) => void;
 
-  addFolder: (folder: Tables<"folders">, workspaceId: string) => void;
+  addFolder: (folder: appFoldersType, workspaceId: string) => void;
   deleteFolder: (folderId: string, workspaceId: string) => void;
   updateFolder: (
-    folder: Partial<Tables<"folders">>,
-    workspaceId: string
+    folder: Partial<appFoldersType>,
+    workspaceId: string,
+    folderId: string
   ) => void;
-  setFolders: (folders: Tables<"folders">[], workspaceId: string) => void;
+  setFolders: (folders: appFoldersType[] | [], workspaceId: string) => void;
 };
 
 export type AppStore = AppState & AppStoreActions;
 
 export const defaultInitState: AppStore = {
-  workspaces: [],
-  folders: [],
+  appWorkspaces: [],
 
   addWorkspace: () => {},
   deleteWorkspace: () => {},
@@ -44,53 +47,86 @@ export const createAppStore = (initState: AppStore = defaultInitState) => {
     addWorkspace: (workspace) =>
       set((state) => ({
         ...state,
-        workspaces: [...state.workspaces, workspace],
+        workspaces: [...state.appWorkspaces, workspace],
       })),
     deleteWorkspace: (workspaceId) =>
       set((state) => ({
         ...state,
-        workspaces: state.workspaces.filter(
+        workspaces: state.appWorkspaces.filter(
           (workspace) => workspace.id !== workspaceId
         ),
       })),
     updateWorkspace: (workspace) =>
       set((state) => ({
         ...state,
-        workspaces: state.workspaces.map((w) =>
+        workspaces: state.appWorkspaces.map((w) =>
           w.id === workspace.id ? { ...w, ...workspace } : w
         ),
       })),
-    setWorkspaces: (workspaces) => set((state) => ({ ...state, workspaces })),
+    setWorkspaces: (workspaces) =>
+      set((state) => ({
+        ...state,
+        workspaces,
+      })),
 
     addFolder: (folder, workspaceId) =>
       set((state) => ({
         ...state,
-        folders: [...state.folders, { ...folder, workspace_id: workspaceId }],
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: [...w.folders, folder].sort(
+                  (a, b) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime()
+                ),
+              }
+            : w
+        ),
       })),
     deleteFolder: (folderId) =>
       set((state) => ({
         ...state,
-        folders: state.folders.filter((folder) => folder.id !== folderId),
+        appWorkspaces: state.appWorkspaces.map((w) => ({
+          ...w,
+          folders: w.folders.filter((f) => f.id !== folderId),
+        })),
       })),
-    updateFolder: (folder, workspaceId) =>
+    updateFolder: (folder, workspaceId, folderId) =>
       set((state) => ({
         ...state,
-        folders: state.folders.map((f) =>
-          f.workspace_id === workspaceId && f.id === folder.id
-            ? { ...f, ...folder }
-            : f
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        ...folder,
+                      }
+                    : f
+                ),
+              }
+            : w
         ),
       })),
     setFolders: (folders, workspaceId) =>
       set((state) => ({
         ...state,
-        folders: folders
-          .filter((folder) => folder.workspace_id === workspaceId)
-          .sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-          ),
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: folders.sort(
+                  (a, b) =>
+                    new Date(a.created_at).getTime() -
+                    new Date(b.created_at).getTime()
+                ),
+              }
+            : w
+        ),
       })),
   }));
 };

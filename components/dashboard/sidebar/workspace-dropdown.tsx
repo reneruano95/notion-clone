@@ -28,16 +28,19 @@ export const WorkspaceDropdown = ({
   const [selectedOption, setSelectedOption] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { workspaces, setWorkspaces } = useAppsStore((store) => store);
+  const { appWorkspaces, setWorkspaces } = useAppsStore((store) => store);
 
   useEffect(() => {
-    if (!workspaces.length) {
+    if (!appWorkspaces.length) {
       setWorkspaces(
         [
           ...privateWorkspaces,
           ...collaboratingWorkspaces,
           ...sharedWorkspaces,
-        ].map((workspace) => ({ ...workspace }))
+        ].map((workspace) => ({
+          ...workspace,
+          folders: [],
+        }))
       );
     }
   }, [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces]);
@@ -48,14 +51,14 @@ export const WorkspaceDropdown = ({
   };
 
   useEffect(() => {
-    const findSelectedWorkspace = workspaces.find(
+    const findSelectedWorkspace = appWorkspaces.find(
       (workspace) => workspace.id === defaultValue?.id
     );
 
     if (findSelectedWorkspace) {
       setSelectedOption(findSelectedWorkspace);
     }
-  }, [defaultValue, workspaces]);
+  }, [defaultValue, appWorkspaces]);
 
   return (
     <div className="relative inline-block w-full">

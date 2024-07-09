@@ -35,5 +35,5 @@ export default async function DashboardPage() {
     );
   }
 
-  return redirect(`/dashboard/${workspace.id}`);
+  return redirect(`/dashboard/${workspace[0].id}`);
 }

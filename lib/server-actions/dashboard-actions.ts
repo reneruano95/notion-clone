@@ -20,7 +20,8 @@ export const getWorkspacesByUserId = async (userId: string) => {
       .select("*")
       .eq("workspace_owner_id", userId)
       .select()
-      .limit(1);
+      .limit(1)
+      .single();
 
     return {
       data: response.data,

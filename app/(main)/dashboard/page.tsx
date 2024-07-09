@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { toast } from "sonner";
 
 import { DashboardSetup } from "@/components/dashboard/dashboard-setup";
 import {
@@ -35,5 +34,5 @@ export default async function DashboardPage() {
     );
   }
 
-  return redirect(`/dashboard/${workspace[0].id}`);
+  return redirect(`/dashboard/${workspace.id}`);
 }

@@ -39,7 +39,7 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
     console.log("subscription error", subscriptionError);
     console.log("folders error", foldersError);
 
-    redirect("/dashboard");
+    return redirect("/dashboard");
   }
 
   const [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces] =
@@ -49,12 +49,7 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
       getSharedWorkspacesByUserId(user.id),
     ]);
 
-  if (collaboratingWorkspaces) {
-    // console.log("data private workspaces", privateWorkspaces.data);
-    // console.log("data collaborating workspaces", collaboratingWorkspaces.data);
-    // console.log("data shared workspaces", sharedWorkspaces.data);
-  }
-
+  // TODO: Add error handling
   if (
     privateWorkspaces.error ||
     collaboratingWorkspaces.error ||

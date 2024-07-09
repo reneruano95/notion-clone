@@ -1,7 +1,7 @@
 import { createStore } from "zustand/vanilla";
 import { Tables } from "../supabase/supabase.types";
 
-type appFoldersType = Tables<"folders"> & { file: Tables<"files">[] | [] };
+type appFoldersType = Tables<"folders"> & { files: Tables<"files">[] | [] };
 type appWorkspacesType = Tables<"workspaces"> & {
   folders: appFoldersType[] | [];
 };
@@ -22,7 +22,7 @@ export type AppStoreActions = {
     workspaceId: string,
     folderId: string
   ) => void;
-  setFolders: (folders: appFoldersType[] | [], workspaceId: string) => void;
+  setFolders: (workspaceId: string, folders: appFoldersType[] | []) => void;
 };
 
 export type AppStore = AppState & AppStoreActions;
@@ -112,7 +112,7 @@ export const createAppStore = (initState: AppStore = defaultInitState) => {
             : w
         ),
       })),
-    setFolders: (folders, workspaceId) =>
+    setFolders: (workspaceId, folders) =>
       set((state) => ({
         ...state,
         appWorkspaces: state.appWorkspaces.map((w) =>

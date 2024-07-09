@@ -16,18 +16,31 @@ export const FoldersDropdownList = ({
   workspaceId,
 }: FoldersDropdownListProps) => {
   //WIP Set real time updates
-  const { folders, setFolders } = useAppsStore((store) => store);
+  const { appWorkspaces, setFolders } = useAppsStore((store) => store);
+
   const [folderState, setFolderState] = useState(workspaceFolders);
 
   useEffect(() => {
     if (workspaceFolders.length > 0) {
-      setFolders(workspaceFolders, workspaceId);
+      setFolders(
+        workspaceId,
+        workspaceFolders.map((folder) => ({
+          ...folder,
+          files:
+            appWorkspaces
+              .find((workspace) => workspace.id === workspaceId)
+              ?.folders.find((f) => f.id === folder.id)?.files || [],
+        }))
+      );
     }
   }, [workspaceFolders, workspaceId]);
 
   useEffect(() => {
-    setFolderState(folders);
-  }, [folders]);
+    setFolderState(
+      appWorkspaces.find((workspace) => workspace.id === workspaceId)
+        ?.folders || []
+    );
+  }, [appWorkspaces, workspaceId]);
 
   const addFolderHandler = async () => {
     console.log("add folder handler");

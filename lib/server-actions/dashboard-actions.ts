@@ -252,3 +252,25 @@ export const createFolder = async (data: Tables<"folders">) => {
     };
   }
 };
+
+export const updateFolder = async (
+  data: Partial<Tables<"folders">>,
+  folderId: string
+) => {
+  const supabase = createServerClient();
+  try {
+    const response = await supabase
+      .from("folders")
+      .update(data)
+      .eq("id", folderId);
+    return {
+      data: response.data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};

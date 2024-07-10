@@ -8,6 +8,7 @@ import { MAX_FOLDERS_FREE_PLAN } from "@/lib/constants";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import { Progress } from "@/components/ui/progress";
 import CypressDiamondIcon from "@/components/icons/cypressDiamondIcon";
+import useId from "@/lib/hooks/useId";
 
 interface PlanUsageProps {
   foldersLength: number;
@@ -15,20 +16,12 @@ interface PlanUsageProps {
 }
 
 export const PlanUsage = ({ foldersLength, subscription }: PlanUsageProps) => {
-  const pathname = usePathname();
+  const { workspaceId } = useId();
   const { appWorkspaces } = useAppsStore((store) => store);
 
   const [usagePercentage, setUsagePercentage] = useState(
     (foldersLength / MAX_FOLDERS_FREE_PLAN) * 100
   );
-
-  const workspaceId = useMemo(() => {
-    const urlSegments = pathname?.split("/").filter(Boolean);
-    if (urlSegments)
-      if (urlSegments.length > 1) {
-        return urlSegments[1];
-      }
-  }, [pathname]);
 
   useEffect(() => {
     const stateFoldersLength = appWorkspaces.find(

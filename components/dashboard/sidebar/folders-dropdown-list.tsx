@@ -13,6 +13,8 @@ import {
   createFolder,
   getUserSubscriptionStatus,
 } from "@/lib/server-actions/dashboard-actions";
+import useId from "@/lib/hooks/useId";
+import { Accordion } from "@/components/ui/accordion";
 
 interface FoldersDropdownListProps {
   workspaceFolders: Tables<"folders">[];
@@ -22,11 +24,11 @@ export const FoldersDropdownList = ({
   workspaceFolders,
   workspaceId,
 }: FoldersDropdownListProps) => {
-  //WIP Set real time updates
+  const { folderId } = useId();
   const { appWorkspaces, setFolders, addFolder } = useAppsStore(
     (store) => store
   );
-
+  //WIP Set real time updates
   const [folderState, setFolderState] = useState(workspaceFolders);
 
   useEffect(() => {
@@ -90,17 +92,30 @@ export const FoldersDropdownList = ({
   };
 
   return (
-    <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-4 text-Neutrals/neutrals-8">
-      <span className="text-Neutrals/neutrals-8 font-bold text-xs">
-        FOLDERS
-      </span>
-      <TooltipComponent message="Create Folder">
-        <PlusIcon
-          onClick={addFolderHandler}
-          size={16}
-          className="cursor-pointer group-hover/title:inline-block hidden hover:dark:text-white"
-        />
-      </TooltipComponent>
-    </div>
+    <>
+      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-4 text-Neutrals/neutrals-8">
+        <span className="text-Neutrals/neutrals-8 font-bold text-xs">
+          FOLDERS
+        </span>
+        <TooltipComponent message="Create Folder">
+          <PlusIcon
+            onClick={addFolderHandler}
+            size={16}
+            className="cursor-pointer group-hover/title:inline-block hidden hover:dark:text-white"
+          />
+        </TooltipComponent>
+      </div>
+      <Accordion
+        type="multiple"
+        defaultValue={[folderId || ""]}
+        className="pb-20"
+      >
+        {folderState
+          .filter((folder) => !folder.in_trash)
+          .map((folder) => (
+            <div key={folder.id}></div>
+          ))}
+      </Accordion>
+    </>
   );
 };

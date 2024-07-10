@@ -1,3 +1,11 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import useId from "@/lib/hooks/useId";
+import { useAppsStore } from "@/lib/providers/store-provider";
+
 interface DropdownProps {
   title: string;
   id: string;
@@ -16,5 +24,11 @@ export const Dropdown = ({
   disabled,
   ...props
 }: DropdownProps) => {
+  const router = useRouter();
+
+  const { folderId, workspaceId } = useId();
+  const { appWorkspaces } = useAppsStore((store) => store);
+  const [isEditing, setIsEditing] = useState(false);
+
   return <div>Dropdown</div>;
 };

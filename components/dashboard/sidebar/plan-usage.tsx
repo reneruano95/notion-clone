@@ -38,7 +38,17 @@ export const PlanUsage = ({ foldersLength, subscription }: PlanUsageProps) => {
     if (stateFoldersLength === undefined) return;
 
     setUsagePercentage((stateFoldersLength / MAX_FOLDERS_FREE_PLAN) * 100);
-  }, [appWorkspaces, workspaceId]);
+
+    if (stateFoldersLength > MAX_FOLDERS_FREE_PLAN) {
+      setUsagePercentage(100);
+    }
+
+    if (stateFoldersLength < 0) {
+      setUsagePercentage(0);
+    }
+
+    return () => {};
+  }, [appWorkspaces, workspaceId, foldersLength]);
 
   return (
     <article className="mb-4">

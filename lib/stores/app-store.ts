@@ -15,12 +15,12 @@ export type AppStoreActions = {
   updateWorkspace: (workspace: Partial<appWorkspacesType>) => void;
   setWorkspaces: (workspaces: appWorkspacesType[] | []) => void;
 
-  addFolder: (folder: appFoldersType, workspaceId: string) => void;
+  addFolder: (workspaceId: string, folder: appFoldersType) => void;
   deleteFolder: (folderId: string, workspaceId: string) => void;
   updateFolder: (
-    folder: Partial<appFoldersType>,
     workspaceId: string,
-    folderId: string
+    folderId: string,
+    folder: Partial<appFoldersType>
   ) => void;
   setFolders: (workspaceId: string, folders: appFoldersType[] | []) => void;
 };
@@ -69,7 +69,7 @@ export const createAppStore = (initState: AppStore = defaultInitState) => {
         workspaces,
       })),
 
-    addFolder: (folder, workspaceId) =>
+    addFolder: (workspaceId, folder) =>
       set((state) => ({
         ...state,
         appWorkspaces: state.appWorkspaces.map((w) =>
@@ -93,7 +93,7 @@ export const createAppStore = (initState: AppStore = defaultInitState) => {
           folders: w.folders.filter((f) => f.id !== folderId),
         })),
       })),
-    updateFolder: (folder, workspaceId, folderId) =>
+    updateFolder: (workspaceId, folderId, folder) =>
       set((state) => ({
         ...state,
         appWorkspaces: state.appWorkspaces.map((w) =>

@@ -235,3 +235,20 @@ export const getUsersFromSearch = async (email: string) => {
     };
   }
 };
+
+export const createFolder = async (data: Tables<"folders">) => {
+  const supabase = createServerClient();
+
+  try {
+    const response = await supabase.from("folders").insert(data);
+    return {
+      data: response.data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};

@@ -35,10 +35,28 @@ export const Dropdown = ({
   const { appWorkspaces, updateFolder } = useAppsStore((store) => store);
   const [isEditing, setIsEditing] = useState(false);
 
-  //WIP
-  const folderTitle = useMemo(() => {}, []);
+  const folderTitle: string | undefined = useMemo(() => {
+    if (listType === "folder") {
+      const stateTitle = appWorkspaces
+        .find((workspace) => workspace.id === workspaceId)
+        ?.folders.find((folder) => folder.id === id)?.title;
 
-  const fileTitle = useMemo(() => {}, []);
+      if (title === stateTitle || !stateTitle) return title;
+      return stateTitle;
+    }
+  }, [appWorkspaces, listType, id, workspaceId, title]);
+
+  const fileTitle: string | undefined = useMemo(() => {
+    if (listType === "file") {
+      const fileAndFolderId = id.split("folder");
+      const stateTitle = appWorkspaces
+        .find((workspace) => workspace.id === workspaceId)
+        ?.folders.find((folder) => folder.id === fileAndFolderId[0])
+        ?.files.find((file) => file.id === fileAndFolderId[1])?.title;
+      if (title === stateTitle || !stateTitle) return title;
+      return stateTitle;
+    }
+  }, [appWorkspaces, listType, id, workspaceId, title]);
 
   const navigatePage = (accordionId: string, type: string) => {
     if (type === "folder") {
@@ -76,6 +94,52 @@ export const Dropdown = ({
       );
     } else {
       return toast.success("Emoji updated successfully");
+    }
+  };
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleBlur = async () => {
+    if (!isEditing) return;
+    setIsEditing(false);
+
+    const fId = id.split("folder");
+    if (fId?.length === 1) {
+      if (!folderTitle) return;
+
+      await updateFolderHandler({ title }, fId[0]);
+    }
+
+    if (fId?.length === 2) {
+      if (!fileTitle) return;
+
+      // WIP UPDATE THE FILE
+    }
+  };
+
+  const folderTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!workspaceId) return;
+
+    const fId = id.split("folder");
+
+    if (fId?.length === 1) {
+      return updateFolder(workspaceId, fId[0], {
+        title: e.target.value,
+      });
+    }
+  };
+
+  const fileTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!workspaceId) return;
+
+    const fId = id.split("folder");
+
+    if (fId?.length === 2) {
+      return updateFolder(workspaceId, fId[0], {
+        title: e.target.value,
+      });
     }
   };
 
@@ -129,6 +193,12 @@ export const Dropdown = ({
                   "bg-transparent cursor-pointer": !isEditing,
                 }
               )}
+              readOnly={!isEditing}
+              onClick={handleDoubleClick}
+              onBlur={handleBlur}
+              onChange={
+                listType === "folder" ? folderTitleChange : fileTitleChange
+              }
             />
           </div>
         </div>

@@ -10,11 +10,13 @@ export type AppState = {
 };
 
 export type AppStoreActions = {
+  // workspaces
   addWorkspace: (workspace: appWorkspacesType) => void;
   deleteWorkspace: (workspaceId: string) => void;
   updateWorkspace: (workspace: Partial<appWorkspacesType>) => void;
   setWorkspaces: (workspaces: appWorkspacesType[] | []) => void;
 
+  // folders
   addFolder: (workspaceId: string, folder: appFoldersType) => void;
   deleteFolder: (folderId: string, workspaceId: string) => void;
   updateFolder: (
@@ -23,6 +25,25 @@ export type AppStoreActions = {
     folder: Partial<appFoldersType>
   ) => void;
   setFolders: (workspaceId: string, folders: appFoldersType[] | []) => void;
+
+  // files
+  addFile: (
+    workspaceId: string,
+    folderId: string,
+    file: Tables<"files">
+  ) => void;
+  deleteFile: (workspaceId: string, folderId: string, fileId: string) => void;
+  setFile: (
+    workspaceId: string,
+    folderId: string,
+    file: Tables<"files">[]
+  ) => void;
+  updateFile: (
+    workspaceId: string,
+    folderId: string,
+    fileId: string,
+    files: Partial<Tables<"files">[]> | []
+  ) => void;
 };
 
 export type AppStore = AppState & AppStoreActions;
@@ -39,6 +60,11 @@ export const defaultInitState: AppStore = {
   deleteFolder: () => {},
   updateFolder: () => {},
   setFolders: () => {},
+
+  addFile: () => {},
+  deleteFile: () => {},
+  setFile: () => {},
+  updateFile: () => {},
 };
 
 export const createAppStore = (initState: AppStore = defaultInitState) => {
@@ -123,6 +149,101 @@ export const createAppStore = (initState: AppStore = defaultInitState) => {
                   (a, b) =>
                     new Date(a.created_at).getTime() -
                     new Date(b.created_at).getTime()
+                ),
+              }
+            : w
+        ),
+      })),
+
+    addFile: (workspaceId, folderId, file) =>
+      set((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        files: [...f.files, file].sort(
+                          (a, b) =>
+                            new Date(a.created_at).getTime() -
+                            new Date(b.created_at).getTime()
+                        ),
+                      }
+                    : f
+                ),
+              }
+            : w
+        ),
+      })),
+
+    setFile: (workspaceId, folderId, files) =>
+      set((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        files: files.sort(
+                          (a, b) =>
+                            new Date(a.created_at).getTime() -
+                            new Date(b.created_at).getTime()
+                        ),
+                      }
+                    : f
+                ),
+              }
+            : w
+        ),
+      })),
+
+    deleteFile: (workspaceId, folderId, fileId) =>
+      set((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        files: f.files.filter((file) => file.id !== fileId),
+                      }
+                    : f
+                ),
+              }
+            : w
+        ),
+      })),
+
+    updateFile: (workspaceId, folderId, fileId, files) =>
+      set((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        files: f.files.map((file) =>
+                          file.id === fileId
+                            ? {
+                                ...file,
+                                ...files,
+                              }
+                            : file
+                        ),
+                      }
+                    : f
                 ),
               }
             : w

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import useId from "@/lib/hooks/useId";
 import { useAppsStore } from "@/lib/providers/store-provider";
@@ -9,7 +10,6 @@ import { AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { EmojiPicker } from "@/components/global/emoji-picker";
 import { updateFolder as updateFolderHandler } from "@/lib/server-actions/dashboard-actions";
-import { toast } from "sonner";
 
 interface DropdownProps {
   title: string;

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 import { Tables } from "@/lib/supabase/supabase.types";
 import { getImageUrl } from "@/lib/server-actions/images-actions";

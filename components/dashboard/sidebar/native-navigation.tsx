@@ -1,8 +1,9 @@
+import Link from "next/link";
+
 import CypressHomeIcon from "@/components/icons/cypressHomeIcon";
 import CypressSettingsIcon from "@/components/icons/cypressSettingsIcon";
 import CypressTrashIcon from "@/components/icons/cypressTrashIcon";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 interface NativeNavigationProps {
   myWorkspaceId: string;

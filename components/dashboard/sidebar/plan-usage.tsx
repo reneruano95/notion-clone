@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Tables } from "@/lib/supabase/supabase.types";
 import { MAX_FOLDERS_FREE_PLAN } from "@/lib/constants";

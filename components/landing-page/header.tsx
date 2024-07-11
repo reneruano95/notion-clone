@@ -12,7 +12,9 @@ export const Header = () => {
           className="w-full flex gap-2 justify-left items-center"
         >
           <NotebookPen className="text-brand-primary h-8 w-8" />
-          <span className="font-semibold dark:text-white">notion.</span>
+          <span className="font-semibold dark:text-white text-xl sm:text-2xl">
+            &#123;Notebook&#125;
+          </span>
         </Link>
       </div>
       <aside className="flex w-full gap-2 justify-end">

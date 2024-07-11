@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
 import { Loader2, Lock, Plus, Share } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -16,7 +17,6 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { Tables } from "@/lib/supabase/supabase.types";
-import { toast } from "sonner";
 import {
   addCollaborators,
   createWorkspace,
@@ -67,7 +67,8 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
           </span>
         );
         await createWorkspace(newWorkspace);
-        router.refresh();
+        // router.refresh();
+        window.location.reload();
       }
 
       if (permissions === "shared") {
@@ -79,7 +80,8 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
         await createWorkspace(newWorkspace);
         await addCollaborators(workspaceId, collaborators);
 
-        router.refresh();
+        // router.refresh();
+        window.location.reload();
       }
 
       setIsLoading(false);

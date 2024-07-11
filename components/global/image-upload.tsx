@@ -26,7 +26,7 @@ export const ImageUpload = ({
         getImageUrl({ bucketName, filePath: value }).then(setImageUrl)
       );
     }
-  }, [value]);
+  }, [value, bucketName]);
 
   const handleClear = async () => {
     setImageUrl("");

@@ -13,7 +13,7 @@ export const Header = () => {
         >
           <NotebookPen className="text-brand-primary h-8 w-8" />
           <span className="font-semibold dark:text-white text-xl sm:text-2xl">
-            &#123;Notebook&#125;
+            &#123;NoteBook&#125;
           </span>
         </Link>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
@@ -24,6 +25,8 @@ export const FoldersDropdownList = ({
   workspaceFolders,
   workspaceId,
 }: FoldersDropdownListProps) => {
+  const router = useRouter();
+
   const { folderId } = useId();
   const { appWorkspaces, setFolders, addFolder } = useAppsStore(
     (store) => store
@@ -85,9 +88,11 @@ export const FoldersDropdownList = ({
         "An error occurred while creating the folder. Please try again."
       );
     } else {
-      toast.success("New Folder has been created successfully.");
+      toast.success("A new folder has been created successfully.");
 
       window.location.reload();
+
+      // router.refresh();
     }
   };
 

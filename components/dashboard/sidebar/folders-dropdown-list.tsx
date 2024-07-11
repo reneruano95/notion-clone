@@ -16,6 +16,7 @@ import {
 } from "@/lib/server-actions/dashboard-actions";
 import useId from "@/lib/hooks/useId";
 import { Accordion } from "@/components/ui/accordion";
+import { Dropdown } from "./dropdown";
 
 interface FoldersDropdownListProps {
   workspaceFolders: Tables<"folders">[];
@@ -118,7 +119,13 @@ export const FoldersDropdownList = ({
         {folderState
           .filter((folder) => !folder.in_trash)
           .map((folder) => (
-            <div key={folder.id}></div>
+            <Dropdown
+              key={folder.id}
+              title={folder.title}
+              listType="folder"
+              id={folder.id}
+              emoji={folder.emoji}
+            />
           ))}
       </Accordion>
     </>

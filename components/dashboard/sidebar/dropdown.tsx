@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { PlusIcon, Trash } from "lucide-react";
 
 import useId from "@/lib/hooks/useId";
 import { useAppsStore } from "@/lib/providers/store-provider";
@@ -10,12 +11,13 @@ import { AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { EmojiPicker } from "@/components/global/emoji-picker";
 import { updateFolder as updateFolderHandler } from "@/lib/server-actions/dashboard-actions";
+import { TooltipComponent } from "@/components/global/tooltip-component";
 
 interface DropdownProps {
   title: string;
   id: string;
   listType: "folder" | "file";
-  iconId: string;
+  emoji: string;
   children?: React.ReactNode;
   disabled?: boolean;
 }
@@ -24,7 +26,7 @@ export const Dropdown = ({
   title,
   id,
   listType,
-  iconId,
+  emoji,
   children,
   disabled,
   ...props
@@ -115,7 +117,7 @@ export const Dropdown = ({
     if (fId?.length === 2) {
       if (!fileTitle) return;
 
-      // WIP UPDATE THE FILE
+      // WIP UPDATE THE FILE TITLE
     }
   };
 
@@ -164,6 +166,18 @@ export const Dropdown = ({
     [isFolder]
   );
 
+  const hoverStyles = useMemo(
+    () =>
+      cn(
+        "h-full hidden rounded-sm absolute right-0 items-center justify-center",
+        {
+          "group-hover/file:block": listType === "file",
+          "group-hover/folder:block": listType === "folder",
+        }
+      ),
+    [isFolder]
+  );
+
   return (
     <AccordionItem
       value={id}
@@ -181,7 +195,7 @@ export const Dropdown = ({
         <div className={groupIdentifies}>
           <div className="flex gap-4 items-center justify-center overflow-hidden">
             <div className="relative">
-              <EmojiPicker getValue={onChangeEMoji}>{iconId}</EmojiPicker>
+              <EmojiPicker getValue={onChangeEMoji}>{emoji}</EmojiPicker>
             </div>
             <input
               type="text"
@@ -200,6 +214,24 @@ export const Dropdown = ({
                 listType === "folder" ? folderTitleChange : fileTitleChange
               }
             />
+            <div className={hoverStyles}>
+              <TooltipComponent message="Delete Folder">
+                <Trash
+                  // onClick={moveToTrash}
+                  size={15}
+                  className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
+                />
+              </TooltipComponent>
+              {listType === "folder" && !isEditing && (
+                <TooltipComponent message="Add File">
+                  <PlusIcon
+                    // onClick={addNewFile}
+                    size={15}
+                    className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
+                  />
+                </TooltipComponent>
+              )}
+            </div>
           </div>
         </div>
       </AccordionTrigger>

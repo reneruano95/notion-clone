@@ -63,19 +63,6 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
     console.log("data shared workspaces error", sharedWorkspaces.error);
   }
 
-  let defaultValue: Tables<"workspaces"> | undefined;
-  if (
-    privateWorkspaces.data !== null &&
-    collaboratingWorkspaces.data !== null &&
-    sharedWorkspaces.data !== null
-  ) {
-    defaultValue = [
-      ...privateWorkspaces.data,
-      ...collaboratingWorkspaces.data,
-      ...sharedWorkspaces.data,
-    ].find((workspace) => workspace.id === params.workspace_id);
-  }
-
   return (
     <aside
       className={cn(
@@ -89,7 +76,11 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
           privateWorkspaces={privateWorkspaces?.data || []}
           collaboratingWorkspaces={collaboratingWorkspaces?.data || []}
           sharedWorkspaces={sharedWorkspaces.data || []}
-          defaultValue={defaultValue}
+          defaultValue={[
+            ...(privateWorkspaces.data || []),
+            ...(collaboratingWorkspaces.data || []),
+            ...(sharedWorkspaces.data || []),
+          ].find((workspace) => workspace.id === params.workspace_id)}
         />
         <PlanUsage
           foldersLength={folders?.length || 0}

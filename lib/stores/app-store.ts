@@ -48,51 +48,36 @@ export type AppStoreActions = {
 
 export type AppStore = AppState & AppStoreActions;
 
-export const defaultInitState: AppStore = {
+export const defaultInitState: AppState = {
   appWorkspaces: [],
-
-  addWorkspace: () => {},
-  deleteWorkspace: () => {},
-  updateWorkspace: () => {},
-  setWorkspaces: () => {},
-
-  addFolder: () => {},
-  deleteFolder: () => {},
-  updateFolder: () => {},
-  setFolders: () => {},
-
-  addFile: () => {},
-  deleteFile: () => {},
-  setFile: () => {},
-  updateFile: () => {},
 };
 
-export const createAppStore = (initState: AppStore = defaultInitState) => {
+export const createAppStore = (initState: AppState = defaultInitState) => {
   return createStore<AppStore>()((set) => ({
     ...initState,
     addWorkspace: (workspace) =>
       set((state) => ({
         ...state,
-        workspaces: [...state.appWorkspaces, workspace],
+        appWorkspaces: [...state.appWorkspaces, workspace],
       })),
     deleteWorkspace: (workspaceId) =>
       set((state) => ({
         ...state,
-        workspaces: state.appWorkspaces.filter(
+        appWorkspaces: state.appWorkspaces.filter(
           (workspace) => workspace.id !== workspaceId
         ),
       })),
     updateWorkspace: (workspace) =>
       set((state) => ({
         ...state,
-        workspaces: state.appWorkspaces.map((w) =>
+        appWorkspaces: state.appWorkspaces.map((w) =>
           w.id === workspace.id ? { ...w, ...workspace } : w
         ),
       })),
     setWorkspaces: (workspaces) =>
       set((state) => ({
         ...state,
-        workspaces,
+        appWorkspaces: workspaces,
       })),
 
     addFolder: (workspaceId, folder) =>

@@ -1,6 +1,13 @@
 "use client";
 
-import { type ReactNode, createContext, useRef, useContext } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useRef,
+  useContext,
+  useEffect,
+} from "react";
+
 import { useStore } from "zustand";
 
 import { type AppStore, createAppStore } from "@/lib/stores/app-store";
@@ -19,6 +26,10 @@ export const AppStoreProvider = ({ children }: AppStoreProviderProps) => {
   if (!storeRef.current) {
     storeRef.current = createAppStore();
   }
+
+  useEffect(() => {
+    console.log("App State Changed", storeRef.current?.getState());
+  }, [storeRef.current]);
 
   return (
     <AppStoreContext.Provider value={storeRef.current}>

@@ -91,9 +91,7 @@ export const FoldersDropdownList = ({
     } else {
       toast.success("A new folder has been created successfully.");
 
-      window.location.reload();
-
-      // router.refresh();
+      router.refresh();
     }
   };
 
@@ -111,6 +109,7 @@ export const FoldersDropdownList = ({
           />
         </TooltipComponent>
       </div>
+
       <Accordion
         type="multiple"
         defaultValue={[folderId || ""]}

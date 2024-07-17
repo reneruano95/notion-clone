@@ -11,6 +11,8 @@ import {
 import { useStore } from "zustand";
 
 import { type AppStore, createAppStore } from "@/lib/stores/app-store";
+import useId from "../hooks/useId";
+import { getFiles } from "../server-actions/file-actions";
 
 export type StoreApi = ReturnType<typeof createAppStore>;
 

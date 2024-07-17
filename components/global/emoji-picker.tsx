@@ -12,12 +12,16 @@ interface EmojiPickerProps {
 }
 
 export const EmojiPicker = ({ children, getValue }: EmojiPickerProps) => {
-  const Picker = dynamic(() => import("emoji-picker-react"));
+  const Picker = dynamic(() => import("emoji-picker-react"), {
+    ssr: false,
+  });
 
   const onEmojiClick = (selectedEmoji: any) => {
     if (getValue) {
       getValue(selectedEmoji.emoji);
     }
+
+    console.log(selectedEmoji.emoji);
   };
 
   return (

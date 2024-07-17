@@ -264,7 +264,7 @@ export const updateFolder = async (
       .update(data)
       .eq("id", folderId);
     return {
-      data: response.data,
+      data: null,
       error: null,
     };
   } catch (error) {

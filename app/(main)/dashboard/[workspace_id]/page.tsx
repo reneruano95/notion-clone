@@ -3,6 +3,7 @@ export default function WorkspaceIdPage({
 }: {
   params: { workspace_id: string };
 }) {
-  console.log(params.workspace_id);
+  console.log("WorkspaceIdPage", params.workspace_id);
+
   return <div>{params.workspace_id}</div>;
 }

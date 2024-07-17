@@ -33,7 +33,7 @@ export type AppStoreActions = {
     file: Tables<"files">
   ) => void;
   deleteFile: (workspaceId: string, folderId: string, fileId: string) => void;
-  setFile: (
+  setFiles: (
     workspaceId: string,
     folderId: string,
     file: Tables<"files">[]
@@ -164,7 +164,7 @@ export const createAppStore = (initState: AppState = defaultInitState) => {
         ),
       })),
 
-    setFile: (workspaceId, folderId, files) =>
+    setFiles: (workspaceId, folderId, files) =>
       set((state) => ({
         ...state,
         appWorkspaces: state.appWorkspaces.map((w) =>

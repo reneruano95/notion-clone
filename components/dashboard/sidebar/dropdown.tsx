@@ -4,14 +4,21 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PlusIcon, Trash } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 import useId from "@/lib/hooks/useId";
 import { useAppsStore } from "@/lib/providers/store-provider";
-import { AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { EmojiPicker } from "@/components/global/emoji-picker";
 import { updateFolder as updateFolderHandler } from "@/lib/server-actions/dashboard-actions";
 import { TooltipComponent } from "@/components/global/tooltip-component";
+import { Tables } from "@/lib/supabase/supabase.types";
+import { createFile } from "@/lib/server-actions/file-actions";
 
 interface DropdownProps {
   title: string;
@@ -34,8 +41,11 @@ export const Dropdown = ({
   const router = useRouter();
 
   const { folderId, workspaceId } = useId();
-  const { appWorkspaces, updateFolder } = useAppsStore((store) => store);
+  const { appWorkspaces, updateFolder, addFile } = useAppsStore(
+    (store) => store
+  );
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState<string>("");
 
   const folderTitle: string | undefined = useMemo(() => {
     if (listType === "folder") {
@@ -44,6 +54,7 @@ export const Dropdown = ({
         ?.folders.find((folder) => folder.id === id)?.title;
 
       if (title === stateTitle || !stateTitle) return title;
+
       return stateTitle;
     }
   }, [appWorkspaces, listType, id, workspaceId, title]);
@@ -55,7 +66,9 @@ export const Dropdown = ({
         .find((workspace) => workspace.id === workspaceId)
         ?.folders.find((folder) => folder.id === fileAndFolderId[0])
         ?.files.find((file) => file.id === fileAndFolderId[1])?.title;
+
       if (title === stateTitle || !stateTitle) return title;
+
       return stateTitle;
     }
   }, [appWorkspaces, listType, id, workspaceId, title]);
@@ -71,6 +84,28 @@ export const Dropdown = ({
           accordionId.split("folder/")[1]
         }`
       );
+    }
+  };
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleBlur = async () => {
+    if (!isEditing) return;
+    setIsEditing(false);
+
+    const fId = id.split("folder");
+    if (fId?.length === 1) {
+      if (!folderTitle) return;
+
+      await updateFolderHandler({ title }, fId[0]);
+    }
+
+    if (fId?.length === 2) {
+      if (!fileTitle) return;
+
+      // WIP UPDATE THE FILE TITLE
     }
   };
 
@@ -96,28 +131,6 @@ export const Dropdown = ({
       );
     } else {
       return toast.success("Emoji updated successfully");
-    }
-  };
-
-  const handleDoubleClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleBlur = async () => {
-    if (!isEditing) return;
-    setIsEditing(false);
-
-    const fId = id.split("folder");
-    if (fId?.length === 1) {
-      if (!folderTitle) return;
-
-      await updateFolderHandler({ title }, fId[0]);
-    }
-
-    if (fId?.length === 2) {
-      if (!fileTitle) return;
-
-      // WIP UPDATE THE FILE TITLE
     }
   };
 
@@ -178,6 +191,31 @@ export const Dropdown = ({
     [isFolder]
   );
 
+  const addNewFile = async () => {
+    if (!workspaceId) return;
+    const newFile: Tables<"files"> = {
+      id: uuidv4(),
+      data: "",
+      created_at: new Date().toISOString(),
+      in_trash: "",
+      title: "Unnamed File",
+      emoji: "📄",
+      banner_url: "",
+      workspace_id: workspaceId,
+      folder_id: id,
+    };
+    addFile(workspaceId, id, newFile);
+    const { error } = await createFile(newFile);
+
+    if (error) {
+      return toast.error(
+        "An error occurred while creating a new file. Please try again."
+      );
+    } else {
+      return toast.success("File created successfully");
+    }
+  };
+
   return (
     <AccordionItem
       value={id}
@@ -193,10 +231,11 @@ export const Dropdown = ({
         disabled={listType === "file"}
       >
         <div className={groupIdentifies}>
-          <div className="flex gap-4 items-center justify-center overflow-hidden">
+          <div className="flex gap-2 items-center justify-center overflow-hidden">
             <div className="relative">
               <EmojiPicker getValue={onChangeEMoji}>{emoji}</EmojiPicker>
             </div>
+
             <input
               type="text"
               value={listType === "folder" ? folderTitle : fileTitle}
@@ -208,12 +247,13 @@ export const Dropdown = ({
                 }
               )}
               readOnly={!isEditing}
-              onClick={handleDoubleClick}
+              onDoubleClick={handleDoubleClick}
               onBlur={handleBlur}
               onChange={
                 listType === "folder" ? folderTitleChange : fileTitleChange
               }
             />
+
             <div className={hoverStyles}>
               <TooltipComponent message="Delete Folder">
                 <Trash
@@ -222,10 +262,11 @@ export const Dropdown = ({
                   className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
                 />
               </TooltipComponent>
+
               {listType === "folder" && !isEditing && (
                 <TooltipComponent message="Add File">
                   <PlusIcon
-                    // onClick={addNewFile}
+                    onClick={addNewFile}
                     size={15}
                     className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
                   />
@@ -235,6 +276,24 @@ export const Dropdown = ({
           </div>
         </div>
       </AccordionTrigger>
+      <AccordionContent>
+        {appWorkspaces
+          .find((workspace) => workspace.id === workspaceId)
+          ?.folders.find((folder) => folder.id === id)
+          ?.files.filter((file) => !file.in_trash)
+          .map((file) => {
+            const customFileId = `${id}folder${file.id}`;
+            return (
+              <Dropdown
+                key={file.id}
+                title={file.title}
+                listType="file"
+                id={customFileId}
+                emoji={file.emoji}
+              />
+            );
+          })}
+      </AccordionContent>
     </AccordionItem>
   );
 };

@@ -67,8 +67,8 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
           </span>
         );
         await createWorkspace(newWorkspace);
-        // router.refresh();
-        window.location.reload();
+
+        router.refresh();
       }
 
       if (permissions === "shared") {
@@ -80,8 +80,7 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
         await createWorkspace(newWorkspace);
         await addCollaborators(workspaceId, collaborators);
 
-        // router.refresh();
-        window.location.reload();
+        router.refresh();
       }
 
       setIsLoading(false);

@@ -122,10 +122,10 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
                   <Lock />
                   <article className="text-left flex flex-col">
                     <span>Private</span>
-                    <p>
+                    <span>
                       Your workspace is private to you. You can choose to share
                       it later.
-                    </p>
+                    </span>
                   </article>
                 </div>
               </SelectItem>

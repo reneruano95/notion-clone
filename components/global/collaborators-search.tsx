@@ -59,11 +59,13 @@ export const CollaboratorsSearch = ({
 
   return (
     <Sheet>
-      <SheetTrigger className="w-full">{children}</SheetTrigger>
+      <SheetTrigger className="w-full" asChild>
+        {children}
+      </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[500px]">
         <SheetHeader>
           <SheetTitle>Search Collaborators</SheetTitle>
-          <SheetDescription>
+          <SheetDescription asChild>
             <p className="text-sm text-muted-foreground">
               You can also remove collaborators after adding them from the
               settings tab.
@@ -98,9 +100,9 @@ export const CollaboratorsSearch = ({
                     <AvatarImage src={user?.avatar_url || ""} />
                     <AvatarFallback>{user?.email?.[0]}</AvatarFallback>
                   </Avatar>
-                  <div className="text-sm gap-2 overflow-hidden overflow-ellipsis w-[180px] text-muted-foreground">
+                  <p className="text-sm gap-2 overflow-hidden overflow-ellipsis w-[180px] text-muted-foreground">
                     {user.email}
-                  </div>
+                  </p>
                 </div>
                 <Button
                   variant={"secondary"}

@@ -17,13 +17,11 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { Tables } from "@/lib/supabase/supabase.types";
-import {
-  addCollaborators,
-  createWorkspace,
-} from "@/lib/server-actions/dashboard-actions";
 import { CollaboratorsSearch } from "./collaborators-search";
 import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { addCollaborators } from "@/lib/server-actions/collaborators-actions";
+import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
 
 export const WorkspaceCreator = ({ user }: { user: User }) => {
   const router = useRouter();

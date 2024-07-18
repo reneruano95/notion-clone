@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 import { EmojiPicker } from "@/components/global/emoji-picker";
-import { updateFolder as updateFolderHandler } from "@/lib/server-actions/dashboard-actions";
+import { updateFolder as updateFolderAction } from "@/lib/server-actions/folder-actions";
 import { TooltipComponent } from "@/components/global/tooltip-component";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { createFile } from "@/lib/server-actions/file-actions";
@@ -113,7 +113,7 @@ export const Dropdown = ({
       if (fId?.length === 1) {
         if (!folderTitle) return;
 
-        await updateFolderHandler({ title }, fId[0]);
+        await updateFolderAction({ title }, fId[0]);
       }
 
       if (fId?.length === 2) {
@@ -133,7 +133,7 @@ export const Dropdown = ({
       });
     }
 
-    const { error } = await updateFolderHandler(
+    const { error } = await updateFolderAction(
       {
         emoji: selectedEmoji,
       },

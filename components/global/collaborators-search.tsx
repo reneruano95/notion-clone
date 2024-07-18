@@ -14,7 +14,7 @@ import { Input } from "../ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { getUsersFromSearch } from "@/lib/server-actions/dashboard-actions";
+import { getUsersFromSearch } from "@/lib/server-actions/user-actions";
 import { Tables } from "@/lib/supabase/supabase.types";
 
 interface CollaboratorsSearchProps {

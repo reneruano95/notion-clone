@@ -6,17 +6,15 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
 
-import { useAppsStore } from "@/lib/providers/store-provider";
-import { Tables } from "@/lib/supabase/supabase.types";
-import { TooltipComponent } from "@/components/global/tooltip-component";
-import { getUser } from "@/lib/server-actions/auth-actions";
-import {
-  createFolder,
-  getUserSubscriptionStatus,
-} from "@/lib/server-actions/dashboard-actions";
 import useId from "@/lib/hooks/useId";
 import { Accordion } from "@/components/ui/accordion";
 import { Dropdown } from "./dropdown";
+import { TooltipComponent } from "@/components/global/tooltip-component";
+import { Tables } from "@/lib/supabase/supabase.types";
+import { useAppsStore } from "@/lib/providers/store-provider";
+import { getUser } from "@/lib/server-actions/auth-actions";
+import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
+import { createFolder } from "@/lib/server-actions/folder-actions";
 
 interface FoldersDropdownListProps {
   workspaceFolders: Tables<"folders">[];

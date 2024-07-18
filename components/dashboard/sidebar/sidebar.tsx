@@ -1,20 +1,19 @@
 import { redirect } from "next/navigation";
 
-import { getUser } from "@/lib/server-actions/auth-actions";
-import {
-  getCollaboratingWorkspacesByUserId,
-  getFoldersByWorkspaceId,
-  getPrivateWorkspacesByUserId,
-  getSharedWorkspacesByUserId,
-  getUserSubscriptionStatus,
-} from "@/lib/server-actions/dashboard-actions";
 import { cn } from "@/lib/utils";
+import { getUser } from "@/lib/server-actions/auth-actions";
+import { getFoldersByWorkspaceId } from "@/lib/server-actions/folder-actions";
+import {
+  getCollaboratingWorkspaces,
+  getPrivateWorkspaces,
+  getSharedWorkspaces,
+} from "@/lib/server-actions/workspaces-actions";
 import { WorkspaceDropdown } from "./workspace-dropdown";
-import { Tables } from "@/lib/supabase/supabase.types";
 import { PlanUsage } from "./plan-usage";
 import { NativeNavigation } from "./native-navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FoldersDropdownList } from "./folders-dropdown-list";
+import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
 
 interface SidebarProps {
   params: { workspace_id: string };
@@ -44,9 +43,9 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
 
   const [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces] =
     await Promise.all([
-      getPrivateWorkspacesByUserId(user.id),
-      getCollaboratingWorkspacesByUserId(user.id),
-      getSharedWorkspacesByUserId(user.id),
+      getPrivateWorkspaces(user.id),
+      getCollaboratingWorkspaces(user.id),
+      getSharedWorkspaces(user.id),
     ]);
 
   // TODO: Add error handling

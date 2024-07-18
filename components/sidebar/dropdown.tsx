@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PlusIcon, Trash } from "lucide-react";
@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { EmojiPicker } from "@/components/global/emoji-picker";
 import { updateFolder as updateFolderAction } from "@/lib/server-actions/folder-actions";
+import { updateFile as updateFileAction } from "@/lib/server-actions/file-actions";
 import { TooltipComponent } from "@/components/global/tooltip-component";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { createFile } from "@/lib/server-actions/file-actions";
@@ -41,20 +42,10 @@ export const Dropdown = ({
   const router = useRouter();
 
   const { folderId, workspaceId } = useId();
-  const { appWorkspaces, updateFolder, addFile } = useAppsStore(
+  const { appWorkspaces, updateFolder, addFile, updateFile } = useAppsStore(
     (store) => store
   );
   const [isEditing, setIsEditing] = useState(false);
-
-  const timerRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
 
   const folderTitle: string | undefined = useMemo(() => {
     if (listType === "folder") {
@@ -104,31 +95,42 @@ export const Dropdown = ({
     if (!isEditing) return;
     setIsEditing(false);
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
+    const fId = id.split("folder");
+
+    if (fId?.length === 1) {
+      if (!folderTitle) return;
+
+      const { error } = await updateFolderAction({ title }, fId[0]);
+
+      toast.success("Folder name updated successfully");
+
+      if (error) {
+        return toast.error(
+          " An error occurred while updating the folder name. Please try again."
+        );
+      }
     }
 
-    timerRef.current = setTimeout(async () => {
-      const fId = id.split("folder");
-      if (fId?.length === 1) {
-        if (!folderTitle) return;
+    if (fId?.length === 2) {
+      if (!fileTitle) return;
 
-        await updateFolderAction({ title }, fId[0]);
+      const { error } = await updateFileAction({ title: fileTitle }, fId[1]);
+
+      toast.success("File name updated successfully");
+
+      if (error) {
+        return toast.error(
+          " An error occurred while updating the file name. Please try again."
+        );
       }
-
-      if (fId?.length === 2) {
-        if (!fileTitle) return;
-
-        // WIP UPDATE THE FILE TITLE
-      }
-    }, 1000);
+    }
   };
 
-  const onChangeEMoji = async (selectedEmoji: string) => {
+  const onChangeEmoji = async (selectedEmoji: string) => {
     if (!workspaceId) return;
 
     if (listType === "folder") {
-      return updateFolder(workspaceId, id, {
+      updateFolder(workspaceId, id, {
         emoji: selectedEmoji,
       });
     }
@@ -155,7 +157,7 @@ export const Dropdown = ({
     const fId = id.split("folder");
 
     if (fId?.length === 1) {
-      return updateFolder(workspaceId, fId[0], {
+      updateFolder(workspaceId, fId[0], {
         title: e.target.value,
       });
     }
@@ -167,7 +169,7 @@ export const Dropdown = ({
     const fId = id.split("folder");
 
     if (fId?.length === 2) {
-      return updateFolder(workspaceId, fId[0], {
+      updateFile(workspaceId, folderId as string, fId[1], {
         title: e.target.value,
       });
     }
@@ -248,7 +250,7 @@ export const Dropdown = ({
         <div className={groupIdentifies}>
           <div className="flex gap-2 items-center justify-center overflow-hidden">
             <div className="relative">
-              <EmojiPicker getValue={onChangeEMoji}>{emoji}</EmojiPicker>
+              <EmojiPicker getValue={onChangeEmoji}>{emoji}</EmojiPicker>
             </div>
 
             <input

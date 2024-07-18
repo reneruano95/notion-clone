@@ -43,3 +43,23 @@ export const getFiles = async (folderId: string) => {
     };
   }
 };
+
+export const updateFile = async (
+  data: Partial<Tables<"files">>,
+  fileId: string
+) => {
+  const supabase = createServerClient();
+  try {
+    const response = await supabase.from("files").update(data).eq("id", fileId);
+
+    return {
+      data: null,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};

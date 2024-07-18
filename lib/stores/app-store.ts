@@ -42,7 +42,7 @@ export type AppStoreActions = {
     workspaceId: string,
     folderId: string,
     fileId: string,
-    files: Partial<Tables<"files">[]> | []
+    files: Partial<Tables<"files">>
   ) => void;
 };
 

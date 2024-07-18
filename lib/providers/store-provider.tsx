@@ -25,13 +25,43 @@ export interface AppStoreProviderProps {
 export const AppStoreProvider = ({ children }: AppStoreProviderProps) => {
   const storeRef = useRef<StoreApi>();
 
+  const { folderId, workspaceId } = useId();
+
   if (!storeRef.current) {
     storeRef.current = createAppStore();
   }
 
+  // useEffect(() => {
+  //   console.log("App State Changed", storeRef.current?.getState());
+  // }, [storeRef.current]);
+
   useEffect(() => {
-    console.log("App State Changed", storeRef.current?.getState());
-  }, [storeRef.current]);
+    if (!folderId || !workspaceId) return;
+    const fetchFiles = async () => {
+      const { error: filesError, data } = await getFiles(folderId);
+      if (filesError) {
+        console.log(filesError);
+      }
+      if (!data) return;
+
+      storeRef.current?.setState((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((workspace) => ({
+          ...workspace,
+          folders: workspace.folders.map((folder) => {
+            if (folder.id === folderId) {
+              return {
+                ...folder,
+                files: data,
+              };
+            }
+            return folder;
+          }),
+        })),
+      }));
+    };
+    fetchFiles();
+  }, [folderId, workspaceId]);
 
   return (
     <AppStoreContext.Provider value={storeRef.current}>

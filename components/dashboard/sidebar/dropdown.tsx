@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PlusIcon, Trash } from "lucide-react";
@@ -45,7 +45,16 @@ export const Dropdown = ({
     (store) => store
   );
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState<string>("");
+
+  const timerRef = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
 
   const folderTitle: string | undefined = useMemo(() => {
     if (listType === "folder") {
@@ -95,18 +104,24 @@ export const Dropdown = ({
     if (!isEditing) return;
     setIsEditing(false);
 
-    const fId = id.split("folder");
-    if (fId?.length === 1) {
-      if (!folderTitle) return;
-
-      await updateFolderHandler({ title }, fId[0]);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
     }
 
-    if (fId?.length === 2) {
-      if (!fileTitle) return;
+    timerRef.current = setTimeout(async () => {
+      const fId = id.split("folder");
+      if (fId?.length === 1) {
+        if (!folderTitle) return;
 
-      // WIP UPDATE THE FILE TITLE
-    }
+        await updateFolderHandler({ title }, fId[0]);
+      }
+
+      if (fId?.length === 2) {
+        if (!fileTitle) return;
+
+        // WIP UPDATE THE FILE TITLE
+      }
+    }, 1000);
   };
 
   const onChangeEMoji = async (selectedEmoji: string) => {
@@ -276,7 +291,7 @@ export const Dropdown = ({
           </div>
         </div>
       </AccordionTrigger>
-      <AccordionContent>
+      <AccordionContent className="pb-0">
         {appWorkspaces
           .find((workspace) => workspace.id === workspaceId)
           ?.folders.find((folder) => folder.id === id)

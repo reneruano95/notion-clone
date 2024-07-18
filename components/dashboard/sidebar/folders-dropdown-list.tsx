@@ -97,7 +97,7 @@ export const FoldersDropdownList = ({
 
   return (
     <>
-      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center pr-4 text-Neutrals/neutrals-8">
+      <div className="flex sticky z-20 top-0 bg-background w-full h-10 group/title justify-between items-center text-Neutrals/neutrals-8">
         <span className="text-Neutrals/neutrals-8 font-bold text-xs">
           FOLDERS
         </span>

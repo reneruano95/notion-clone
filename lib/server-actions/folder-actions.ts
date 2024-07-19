@@ -32,6 +32,7 @@ export const createFolder = async (data: Tables<"folders">) => {
 
   try {
     const response = await supabase.from("folders").insert(data);
+
     return {
       data: response.data,
       error: null,
@@ -54,6 +55,7 @@ export const updateFolder = async (
       .from("folders")
       .update(data)
       .eq("id", folderId);
+
     return {
       data: null,
       error: null,

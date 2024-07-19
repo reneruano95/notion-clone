@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
@@ -154,8 +153,6 @@ export const updateWorkspace = async (
     if (error) {
       return { data: null, error };
     }
-
-    revalidatePath(`/dashboard/${workspaceId}`);
 
     return {
       data: null,

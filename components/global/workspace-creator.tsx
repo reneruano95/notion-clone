@@ -60,22 +60,16 @@ export const WorkspaceCreator = () => {
       };
 
       if (permissions === "private") {
-        toast.success(
-          <span>
-            Successfully created private workspace <b>{newWorkspace.title}</b>
-          </span>
-        );
+        toast.success("Successfully created private workspace ");
+
         await createWorkspace(newWorkspace);
 
         router.refresh();
       }
 
       if (permissions === "shared") {
-        toast.success(
-          <span>
-            Successfully created shared workspace <b>{newWorkspace.title}</b>
-          </span>
-        );
+        toast.success(" Successfully created shared workspace");
+
         await createWorkspace(newWorkspace);
         await addCollaborators(workspaceId, collaborators);
 

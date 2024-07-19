@@ -82,15 +82,13 @@ export const FoldersDropdownList = ({
     const { data, error } = await createFolder(newFolder);
 
     if (error) {
-      console.log("error creating folder", error);
       toast.error(
         "An error occurred while creating the folder. Please try again."
       );
     } else {
       toast.success("A new folder has been created successfully.");
-
-      router.refresh();
     }
+    router.refresh();
   };
 
   return (

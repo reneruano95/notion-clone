@@ -136,21 +136,21 @@ export const Dropdown = ({
       updateFolder(workspaceId, id, {
         emoji: selectedEmoji,
       });
-    }
 
-    const { error } = await updateFolderAction(
-      {
-        emoji: selectedEmoji,
-      },
-      id
-    );
-
-    if (error) {
-      return toast.error(
-        "An error occurred while updating the emoji for this folder. Please try again."
+      const { error } = await updateFolderAction(
+        {
+          emoji: selectedEmoji,
+        },
+        id
       );
-    } else {
-      return toast.success("Emoji updated successfully");
+
+      if (error) {
+        toast.error(
+          "An error occurred while updating the emoji for this folder. Please try again."
+        );
+      } else {
+        toast.success("Emoji updated successfully");
+      }
     }
   };
 
@@ -239,6 +239,8 @@ export const Dropdown = ({
       } else {
         toast.success("Folder moved to trash successfully");
       }
+
+      router.refresh();
     }
 
     if (listType === "file") {
@@ -260,6 +262,8 @@ export const Dropdown = ({
       } else {
         toast.success("File moved to trash successfully");
       }
+
+      router.refresh();
     }
   };
 
@@ -293,7 +297,6 @@ export const Dropdown = ({
       value={id}
       className={listStyles}
       onClick={(e) => {
-        e.stopPropagation();
         navigatePage(id, listType);
       }}
     >

@@ -95,6 +95,22 @@ export const SettingsForm = () => {
     }, 1000);
   };
 
+  const handleDeleteWorkspace = async () => {
+    if (!workspaceId) return;
+    deleteWorkspace(workspaceId);
+    const { error } = await deleteWorkspaceAction(workspaceId);
+
+    if (error) {
+      toast.error(
+        "Something went wrong while deleting workspace. Please try again"
+      );
+      return;
+    } else {
+      toast.success("Workspace deleted successfully");
+    }
+
+    router.push("/dashboard");
+  };
   return (
     <div className="flex gap-4 flex-col">
       <p className="flex items-center gap-2 mt-6">
@@ -234,17 +250,10 @@ export const SettingsForm = () => {
         </AlertDescription>
         <Button
           type="submit"
-          size={"sm"}
-          variant={"destructive"}
+          size="sm"
+          variant="destructive"
           className="mt-4 text-s bg-destructive/40 hover:bg-destructive/60 border-2 border-destructive text-white/70 rounded py-2 px-4 w-full"
-          onClick={async () => {
-            if (!workspaceId) return;
-            await deleteWorkspaceAction(workspaceId);
-            deleteWorkspace(workspaceId);
-            toast.success("Workspace deleted successfully!");
-
-            router.replace("/dashboard");
-          }}
+          onClick={handleDeleteWorkspace}
         >
           Delete Workspace
         </Button>

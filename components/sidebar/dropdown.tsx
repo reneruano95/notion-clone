@@ -20,6 +20,7 @@ import { updateFile as updateFileAction } from "@/lib/server-actions/file-action
 import { TooltipComponent } from "@/components/global/tooltip-component";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { createFile } from "@/lib/server-actions/file-actions";
+import { getUser } from "@/lib/server-actions/auth-actions";
 
 interface DropdownProps {
   title: string;
@@ -129,6 +130,8 @@ export const Dropdown = ({
   const onChangeEmoji = async (selectedEmoji: string) => {
     if (!workspaceId) return;
 
+    if (!listType) return;
+
     if (listType === "folder") {
       updateFolder(workspaceId, id, {
         emoji: selectedEmoji,
@@ -208,6 +211,58 @@ export const Dropdown = ({
     [isFolder]
   );
 
+  const moveToTrash = async () => {
+    const {
+      data: { user },
+    } = await getUser();
+
+    if (!user || !workspaceId) return;
+
+    const pathId = id.split("folder"); // 0 = folder id, 1 = file id
+
+    if (listType === "folder") {
+      updateFolder(workspaceId, pathId[0], {
+        in_trash: `Deleted by ${user?.email}`,
+      });
+
+      const { error: folderError } = await updateFolderAction(
+        {
+          in_trash: `Deleted by ${user?.email}`,
+        },
+        pathId[0]
+      );
+
+      if (folderError) {
+        toast.error(
+          "An error occurred while moving the folder to trash. Please try again."
+        );
+      } else {
+        toast.success("Folder moved to trash successfully");
+      }
+    }
+
+    if (listType === "file") {
+      updateFile(workspaceId, pathId[0], pathId[1], {
+        in_trash: `Deleted by ${user?.email}`,
+      });
+
+      const { error: fileError } = await updateFileAction(
+        {
+          in_trash: `Deleted by ${user?.email}`,
+        },
+        pathId[1]
+      );
+
+      if (fileError) {
+        toast.error(
+          "An error occurred while moving the file to trash. Please try again."
+        );
+      } else {
+        toast.success("File moved to trash successfully");
+      }
+    }
+  };
+
   const addNewFile = async () => {
     if (!workspaceId) return;
     const newFile: Tables<"files"> = {
@@ -274,7 +329,7 @@ export const Dropdown = ({
             <div className={hoverStyles}>
               <TooltipComponent message="Delete Folder">
                 <Trash
-                  // onClick={moveToTrash}
+                  onClick={moveToTrash}
                   size={15}
                   className="hover:dark:text-white dark:text-Neutrals/neutrals-7 transition-colors"
                 />

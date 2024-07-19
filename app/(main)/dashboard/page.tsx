@@ -1,11 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { DashboardSetup } from "@/components/dashboard/dashboard-setup";
-import {
-  getUserSubscriptionStatus,
-  getWorkspacesByUserId,
-} from "@/lib/server-actions/dashboard-actions";
+
 import { getUser } from "@/lib/server-actions/auth-actions";
+import { getWorkspaces } from "@/lib/server-actions/workspaces-actions";
+import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
 
 export default async function DashboardPage() {
   const {
@@ -14,8 +13,9 @@ export default async function DashboardPage() {
 
   if (!user) return redirect("/sign-in");
 
-  const { data: workspace, error: workspaceError } =
-    await getWorkspacesByUserId(user.id);
+  const { data: workspace, error: workspaceError } = await getWorkspaces(
+    user.id
+  );
 
   const { data: subscription, error: subscriptionError } =
     await getUserSubscriptionStatus(user.id);

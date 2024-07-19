@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Briefcase, Lock, Plus, Share } from "lucide-react";
 
 import {
@@ -21,7 +22,10 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { Separator } from "../ui/separator";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/workspaces-actions";
+import {
+  deleteWorkspace as deleteWorkspaceAction,
+  updateWorkspace as updateWorkspaceAction,
+} from "@/lib/server-actions/workspaces-actions";
 import { ImageUpload } from "../global/image-upload";
 import { CollaboratorsSearch } from "../global/collaborators-search";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
@@ -29,12 +33,13 @@ import {
   addCollaborators,
   removeCollaborators,
 } from "@/lib/server-actions/collaborators-actions";
+import { Alert, AlertDescription } from "../ui/alert";
 
 export const SettingsForm = () => {
   const router = useRouter();
   const { user, subscription } = useSupabaseUser();
   const { folderId, workspaceId } = useId();
-  const { appWorkspaces, updateWorkspace, addFile, updateFile } = useAppsStore(
+  const { appWorkspaces, updateWorkspace, deleteWorkspace } = useAppsStore(
     (store) => store
   );
 
@@ -68,7 +73,6 @@ export const SettingsForm = () => {
 
     if (collaborators.length === 1) {
       setPermissions("private");
-      return;
     }
 
     await removeCollaborators(workspaceId, [user]);
@@ -222,6 +226,29 @@ export const SettingsForm = () => {
           </div>
         </div>
       )}
+
+      <Alert variant={"destructive"}>
+        <AlertDescription>
+          Warning! deleting you workspace will permanently delete all data
+          related to this workspace.
+        </AlertDescription>
+        <Button
+          type="submit"
+          size={"sm"}
+          variant={"destructive"}
+          className="mt-4 text-s bg-destructive/40 hover:bg-destructive/60 border-2 border-destructive text-white/70 rounded py-2 px-4 w-full"
+          onClick={async () => {
+            if (!workspaceId) return;
+            await deleteWorkspaceAction(workspaceId);
+            deleteWorkspace(workspaceId);
+            toast.success("Workspace deleted successfully!");
+
+            router.replace("/dashboard");
+          }}
+        >
+          Delete Workspace
+        </Button>
+      </Alert>
     </div>
   );
 };

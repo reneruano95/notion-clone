@@ -168,3 +168,27 @@ export const updateWorkspace = async (
     };
   }
 };
+
+export const deleteWorkspace = async (workspaceId: string) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("workspaces")
+      .delete()
+      .eq("id", workspaceId);
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    return {
+      data: null,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};

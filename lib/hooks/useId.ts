@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 
-export default function useId() {
+export const useId = () => {
   const pathname = usePathname();
 
   const workspaceId = useMemo(() => {
@@ -29,4 +29,4 @@ export default function useId() {
   }, [pathname]);
 
   return { workspaceId, folderId, fileId };
-}
+};

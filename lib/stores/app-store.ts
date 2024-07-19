@@ -13,7 +13,10 @@ export type AppStoreActions = {
   // workspaces
   addWorkspace: (workspace: appWorkspacesType) => void;
   deleteWorkspace: (workspaceId: string) => void;
-  updateWorkspace: (workspace: Partial<appWorkspacesType>) => void;
+  updateWorkspace: (
+    workspace: Partial<appWorkspacesType>,
+    workspaceId: string
+  ) => void;
   setWorkspaces: (workspaces: appWorkspacesType[] | []) => void;
 
   // folders
@@ -67,11 +70,11 @@ export const createAppStore = (initState: AppState = defaultInitState) => {
           (workspace) => workspace.id !== workspaceId
         ),
       })),
-    updateWorkspace: (workspace) =>
+    updateWorkspace: (workspace, workspaceId) =>
       set((state) => ({
         ...state,
         appWorkspaces: state.appWorkspaces.map((w) =>
-          w.id === workspace.id ? { ...w, ...workspace } : w
+          w.id === workspaceId ? { ...w, ...workspace } : w
         ),
       })),
     setWorkspaces: (workspaces) =>

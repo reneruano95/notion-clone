@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 import { PlusIcon } from "lucide-react";
 
-import useId from "@/lib/hooks/useId";
+import { useId } from "@/lib/hooks/useId";
 import { Accordion } from "@/components/ui/accordion";
 import { Dropdown } from "./dropdown";
 import { TooltipComponent } from "@/components/global/tooltip-component";

@@ -7,7 +7,7 @@ import { MAX_FOLDERS_FREE_PLAN } from "@/lib/constants";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import { Progress } from "@/components/ui/progress";
 import CypressDiamondIcon from "@/components/icons/cypressDiamondIcon";
-import useId from "@/lib/hooks/useId";
+import { useId } from "@/lib/hooks/useId";
 
 interface PlanUsageProps {
   foldersLength: number;

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { PlusIcon, Trash } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-import useId from "@/lib/hooks/useId";
+import { useId } from "@/lib/hooks/useId";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import {
   AccordionContent,

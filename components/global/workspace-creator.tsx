@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { User } from "@supabase/supabase-js";
 import { Loader2, Lock, Plus, Share } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -22,9 +21,11 @@ import { ScrollArea } from "../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { addCollaborators } from "@/lib/server-actions/collaborators-actions";
 import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 
-export const WorkspaceCreator = ({ user }: { user: User }) => {
+export const WorkspaceCreator = () => {
   const router = useRouter();
+  const { user } = useSupabaseUser();
 
   const [permissions, setPermissions] = useState("private");
   const [collaborators, setCollaborators] = useState<Tables<"users">[]>([]);
@@ -44,7 +45,7 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
     setIsLoading(true);
     const workspaceId = uuidv4();
 
-    if (user.id) {
+    if (user?.id) {
       const newWorkspace: Tables<"workspaces"> = {
         id: workspaceId,
         data: "",
@@ -53,7 +54,7 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
         in_trash: "",
         banner_url: "",
         title,
-        workspace_owner_id: user.id,
+        workspace_owner_id: user?.id,
         is_private: permissions === "private",
         logo: "",
       };
@@ -149,7 +150,6 @@ export const WorkspaceCreator = ({ user }: { user: User }) => {
           <CollaboratorsSearch
             existingCollaborators={collaborators}
             getCollaborators={(user) => addCollaborator(user)}
-            user={user}
           >
             <Button
               type="button"

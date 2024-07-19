@@ -42,7 +42,7 @@ export const addCollaborators = async (
 
 export const removeCollaborators = async (
   workspaceId: string,
-  removedCollaborators: User[]
+  removedCollaborators: Tables<"users">[]
 ) => {
   const supabase = createServerClient();
 

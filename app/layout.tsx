@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/lib/providers/next-theme-provider";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { AppStoreProvider } from "@/lib/providers/store-provider";
+import { SupabaseUserProvider } from "@/lib/providers/supabase-user-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,8 +24,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AppStoreProvider>
-            {children}
-            <Toaster theme="dark" richColors duration={3000} />
+            <SupabaseUserProvider>
+              {children}
+              <Toaster theme="dark" richColors duration={3000} />
+            </SupabaseUserProvider>
           </AppStoreProvider>
         </ThemeProvider>
       </body>

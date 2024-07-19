@@ -15,7 +15,6 @@ interface WorkspaceDropdownProps {
   collaboratingWorkspaces: Tables<"workspaces">[] | [];
   sharedWorkspaces: Tables<"workspaces">[] | [];
   defaultValue: Tables<"workspaces"> | undefined;
-  user: User;
 }
 
 export const WorkspaceDropdown = ({
@@ -23,7 +22,6 @@ export const WorkspaceDropdown = ({
   collaboratingWorkspaces,
   sharedWorkspaces,
   defaultValue,
-  user,
 }: WorkspaceDropdownProps) => {
   const [selectedOption, setSelectedOption] = useState(defaultValue);
   const [isOpen, setIsOpen] = useState(false);
@@ -120,7 +118,7 @@ export const WorkspaceDropdown = ({
 
             <CustomDialogTrigger
               title="Create A Workspace"
-              content={<WorkspaceCreator user={user} />}
+              content={<WorkspaceCreator />}
               description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
             >
               <div className="flex rounded transition-all hover:bg-muted justify-center items-center p-2 gap-2 mx-2 mb-2">

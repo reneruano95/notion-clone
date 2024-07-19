@@ -31,7 +31,7 @@ import { EmojiPicker } from "../global/emoji-picker";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { ImageUpload } from "../global/image-upload";
 import { Loader } from "../global/loader";
-import { createWorkspace } from "@/lib/server-actions/dashboard-actions";
+import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
 import { useAppsStore } from "@/lib/providers/store-provider";
 
 const createWorkspaceSchema = z.object({
@@ -84,12 +84,10 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
         is_private: true,
       };
 
-      const { data, error: createWorkspaceError } = await createWorkspace(
-        newWorkspace
-      );
+      const { data, error } = await createWorkspace(newWorkspace);
 
-      if (createWorkspaceError) {
-        throw createWorkspaceError;
+      if (error) {
+        throw error;
       }
 
       addWorkspace({

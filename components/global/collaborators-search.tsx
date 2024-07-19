@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { User } from "@supabase/supabase-js";
 import { Search } from "lucide-react";
 
 import {
@@ -16,20 +15,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { getUsersFromSearch } from "@/lib/server-actions/user-actions";
 import { Tables } from "@/lib/supabase/supabase.types";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 
 interface CollaboratorsSearchProps {
-  user: User;
   existingCollaborators: Tables<"users">[] | [];
   getCollaborators: (collaborator: Tables<"users">) => void;
   children: React.ReactNode;
 }
 
 export const CollaboratorsSearch = ({
-  user,
   existingCollaborators,
   getCollaborators,
   children,
 }: CollaboratorsSearchProps) => {
+  const { user } = useSupabaseUser();
   const [searchResults, setSearchResults] = useState<Tables<"users">[] | []>(
     []
   );

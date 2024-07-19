@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PlusIcon, Trash } from "lucide-react";
@@ -48,6 +48,20 @@ export const Dropdown = ({
   );
   const [isEditing, setIsEditing] = useState(false);
 
+  useEffect(() => {
+    // TODO: add save functionality when enter is pressed
+    const leaveEdit = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsEditing(false);
+      }
+    };
+
+    document.addEventListener("keyup", leaveEdit);
+    return () => {
+      document.removeEventListener("keyup", leaveEdit);
+    };
+  }, [setIsEditing]);
+
   const folderTitle: string | undefined = useMemo(() => {
     if (listType === "folder") {
       const stateTitle = appWorkspaces
@@ -88,11 +102,11 @@ export const Dropdown = ({
     }
   };
 
-  const handleDoubleClick = () => {
+  const handleDoubleClick = useCallback(() => {
     setIsEditing(true);
-  };
+  }, [setIsEditing]);
 
-  const handleBlur = async () => {
+  const handleBlur = useCallback(async () => {
     if (!isEditing) return;
     setIsEditing(false);
 
@@ -125,12 +139,17 @@ export const Dropdown = ({
         );
       }
     }
-  };
+  }, [
+    folderTitle,
+    fileTitle,
+    id,
+    isEditing,
+    updateFolderAction,
+    updateFileAction,
+  ]);
 
   const onChangeEmoji = async (selectedEmoji: string) => {
-    if (!workspaceId) return;
-
-    if (!listType) return;
+    if (!workspaceId || !listType) return;
 
     if (listType === "folder") {
       updateFolder(workspaceId, id, {
@@ -211,7 +230,7 @@ export const Dropdown = ({
     [isFolder]
   );
 
-  const moveToTrash = async () => {
+  const moveToTrash = useCallback(async () => {
     const {
       data: { user },
     } = await getUser();
@@ -265,9 +284,9 @@ export const Dropdown = ({
 
       router.refresh();
     }
-  };
+  }, [workspaceId, listType, id, router]);
 
-  const addNewFile = async () => {
+  const addNewFile = useCallback(async () => {
     if (!workspaceId) return;
     const newFile: Tables<"files"> = {
       id: uuidv4(),
@@ -290,13 +309,14 @@ export const Dropdown = ({
     } else {
       return toast.success("File created successfully");
     }
-  };
+  }, [workspaceId, id]);
 
   return (
     <AccordionItem
       value={id}
       className={listStyles}
       onClick={(e) => {
+        e.stopPropagation();
         navigatePage(id, listType);
       }}
     >

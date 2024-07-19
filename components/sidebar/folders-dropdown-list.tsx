@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -55,7 +55,7 @@ export const FoldersDropdownList = ({
     );
   }, [appWorkspaces, workspaceId]);
 
-  const addFolderHandler = async () => {
+  const addFolderHandler = useCallback(async () => {
     const {
       data: { user },
     } = await getUser();
@@ -89,7 +89,7 @@ export const FoldersDropdownList = ({
       toast.success("A new folder has been created successfully.");
     }
     router.refresh();
-  };
+  }, [workspaceId, folderState, router]);
 
   return (
     <>

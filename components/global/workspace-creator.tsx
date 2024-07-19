@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock, Plus, Share } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -33,15 +33,21 @@ export const WorkspaceCreator = () => {
   const [title, setTitle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const addCollaborator = (user: Tables<"users">) => {
-    setCollaborators([...collaborators, user]);
-  };
+  const addCollaborator = useCallback(
+    (user: Tables<"users">) => {
+      setCollaborators([...collaborators, user]);
+    },
+    [collaborators]
+  );
 
-  const removeCollaborator = (user: Tables<"users">) => {
-    setCollaborators(collaborators.filter((u) => u.id !== user.id));
-  };
+  const removeCollaborator = useCallback(
+    (user: Tables<"users">) => {
+      setCollaborators(collaborators.filter((u) => u.id !== user.id));
+    },
+    [collaborators]
+  );
 
-  const createItem = async () => {
+  const createItem = useCallback(async () => {
     setIsLoading(true);
     const workspaceId = uuidv4();
 
@@ -78,7 +84,7 @@ export const WorkspaceCreator = () => {
 
       setIsLoading(false);
     }
-  };
+  }, [collaborators, permissions, router, title, user?.id]);
 
   return (
     <div className="flex gap-4 flex-col">

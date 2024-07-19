@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { SquarePlus } from "lucide-react";
 
@@ -43,10 +43,13 @@ export const WorkspaceDropdown = ({
     }
   }, [privateWorkspaces, collaboratingWorkspaces, sharedWorkspaces]);
 
-  const handleSelect = (workspace: Tables<"workspaces">) => {
-    setSelectedOption(workspace);
-    setIsOpen(false);
-  };
+  const handleSelect = useCallback(
+    (workspace: Tables<"workspaces">) => {
+      setSelectedOption(workspace);
+      setIsOpen(false);
+    },
+    [setIsOpen, setSelectedOption]
+  );
 
   useEffect(() => {
     const findSelectedWorkspace = appWorkspaces.find(

@@ -27,14 +27,9 @@ export const NativeNavigation = ({
           </Link>
         </li>
 
-        <li>
-          <Link
-            className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all"
-            href={`/dashboard/${myWorkspaceId}`}
-          >
-            <CypressSettingsIcon />
-            <span>Settings</span>
-          </Link>
+        <li className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all cursor-pointer">
+          <CypressSettingsIcon />
+          <span>Settings</span>
         </li>
 
         <li>

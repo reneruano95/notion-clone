@@ -29,7 +29,7 @@ export const getFiles = async (folderId: string) => {
       .from("files")
       .select("*")
       .eq("folder_id", folderId)
-      .order("created_at", { ascending: false })
+      .order("created_at", { ascending: true })
       .select();
 
     return {

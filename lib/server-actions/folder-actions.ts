@@ -12,6 +12,7 @@ export const getFoldersByWorkspaceId = async (workspaceId: string) => {
       .from("folders")
       .select("*")
       .eq("workspace_id", workspaceId)
+      .order("created_at", { ascending: true })
       .select();
 
     return {

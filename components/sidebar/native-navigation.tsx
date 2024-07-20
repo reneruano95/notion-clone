@@ -5,6 +5,7 @@ import CypressSettingsIcon from "@/components/icons/cypressSettingsIcon";
 import CypressTrashIcon from "@/components/icons/cypressTrashIcon";
 import { cn } from "@/lib/utils";
 import { Settings } from "../settings/settings";
+import { Search } from "lucide-react";
 
 interface NativeNavigationProps {
   myWorkspaceId: string;
@@ -18,6 +19,10 @@ export const NativeNavigation = ({
   return (
     <nav className={cn("my-2", className)}>
       <ul className="flex flex-col gap-2">
+        <li className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all cursor-pointer">
+          <Search />
+          <span>Search</span>
+        </li>
         <li>
           <Link
             className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all"

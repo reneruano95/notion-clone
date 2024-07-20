@@ -1,6 +1,6 @@
 "use server";
 
-import { PostgrestError, User } from "@supabase/supabase-js";
+import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
 import { Tables } from "../supabase/supabase.types";

@@ -8,15 +8,22 @@ export const getFoldersByWorkspaceId = async (workspaceId: string) => {
   const supabase = createServerClient();
 
   try {
-    const response = await supabase
+    const { data, error } = await supabase
       .from("folders")
       .select("*")
       .eq("workspace_id", workspaceId)
       .order("created_at", { ascending: true })
       .select();
 
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
     return {
-      data: response.data,
+      data,
       error: null,
     };
   } catch (error) {
@@ -27,14 +34,21 @@ export const getFoldersByWorkspaceId = async (workspaceId: string) => {
   }
 };
 
-export const createFolder = async (data: Tables<"folders">) => {
+export const createFolder = async (newFolder: Tables<"folders">) => {
   const supabase = createServerClient();
 
   try {
-    const response = await supabase.from("folders").insert(data);
+    const { data, error } = await supabase.from("folders").insert(newFolder);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
 
     return {
-      data: response.data,
+      data,
       error: null,
     };
   } catch (error) {
@@ -46,18 +60,25 @@ export const createFolder = async (data: Tables<"folders">) => {
 };
 
 export const updateFolder = async (
-  data: Partial<Tables<"folders">>,
+  updatedFolder: Partial<Tables<"folders">>,
   folderId: string
 ) => {
   const supabase = createServerClient();
   try {
-    const response = await supabase
+    const { data, error } = await supabase
       .from("folders")
-      .update(data)
+      .update(updatedFolder)
       .eq("id", folderId);
 
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
     return {
-      data: null,
+      data,
       error: null,
     };
   } catch (error) {

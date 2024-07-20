@@ -14,10 +14,7 @@ export const createWorkspace = async (
   const supabase = createServerClient();
 
   try {
-    const { data, error } = await supabase
-      .from("workspaces")
-      .insert(workspace)
-      .select();
+    const { data, error } = await supabase.from("workspaces").insert(workspace);
 
     if (error) {
       return { data: null, error };
@@ -155,7 +152,7 @@ export const updateWorkspace = async (
     }
 
     return {
-      data: null,
+      data,
       error: null,
     };
   } catch (error) {
@@ -179,7 +176,7 @@ export const deleteWorkspace = async (workspaceId: string) => {
     }
 
     return {
-      data: null,
+      data,
       error: null,
     };
   } catch (error) {

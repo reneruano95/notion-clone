@@ -4,14 +4,21 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { createServerClient } from "../supabase/server";
 import { Tables } from "../supabase/supabase.types";
 
-export const createFile = async (data: Tables<"files">) => {
+export const createFile = async (newFile: Tables<"files">) => {
   const supabase = createServerClient();
 
   try {
-    const response = await supabase.from("files").insert(data).select();
+    const { data, error } = await supabase.from("files").insert(newFile);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
 
     return {
-      data: response.data,
+      data,
       error: null,
     };
   } catch (error) {
@@ -25,15 +32,22 @@ export const createFile = async (data: Tables<"files">) => {
 export const getFiles = async (folderId: string) => {
   const supabase = createServerClient();
   try {
-    const response = await supabase
+    const { data, error } = await supabase
       .from("files")
       .select("*")
       .eq("folder_id", folderId)
       .order("created_at", { ascending: true })
       .select();
 
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
     return {
-      data: response.data,
+      data,
       error: null,
     };
   } catch (error) {
@@ -45,12 +59,22 @@ export const getFiles = async (folderId: string) => {
 };
 
 export const updateFile = async (
-  data: Partial<Tables<"files">>,
+  updatedFile: Partial<Tables<"files">>,
   fileId: string
 ) => {
   const supabase = createServerClient();
   try {
-    const response = await supabase.from("files").update(data).eq("id", fileId);
+    const { data, error } = await supabase
+      .from("files")
+      .update(updatedFile)
+      .eq("id", fileId);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
 
     return {
       data: null,

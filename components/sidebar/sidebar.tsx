@@ -14,6 +14,7 @@ import { NativeNavigation } from "./native-navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FoldersDropdownList } from "./folders-dropdown-list";
 import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
+import { UserCard } from "./user-card";
 
 interface SidebarProps {
   params: { workspace_id: string };
@@ -35,6 +36,7 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
   );
 
   if (subscriptionError || foldersError) {
+    console.log("subscription", subscription);
     console.log("subscription error", subscriptionError);
     console.log("folders error", foldersError);
 
@@ -94,6 +96,7 @@ export const Sidebar = async ({ params, className }: SidebarProps) => {
           />
         </ScrollArea>
       </div>
+      <UserCard subscription={subscription} />
     </aside>
   );
 };

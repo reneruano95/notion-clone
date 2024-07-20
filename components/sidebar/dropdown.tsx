@@ -48,20 +48,6 @@ export const Dropdown = ({
   );
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    // TODO: add save functionality when enter is pressed
-    const leaveEdit = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsEditing(false);
-      }
-    };
-
-    document.addEventListener("keyup", leaveEdit);
-    return () => {
-      document.removeEventListener("keyup", leaveEdit);
-    };
-  }, [setIsEditing]);
-
   const folderTitle: string | undefined = useMemo(() => {
     if (listType === "folder") {
       const stateTitle = appWorkspaces
@@ -115,13 +101,16 @@ export const Dropdown = ({
     if (fId?.length === 1) {
       if (!folderTitle) return;
 
-      const { error } = await updateFolderAction({ title }, fId[0]);
+      const { error } = await updateFolderAction(
+        { title: folderTitle },
+        fId[0]
+      );
 
       toast.success("Folder name updated successfully");
 
       if (error) {
         return toast.error(
-          " An error occurred while updating the folder name. Please try again."
+          "An error occurred while updating the folder name. Please try again."
         );
       }
     }
@@ -135,7 +124,7 @@ export const Dropdown = ({
 
       if (error) {
         return toast.error(
-          " An error occurred while updating the file name. Please try again."
+          "An error occurred while updating the file name. Please try again."
         );
       }
     }

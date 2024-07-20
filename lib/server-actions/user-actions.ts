@@ -6,14 +6,14 @@ import { createServerClient } from "../supabase/server";
 export const getUserSubscriptionStatus = async (userId: string) => {
   const supabase = createServerClient();
   try {
-    const response = await supabase
+    const { data, error } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("user_id", userId)
       .single();
 
     return {
-      data: response.data,
+      data,
       error: null,
     };
   } catch (error) {
@@ -27,13 +27,43 @@ export const getUserSubscriptionStatus = async (userId: string) => {
 export const getUsersFromSearch = async (email: string) => {
   const supabase = createServerClient();
   try {
-    const response = await supabase
+    const { data, error } = await supabase
       .from("users")
       .select("*")
       .ilike("email", `%${email}%`)
       .select();
+
+    if (error) {
+      return { data: null, error };
+    }
+
     return {
-      data: response.data,
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const getUserDetails = async (userId: string) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    return {
+      data,
       error: null,
     };
   } catch (error) {

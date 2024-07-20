@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock, Plus, Share } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -22,16 +22,18 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { addCollaborators } from "@/lib/server-actions/collaborators-actions";
 import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { useAppsStore } from "@/lib/providers/store-provider";
 
 export const WorkspaceCreator = () => {
   const router = useRouter();
   const { user } = useSupabaseUser();
+  const { addWorkspace } = useAppsStore((store) => store);
 
   const [permissions, setPermissions] = useState("private");
   const [collaborators, setCollaborators] = useState<Tables<"users">[]>([]);
 
   const [title, setTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const addCollaborator = useCallback(
     (user: Tables<"users">) => {
@@ -48,42 +50,50 @@ export const WorkspaceCreator = () => {
   );
 
   const createItem = useCallback(async () => {
-    setIsLoading(true);
-    const workspaceId = uuidv4();
+    startTransition(async () => {
+      const workspaceId = uuidv4();
 
-    if (user?.id) {
-      const newWorkspace: Tables<"workspaces"> = {
-        id: workspaceId,
-        data: "",
-        created_at: new Date().toISOString(),
-        emoji: "🖥️",
-        in_trash: "",
-        banner_url: "",
-        title,
-        workspace_owner_id: user?.id,
-        is_private: permissions === "private",
-        logo: "",
-      };
+      if (user?.id) {
+        const newWorkspace: Tables<"workspaces"> = {
+          id: workspaceId,
+          data: "",
+          created_at: new Date().toISOString(),
+          emoji: "🖥️",
+          in_trash: "",
+          banner_url: "",
+          title,
+          workspace_owner_id: user?.id,
+          is_private: permissions === "private",
+          logo: "",
+        };
 
-      if (permissions === "private") {
-        toast.success("Successfully created private workspace ");
+        if (permissions === "private") {
+          toast.success("Successfully created private workspace ");
 
-        await createWorkspace(newWorkspace);
+          await createWorkspace(newWorkspace);
+          addWorkspace({
+            ...newWorkspace,
+            folders: [],
+          });
 
-        router.refresh();
+          router.push(`/dashboard/${workspaceId}`);
+        }
+
+        if (permissions === "shared") {
+          toast.success(" Successfully created shared workspace");
+
+          await createWorkspace(newWorkspace);
+          await addCollaborators(workspaceId, collaborators);
+
+          addWorkspace({
+            ...newWorkspace,
+            folders: [],
+          });
+
+          router.push(`/dashboard/${workspaceId}`);
+        }
       }
-
-      if (permissions === "shared") {
-        toast.success(" Successfully created shared workspace");
-
-        await createWorkspace(newWorkspace);
-        await addCollaborators(workspaceId, collaborators);
-
-        router.refresh();
-      }
-
-      setIsLoading(false);
-    }
+    });
   }, [collaborators, permissions, router, title, user?.id]);
 
   return (
@@ -207,13 +217,13 @@ export const WorkspaceCreator = () => {
         disabled={
           !title ||
           (permissions === "shared" && collaborators.length === 0) ||
-          isLoading
+          isPending
         }
         variant={"default"}
         onClick={createItem}
         className="mt-4"
       >
-        {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
+        {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
       </Button>
     </div>
   );

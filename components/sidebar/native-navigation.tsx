@@ -20,7 +20,7 @@ export const NativeNavigation = ({
     <nav className={cn("my-2", className)}>
       <ul className="flex flex-col gap-2">
         <li className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all cursor-pointer">
-          <Search />
+          <Search className="dark:fill-[#2B2939] fill-[#D3D3D3]  dark:stroke-[#817EB5]  stoke-Neutrals/neutrals-7  transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
           <span>Search</span>
         </li>
         <li>

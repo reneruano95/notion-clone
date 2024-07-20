@@ -4,6 +4,7 @@ import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
 import { Tables } from "../supabase/supabase.types";
+import { validate } from "uuid";
 
 export const createWorkspace = async (
   workspace: Tables<"workspaces">
@@ -36,6 +37,41 @@ export const getWorkspaces = async (userId: string) => {
       .select()
       .limit(1)
       .single();
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const getWorkspaceDetails = async (workspaceId: string) => {
+  const supabase = createServerClient();
+
+  const isValid = validate(workspaceId);
+  if (!isValid) {
+    return {
+      data: null,
+      error: new Error("Invalid workspace ID"),
+    };
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("workspaces")
+      .select("*")
+      .eq("id", workspaceId)
+      .limit(1)
+      .select();
 
     if (error) {
       return { data: null, error };

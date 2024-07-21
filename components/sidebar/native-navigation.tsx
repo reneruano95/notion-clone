@@ -1,11 +1,8 @@
 import Link from "next/link";
+import { House, Search, Settings as SettingsIcon, Trash2 } from "lucide-react";
 
-import CypressHomeIcon from "@/components/icons/cypressHomeIcon";
-import CypressSettingsIcon from "@/components/icons/cypressSettingsIcon";
-import CypressTrashIcon from "@/components/icons/cypressTrashIcon";
 import { cn } from "@/lib/utils";
 import { Settings } from "../settings/settings";
-import { Search } from "lucide-react";
 
 interface NativeNavigationProps {
   myWorkspaceId: string;
@@ -20,7 +17,7 @@ export const NativeNavigation = ({
     <nav className={cn("my-2", className)}>
       <ul className="flex flex-col gap-2">
         <li className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all cursor-pointer">
-          <Search className="dark:fill-[#2B2939] fill-[#D3D3D3]  dark:stroke-[#817EB5]  stoke-Neutrals/neutrals-7  transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
+          <Search className="dark:fill-[#2B2939] fill-[#D3D3D3] dark:stroke-[#817EB5] stoke-Neutrals/neutrals-7 transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
           <span>Search</span>
         </li>
         <li>
@@ -28,14 +25,14 @@ export const NativeNavigation = ({
             className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all"
             href={`/dashboard/${myWorkspaceId}`}
           >
-            <CypressHomeIcon />
+            <House className="dark:fill-[#2B2939] fill-[#D3D3D3] dark:stroke-[#817EB5] stoke-Neutrals/neutrals-7 transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
             <span>My Workspace</span>
           </Link>
         </li>
 
         <Settings>
           <li className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all cursor-pointer">
-            <CypressSettingsIcon />
+            <SettingsIcon className="dark:fill-[#2B2939] fill-[#D3D3D3] dark:stroke-[#817EB5] stoke-Neutrals/neutrals-7 transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
             <span>Settings</span>
           </li>
         </Settings>
@@ -45,7 +42,7 @@ export const NativeNavigation = ({
             className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all"
             href={`/dashboard/${myWorkspaceId}`}
           >
-            <CypressTrashIcon />
+            <Trash2 className="dark:fill-[#2B2939] fill-[#D3D3D3] dark:stroke-[#817EB5] stoke-Neutrals/neutrals-7 transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
             <span>Trash</span>
           </Link>
         </li>

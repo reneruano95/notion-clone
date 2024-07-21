@@ -24,7 +24,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { EmojiPicker } from "../global/emoji-picker";
-import { BannerUpload } from "../banner-upload/banner-upload";
+import { BannerUpload } from "./banner-upload";
 import { BannerImage } from "./banner-image";
 
 import {
@@ -39,6 +39,7 @@ import {
 import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/workspaces-actions";
 
 import "quill/dist/quill.snow.css";
+import { BannerRemove } from "./banner-remove";
 
 interface QuillEditorProps {
   dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -376,21 +377,25 @@ export const QuillEditor = ({
 
       <div className="flex justify-center items-center flex-col mt-2 relative">
         <div className="w-full self-center max-w-[800px] flex flex-col px-7 lg:my-8">
-          <div className="text-[80px]">
+          <div className="text-[80px] text-center">
             <EmojiPicker getValue={onEmojiChange}>
               <div className="w-[100px] cursor-pointer transition-colors h-[100px] flex items-center justify-center hover:bg-muted rounded-xl">
                 {details.emoji}
               </div>
             </EmojiPicker>
           </div>
-          <div className="flex">
-            <BannerUpload
-              id={actualDirId}
-              dirType={dirType}
-              className="mt-2 text-sm text-muted-foreground p-2 hover:text-card-foreground transition-all rounded-md"
-            >
+          <div className="flex items-center">
+            <BannerUpload dirType={dirType}>
               {details.banner_url ? "Update Banner" : "Add Banner"}
             </BannerUpload>
+
+            {details.banner_url && (
+              <BannerRemove
+                actualDirId={actualDirId}
+                dirType={dirType}
+                dirDetails={dirDetails}
+              />
+            )}
           </div>
         </div>
       </div>

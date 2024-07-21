@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { useCallback, useRef } from "react";
 import { toast } from "sonner";
 
@@ -9,21 +10,13 @@ import { uploadImage } from "@/lib/server-actions/images-actions";
 import { updateFile as updateFileAction } from "@/lib/server-actions/file-actions";
 import { updateFolder as updateFolderAction } from "@/lib/server-actions/folder-actions";
 import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/workspaces-actions";
-import { useRouter } from "next/navigation";
 
 interface BannerUploadProps {
   children: React.ReactNode;
-  className?: string;
   dirType: "workspace" | "folder" | "file";
-  id: string;
 }
 
-export const BannerUpload = ({
-  children,
-  className,
-  dirType,
-  id,
-}: BannerUploadProps) => {
+export const BannerUpload = ({ children, dirType }: BannerUploadProps) => {
   const router = useRouter();
   const { workspaceId, folderId, fileId } = useId();
   const { updateWorkspace, updateFolder, updateFile } = useAppsStore(
@@ -89,8 +82,8 @@ export const BannerUpload = ({
     <>
       <Button
         onClick={() => inputRef.current?.click()}
-        variant={"outline"}
-        className="p-2 border-none bg-transparent hover:bg-transparent hover:text-muted-foreground"
+        variant={"ghost"}
+        className="hover:bg-background border-none flex item-center justify-center text-sm text-muted-foreground p-2"
       >
         {children}
       </Button>

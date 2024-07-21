@@ -16,7 +16,10 @@ import {
 import { cn } from "@/lib/utils";
 import { EmojiPicker } from "@/components/global/emoji-picker";
 import { updateFolder as updateFolderAction } from "@/lib/server-actions/folder-actions";
-import { updateFile as updateFileAction } from "@/lib/server-actions/file-actions";
+import {
+  moveFilesToTrash,
+  updateFile as updateFileAction,
+} from "@/lib/server-actions/file-actions";
 import { TooltipComponent } from "@/components/global/tooltip-component";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { createFile } from "@/lib/server-actions/file-actions";
@@ -82,7 +85,7 @@ export const Dropdown = ({
     if (type === "file") {
       return router.push(
         `/dashboard/${workspaceId}/${folderId}/${
-          accordionId.split("folder/")[1]
+          accordionId.split("folder")[1]
         }`
       );
     }
@@ -240,12 +243,16 @@ export const Dropdown = ({
         pathId[0]
       );
 
-      if (folderError) {
+      const { error: moveFilesToTrashError } = await moveFilesToTrash(
+        pathId[0]
+      );
+
+      if (folderError || moveFilesToTrashError) {
         toast.error(
           "An error occurred while moving the folder to trash. Please try again."
         );
       } else {
-        toast.success("Folder moved to trash successfully");
+        toast.success("Folder and its files moved to trash successfully");
       }
 
       router.refresh();

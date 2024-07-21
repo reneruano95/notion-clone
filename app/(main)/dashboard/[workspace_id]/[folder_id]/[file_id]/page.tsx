@@ -1,7 +1,26 @@
-export default function FileIdPage({
+export const dynamic = "force-dynamic";
+
+import { redirect } from "next/navigation";
+
+import { QuillEditor } from "@/components/quill-editor/quill-editor";
+import { getFileDetails } from "@/lib/server-actions/file-actions";
+
+export default async function FileIdPage({
   params,
 }: {
   params: { file_id: string };
 }) {
-  return <div>File Id Page {params.file_id}</div>;
+  const { data, error } = await getFileDetails(params.file_id);
+
+  if (!data || error) return redirect("/dashboard");
+
+  return (
+    <div className="relative">
+      <QuillEditor
+        dirDetails={data[0]}
+        dirType="file"
+        actualDirId={data[0].id}
+      />
+    </div>
+  );
 }

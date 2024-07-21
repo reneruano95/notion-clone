@@ -47,6 +47,18 @@ export type AppStoreActions = {
     fileId: string,
     files: Partial<Tables<"files">>
   ) => void;
+
+  moveFolderToTrash: (
+    workspaceId: string,
+    folderId: string,
+    fileId: string,
+    userId: string
+  ) => void;
+  restoreFolderFromTrash: (
+    workspaceId: string,
+    folderId: string,
+    fileId: string
+  ) => void;
 };
 
 export type AppStore = AppState & AppStoreActions;
@@ -237,5 +249,62 @@ export const createAppStore = (initState: AppState = defaultInitState) => {
             : w
         ),
       })),
+
+    moveFolderToTrash: (workspaceId, folderId, fileId, userEmail) => {
+      set((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        in_trash: `Deleted by ${userEmail}`,
+                        files: f.files.map((file) =>
+                          file.id === fileId
+                            ? {
+                                ...file,
+                                in_trash: `Deleted by ${userEmail}`,
+                              }
+                            : file
+                        ),
+                      }
+                    : f
+                ),
+              }
+            : w
+        ),
+      }));
+    },
+    restoreFolderFromTrash: (workspaceId, folderId, fileId) => {
+      set((state) => ({
+        ...state,
+        appWorkspaces: state.appWorkspaces.map((w) =>
+          w.id === workspaceId
+            ? {
+                ...w,
+                folders: w.folders.map((f) =>
+                  f.id === folderId
+                    ? {
+                        ...f,
+                        in_trash: "",
+                        files: f.files.map((file) =>
+                          file.id === fileId
+                            ? {
+                                ...file,
+                                in_trash: "",
+                              }
+                            : file
+                        ),
+                      }
+                    : f
+                ),
+              }
+            : w
+        ),
+      }));
+    },
   }));
 };

@@ -58,6 +58,34 @@ export const getFiles = async (folderId: string) => {
   }
 };
 
+export const getFileDetails = async (fileId: string) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("files")
+      .select("*")
+      .eq("id", fileId)
+      .select();
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
 export const updateFile = async (
   updatedFile: Partial<Tables<"files">>,
   fileId: string
@@ -78,6 +106,96 @@ export const updateFile = async (
 
     return {
       data: null,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const moveFilesToTrash = async (folderId: string) => {
+  const supabase = createServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  try {
+    const { data, error } = await supabase
+      .from("files")
+      .update({
+        in_trash: `Deleted by ${user?.email}`,
+      })
+      .eq("folder_id", folderId);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const deleteFile = async (fileId: string) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("files")
+      .delete()
+      .eq("id", fileId);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const restoreFilesFromTrash = async (folderId: string) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("files")
+      .update({
+        in_trash: "",
+      })
+      .eq("folder_id", folderId);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
       error: null,
     };
   } catch (error) {

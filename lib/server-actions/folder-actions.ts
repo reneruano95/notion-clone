@@ -34,6 +34,31 @@ export const getFoldersByWorkspaceId = async (workspaceId: string) => {
   }
 };
 
+export const getFolderDetails = async (folderId: string) => {
+  const supabase = createServerClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("folders")
+      .select("*")
+      .eq("id", folderId)
+      .select();
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+    return { data, error: null };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
 export const createFolder = async (newFolder: Tables<"folders">) => {
   const supabase = createServerClient();
 
@@ -68,6 +93,33 @@ export const updateFolder = async (
     const { data, error } = await supabase
       .from("folders")
       .update(updatedFolder)
+      .eq("id", folderId);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const deleteFolder = async (folderId: string) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("folders")
+      .delete()
       .eq("id", folderId);
 
     if (error) {

@@ -53,3 +53,28 @@ export const uploadImage = async ({
 
   return filePath;
 };
+
+export const deleteImage = async ({
+  bucketName,
+  filePath,
+}: {
+  bucketName: string;
+  filePath: string;
+}) => {
+  const supabase = createBrowserClient();
+
+  const {
+    data: { user },
+  } = await getUser();
+
+  if (!user) return redirect("/sign-in");
+
+  const { data, error } = await supabase.storage
+    .from(bucketName)
+    .remove([`${user?.id}/${filePath}`]);
+
+  return {
+    data,
+    error,
+  };
+};

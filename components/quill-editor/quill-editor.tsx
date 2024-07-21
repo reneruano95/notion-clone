@@ -1,18 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { useId } from "@/lib/hooks/useId";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 import {
   updateFile as updateFileAction,
   deleteFile as deleteFileAction,
-  restoreFiles,
   restoreFilesFromTrash,
 } from "@/lib/server-actions/file-actions";
 import {
@@ -21,6 +27,7 @@ import {
 } from "@/lib/server-actions/folder-actions";
 
 import "quill/dist/quill.snow.css";
+import { Badge } from "../ui/badge";
 
 interface QuillEditorProps {
   dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -55,6 +62,8 @@ export const QuillEditor = ({
   actualDirId,
 }: QuillEditorProps) => {
   const router = useRouter();
+  const pathname = usePathname();
+
   const { workspaceId, folderId } = useId();
   const {
     appWorkspaces,
@@ -65,6 +74,15 @@ export const QuillEditor = ({
   } = useAppsStore((store) => store);
 
   const [quill, setQuill] = useState<any>(null);
+  const [collaborators, setCollaborators] = useState<
+    {
+      id: string;
+      email: string;
+      avatar_url: string;
+    }[]
+  >([]);
+
+  const [saving, startTransition] = useTransition();
 
   const details = useMemo(() => {
     let selectedDirDetails;
@@ -99,6 +117,47 @@ export const QuillEditor = ({
       banner_url: dirDetails.banner_url,
     } as Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
   }, [appWorkspaces, workspaceId, folderId, actualDirId, dirType]);
+
+  const breadcrumbs = useMemo(() => {
+    if (!pathname || !appWorkspaces || !workspaceId) return;
+
+    const segments = pathname
+      .split("/")
+      .filter((segment) => segment !== "dashboard" && segment);
+
+    const workspaceDetails = appWorkspaces.find(
+      (workspace) => workspace.id === workspaceId
+    );
+
+    const workspaceBreadcrumb = workspaceDetails
+      ? `${workspaceDetails.emoji} ${workspaceDetails.title}`
+      : "";
+
+    if (segments.length === 1) return workspaceBreadcrumb;
+
+    const folderSegment = segments[1];
+    const folderDetails = workspaceDetails?.folders.find(
+      (folder) => folder.id === folderSegment
+    );
+
+    const folderBreadcrumb = folderDetails
+      ? `/ ${folderDetails.emoji} ${folderDetails.title}`
+      : "";
+
+    if (segments.length === 2)
+      return `${workspaceBreadcrumb}${folderBreadcrumb}`;
+
+    const fileSegment = segments[2];
+    const fileDetails = folderDetails?.files.find(
+      (file) => file.id === fileSegment
+    );
+
+    const fileBreadcrumb = fileDetails
+      ? `/ ${fileDetails.emoji} ${fileDetails.title}`
+      : "";
+
+    return `${workspaceBreadcrumb}${folderBreadcrumb}${fileBreadcrumb}`;
+  }, [pathname, appWorkspaces, workspaceId]);
 
   const wrapperRef = useCallback(async (wrapper: any) => {
     if (typeof window !== "undefined") {
@@ -203,8 +262,49 @@ export const QuillEditor = ({
                 Delete Forever
               </Button>
             </div>
+            <span className="text-sm text-white">{details.in_trash}</span>
           </article>
         )}
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 p-8">
+          <div>{breadcrumbs}</div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center justify-center">
+              {collaborators?.map((collaborator) => (
+                <TooltipProvider key={collaborator.id}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Avatar className="-ml-3 bg-background border-2 flex items-center justify-center dark:border-white border-[#EB5757] h-8 w-8 rounded-full">
+                        <AvatarImage
+                          className="rounded-full"
+                          src={collaborator.avatar_url}
+                        />
+                        <AvatarFallback>
+                          {collaborator.email.substring(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent>username</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
+            </div>
+            {saving ? (
+              <Badge
+                className="bg-orange-600 hover:bg-orange-700 top-4 text-white right-4 z-50 animate-pulse"
+                variant="secondary"
+              >
+                Saving...
+              </Badge>
+            ) : (
+              <Badge
+                className="bg-emerald-600 hover:bg-emerald-700 top-4 text-white right-4 z-50"
+                variant="secondary"
+              >
+                Saved
+              </Badge>
+            )}
+          </div>
+        </div>
       </div>
       <div className="flex justify-center items-center flex-col mt-2 relative">
         <div id="container" ref={wrapperRef} className="max-w-[800px]"></div>

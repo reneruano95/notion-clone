@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { toast } from "sonner";
 
 import { Button } from "../ui/button";
@@ -26,50 +26,64 @@ export const BannerUpload = ({
 }: BannerUploadProps) => {
   const router = useRouter();
   const { workspaceId, folderId, fileId } = useId();
-  const { appWorkspaces, updateWorkspace, updateFolder, updateFile } =
-    useAppsStore((store) => store);
+  const { updateWorkspace, updateFolder, updateFile } = useAppsStore(
+    (store) => store
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const uploadBanner = async ({
-    target: { files },
-  }: React.ChangeEvent<HTMLInputElement>) => {
-    if (!files || files.length === 0) return;
-    const file = files[0];
+  const uploadBanner = useCallback(
+    async ({ target: { files } }: React.ChangeEvent<HTMLInputElement>) => {
+      if (!files || files.length === 0) return;
+      const file = files[0];
 
-    try {
-      const filePath = await uploadImage({ bucketName: "file-banners", file });
+      try {
+        const filePath = await uploadImage({
+          bucketName: "file-banners",
+          file,
+        });
 
-      if (dirType === "workspace") {
-        if (!workspaceId) return;
+        if (dirType === "workspace") {
+          if (!workspaceId) return;
 
-        updateWorkspace({ banner_url: filePath }, workspaceId);
-        await updateWorkspaceAction({ banner_url: filePath }, workspaceId);
+          updateWorkspace({ banner_url: filePath }, workspaceId);
+          await updateWorkspaceAction({ banner_url: filePath }, workspaceId);
+        }
+
+        if (dirType === "folder") {
+          if (!folderId || !workspaceId) return;
+
+          updateFolder(workspaceId, folderId, { banner_url: filePath });
+          await updateFolderAction({ banner_url: filePath }, folderId);
+        }
+
+        if (dirType === "file") {
+          if (!fileId || !folderId || !workspaceId) return;
+
+          updateFile(workspaceId, folderId, fileId, { banner_url: filePath });
+          await updateFileAction({ banner_url: filePath }, fileId);
+        }
+      } catch (error) {
+        console.log("error uploading image", error);
+
+        toast.error("An error occurred while uploading the image", {
+          duration: 3000,
+        });
       }
 
-      if (dirType === "folder") {
-        if (!folderId || !workspaceId) return;
-
-        updateFolder(workspaceId, folderId, { banner_url: filePath });
-        await updateFolderAction({ banner_url: filePath }, folderId);
-      }
-
-      if (dirType === "file") {
-        if (!fileId || !folderId || !workspaceId) return;
-
-        updateFile(workspaceId, folderId, fileId, { banner_url: filePath });
-        await updateFileAction({ banner_url: filePath }, fileId);
-      }
-    } catch (error) {
-      console.log("error uploading image", error);
-
-      toast.error("An error occurred while uploading the image", {
-        duration: 3000,
-      });
-    }
-
-    router.refresh();
-  };
+      router.refresh();
+    },
+    [
+      dirType,
+      folderId,
+      fileId,
+      router,
+      updateFile,
+      updateFolder,
+      updateWorkspace,
+      workspaceId,
+    ]
+  );
 
   return (
     <>

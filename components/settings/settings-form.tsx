@@ -37,8 +37,7 @@ import { Alert, AlertDescription } from "../ui/alert";
 
 export const SettingsForm = () => {
   const router = useRouter();
-  const { user, subscription } = useSupabaseUser();
-  const { folderId, workspaceId } = useId();
+  const { workspaceId } = useId();
   const { appWorkspaces, updateWorkspace, deleteWorkspace } = useAppsStore(
     (store) => store
   );

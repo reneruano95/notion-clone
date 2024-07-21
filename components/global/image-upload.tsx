@@ -5,14 +5,17 @@ import { CloudUpload, ImageUp, X } from "lucide-react";
 
 import { getImageUrl, uploadImage } from "@/lib/server-actions/images-actions";
 import { Loader } from "./loader";
+import { cn } from "@/lib/utils";
 
 interface ImageUploadProps {
+  className?: string;
   bucketName: string;
   value: string | undefined;
   onChange: (value: string | undefined) => void;
 }
 
 export const ImageUpload = ({
+  className,
   bucketName,
   value,
   onChange,
@@ -85,7 +88,7 @@ export const ImageUpload = ({
   }
 
   return (
-    <div className="w-full h-28">
+    <div className={cn("w-full h-28", className)}>
       <input
         type="file"
         id="custom-input"

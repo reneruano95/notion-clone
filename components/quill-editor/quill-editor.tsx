@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import {
   useCallback,
   useEffect,
@@ -21,6 +22,10 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
+import { EmojiPicker } from "../global/emoji-picker";
+import { BannerUpload } from "../banner-upload/banner-upload";
+import { BannerImage } from "./banner-image";
 
 import {
   updateFile as updateFileAction,
@@ -34,10 +39,6 @@ import {
 import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/workspaces-actions";
 
 import "quill/dist/quill.snow.css";
-import { Badge } from "../ui/badge";
-import Image from "next/image";
-import { getImageUrl } from "@/lib/server-actions/images-actions";
-import { EmojiPicker } from "../global/emoji-picker";
 
 interface QuillEditorProps {
   dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -99,18 +100,8 @@ export const QuillEditor = ({
       avatar_url: "https://api.dicebear.com/9.x/pixel-art/svg",
     },
   ]);
-  const [bannerUrl, setBannerUrl] = useState("");
 
   const [saving, startTransition] = useTransition();
-
-  useEffect(() => {
-    if (dirType === "file") {
-      getImageUrl({
-        bucketName: "file-banners",
-        filePath: dirDetails.banner_url,
-      }).then(setBannerUrl);
-    }
-  }, [dirDetails]);
 
   const details = useMemo(() => {
     let selectedDirDetails;
@@ -380,16 +371,9 @@ export const QuillEditor = ({
           </div>
         </div>
       </div>
-      {details.banner_url && (
-        <div className="relative w-full h-[200px]">
-          <Image
-            fill
-            className="w-full md:f-48 h-20 object-cover"
-            alt="Banner Image"
-            src={bannerUrl}
-          />
-        </div>
-      )}
+
+      <BannerImage details={details} dirDetails={dirDetails} />
+
       <div className="flex justify-center items-center flex-col mt-2 relative">
         <div className="w-full self-center max-w-[800px] flex flex-col px-7 lg:my-8">
           <div className="text-[80px]">
@@ -398,6 +382,15 @@ export const QuillEditor = ({
                 {details.emoji}
               </div>
             </EmojiPicker>
+          </div>
+          <div className="flex">
+            <BannerUpload
+              id={actualDirId}
+              dirType={dirType}
+              className="mt-2 text-sm text-muted-foreground p-2 hover:text-card-foreground transition-all rounded-md"
+            >
+              {details.banner_url ? "Update Banner" : "Add Banner"}
+            </BannerUpload>
           </div>
         </div>
       </div>

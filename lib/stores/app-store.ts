@@ -1,8 +1,10 @@
 import { createStore } from "zustand/vanilla";
 import { Tables } from "../supabase/supabase.types";
 
-type appFoldersType = Tables<"folders"> & { files: Tables<"files">[] | [] };
-type appWorkspacesType = Tables<"workspaces"> & {
+export type appFoldersType = Tables<"folders"> & {
+  files: Tables<"files">[] | [];
+};
+export type appWorkspacesType = Tables<"workspaces"> & {
   folders: appFoldersType[] | [];
 };
 export type AppState = {

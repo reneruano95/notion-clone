@@ -15,10 +15,10 @@ import { deleteImage } from "@/lib/server-actions/images-actions";
 interface BannerRemoveProps {
   dirType: "workspace" | "folder" | "file";
   actualDirId: string;
-  dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
+  details: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
 }
 export const BannerRemove = ({
-  dirDetails,
+  details,
   dirType,
   actualDirId,
 }: BannerRemoveProps) => {
@@ -38,7 +38,7 @@ export const BannerRemove = ({
       try {
         await deleteImage({
           bucketName: "file-banners",
-          filePath: dirDetails.banner_url,
+          filePath: details.banner_url,
         });
 
         if (dirType === "workspace") {
@@ -73,7 +73,7 @@ export const BannerRemove = ({
     router.refresh();
   }, [
     actualDirId,
-    dirDetails.banner_url,
+    details.banner_url,
     dirType,
     folderId,
     fileId,

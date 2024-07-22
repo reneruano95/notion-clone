@@ -10,11 +10,10 @@ import { Loader } from "../global/loader";
 import { Skeleton } from "../ui/skeleton";
 
 interface BannerImageProps {
-  dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
   details: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
 }
 
-export const BannerImage = ({ dirDetails, details }: BannerImageProps) => {
+export const BannerImage = ({ details }: BannerImageProps) => {
   const [bannerUrl, setBannerUrl] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -22,10 +21,10 @@ export const BannerImage = ({ dirDetails, details }: BannerImageProps) => {
     startTransition(async () => {
       getImageUrl({
         bucketName: "file-banners",
-        filePath: dirDetails.banner_url,
+        filePath: details.banner_url,
       }).then(setBannerUrl);
     });
-  }, [dirDetails]);
+  }, [details.banner_url]);
 
   return (
     <div

@@ -373,7 +373,7 @@ export const QuillEditor = ({
         </div>
       </div>
 
-      <BannerImage details={details} dirDetails={dirDetails} />
+      <BannerImage details={details} />
 
       <div className="flex justify-center items-center flex-col mt-2 relative">
         <div className="w-full self-center max-w-[800px] flex flex-col px-7 lg:my-8">
@@ -393,7 +393,7 @@ export const QuillEditor = ({
               <BannerRemove
                 actualDirId={actualDirId}
                 dirType={dirType}
-                dirDetails={dirDetails}
+                details={details}
               />
             )}
           </div>

@@ -1,7 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -40,6 +39,7 @@ import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/w
 
 import "quill/dist/quill.snow.css";
 import { BannerRemove } from "./banner-remove";
+import { useBreadcrumbs } from "@/lib/hooks/useBreadcrumbs";
 
 interface QuillEditorProps {
   dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -74,7 +74,6 @@ export const QuillEditor = ({
   actualDirId,
 }: QuillEditorProps) => {
   const router = useRouter();
-  const pathname = usePathname();
 
   const { workspaceId, folderId } = useId();
   const {
@@ -86,6 +85,7 @@ export const QuillEditor = ({
     deleteFolder,
     restoreFolderFromTrash,
   } = useAppsStore((store) => store);
+  const breadcrumbs = useBreadcrumbs();
 
   const [quill, setQuill] = useState<any>(null);
   const [collaborators, setCollaborators] = useState<
@@ -137,47 +137,6 @@ export const QuillEditor = ({
       banner_url: dirDetails.banner_url,
     } as Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
   }, [appWorkspaces, workspaceId, folderId, actualDirId, dirType]);
-
-  const breadcrumbs = useMemo(() => {
-    if (!pathname || !appWorkspaces || !workspaceId) return;
-
-    const segments = pathname
-      .split("/")
-      .filter((segment) => segment !== "dashboard" && segment);
-
-    const workspaceDetails = appWorkspaces.find(
-      (workspace) => workspace.id === workspaceId
-    );
-
-    const workspaceBreadcrumb = workspaceDetails
-      ? `${workspaceDetails.emoji} ${workspaceDetails.title}`
-      : "";
-
-    if (segments.length === 1) return workspaceBreadcrumb;
-
-    const folderSegment = segments[1];
-    const folderDetails = workspaceDetails?.folders.find(
-      (folder) => folder.id === folderSegment
-    );
-
-    const folderBreadcrumb = folderDetails
-      ? `/ ${folderDetails.emoji} ${folderDetails.title}`
-      : "";
-
-    if (segments.length === 2)
-      return `${workspaceBreadcrumb}${folderBreadcrumb}`;
-
-    const fileSegment = segments[2];
-    const fileDetails = folderDetails?.files.find(
-      (file) => file.id === fileSegment
-    );
-
-    const fileBreadcrumb = fileDetails
-      ? `/ ${fileDetails.emoji} ${fileDetails.title}`
-      : "";
-
-    return `${workspaceBreadcrumb}${folderBreadcrumb}${fileBreadcrumb}`;
-  }, [pathname, appWorkspaces, workspaceId]);
 
   const wrapperRef = useCallback(async (wrapper: any) => {
     if (typeof window !== "undefined") {

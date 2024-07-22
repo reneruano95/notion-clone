@@ -23,7 +23,7 @@ import {
 } from "../ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Badge } from "../ui/badge";
-import { EmojiPicker } from "../global/emoji-picker";
+import { IconPicker } from "../global/emoji-picker";
 import { BannerUpload } from "./banner-upload";
 import { BannerImage } from "./banner-image";
 
@@ -376,13 +376,13 @@ export const QuillEditor = ({
       <BannerImage details={details} />
 
       <div className="flex justify-center items-center flex-col mt-2 relative">
-        <div className="w-full self-center max-w-[800px] flex flex-col px-7 lg:my-8">
+        <div className="w-full self-center max-w-[800px] flex flex-col px-7">
           <div className="text-[80px] text-center">
-            <EmojiPicker getValue={onEmojiChange}>
+            <IconPicker getValue={(emoji) => onEmojiChange(emoji)}>
               <div className="w-[100px] cursor-pointer transition-colors h-[100px] flex items-center justify-center hover:bg-muted rounded-xl">
                 {details.emoji}
               </div>
-            </EmojiPicker>
+            </IconPicker>
           </div>
           <div className="flex items-center">
             <BannerUpload dirType={dirType}>

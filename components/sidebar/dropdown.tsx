@@ -14,7 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { EmojiPicker } from "@/components/global/emoji-picker";
+import { IconPicker } from "@/components/global/emoji-picker";
 import { updateFolder as updateFolderAction } from "@/lib/server-actions/folder-actions";
 import {
   moveFilesToTrash,
@@ -324,7 +324,13 @@ export const Dropdown = ({
         <div className={groupIdentifies}>
           <div className="flex gap-2 items-center justify-center overflow-hidden">
             <div className="relative">
-              <EmojiPicker getValue={onChangeEmoji}>{emoji}</EmojiPicker>
+              <IconPicker
+                getValue={(emoji) => {
+                  onChangeEmoji(emoji);
+                }}
+              >
+                {emoji}
+              </IconPicker>
             </div>
 
             <input

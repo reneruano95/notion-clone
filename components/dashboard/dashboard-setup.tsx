@@ -27,7 +27,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { EmojiPicker } from "../global/emoji-picker";
+import { IconPicker } from "../global/emoji-picker";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { ImageUpload } from "../global/image-upload";
 import { Loader } from "../global/loader";
@@ -124,9 +124,9 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <div className="text-5xl">
-                  <EmojiPicker getValue={(emoji) => setSelectedEmoji(emoji)}>
+                  <IconPicker getValue={(emoji) => setSelectedEmoji(emoji)}>
                     {selectedEmoji}
-                  </EmojiPicker>
+                  </IconPicker>
                 </div>
 
                 <FormField

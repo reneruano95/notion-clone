@@ -50,11 +50,8 @@ export const SignInForm = () => {
 
   const onSubmit: SubmitHandler<SignInFormValues> = async (formData) => {
     const { error } = await signIn(formData);
-
     if (error) {
-      toast.error(
-        error.message ? error.message : "Something went wrong. Please try again"
-      );
+      toast.error("Something went wrong. Please try again");
       form.reset();
     }
     if (!error) {

@@ -1,45 +1,72 @@
 "use server";
 
-import { AuthResponse, AuthTokenResponsePassword } from "@supabase/supabase-js";
+import { AuthError } from "@supabase/supabase-js";
 import { SignInFormValues } from "@/components/sign-in/sign-in-form";
 import { createServerClient } from "@/lib/supabase/server";
 import { SignUpFormValues } from "@/components/sign-up/sign-up-form";
 import { createBrowserClient } from "../supabase/client";
 
-export const signIn = async ({
-  email,
-  password,
-}: SignInFormValues): Promise<AuthTokenResponsePassword> => {
+export const signIn = async ({ email, password }: SignInFormValues) => {
   const supabase = createServerClient();
 
-  const response = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
 
-  return JSON.parse(JSON.stringify(response));
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as AuthError,
+    };
+  }
 };
 
-export const signUp = async (
-  formData: SignUpFormValues
-): Promise<AuthResponse> => {
-  const supabase = createServerClient();
+export const signUp = async (formData: SignUpFormValues) => {
+  try {
+    const supabase = createServerClient();
+    const { firstName, lastName, email, password } = formData;
 
-  const { firstName, lastName, email, password } = formData;
-
-  const response = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        first_name: firstName,
-        last_name: lastName,
-        full_name: `${firstName} ${lastName}`,
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          full_name: `${firstName} ${lastName}`,
+        },
       },
-    },
-  });
+    });
 
-  return JSON.parse(JSON.stringify(response));
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as AuthError,
+    };
+  }
 };
 
 export const signOut = async () => {
@@ -49,9 +76,28 @@ export const signOut = async () => {
 };
 
 export const getUser = async () => {
-  const supabase = createServerClient();
+  try {
+    const supabase = createServerClient();
+    const { data, error } = await supabase.auth.getUser();
 
-  return await supabase.auth.getUser();
+    if (error) {
+      console.error("Error fetching user:", error);
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as AuthError,
+    };
+  }
 };
 
 export const getSession = async () => {

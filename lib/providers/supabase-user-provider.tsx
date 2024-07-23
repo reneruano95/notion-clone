@@ -2,10 +2,11 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import { toast } from "sonner";
+
 import { Tables } from "../supabase/supabase.types";
 import { getUser } from "../server-actions/auth-actions";
 import { getUserSubscriptionStatus } from "../server-actions/user-actions";
-import { toast } from "sonner";
 
 type SupabaseUserApi = {
   user: User | null;
@@ -32,17 +33,16 @@ export const SupabaseUserProvider = ({
 
   useEffect(() => {
     const getUserDetails = async () => {
-      const {
-        data: { user },
-      } = await getUser();
+      const { data: currentUser, error: userError } = await getUser();
 
-      if (user) {
+      if (currentUser) {
         setUser(user);
-        const { data, error } = await getUserSubscriptionStatus(user.id);
+        const { data: subscriptionStatus, error: subscriptionStatusError } =
+          await getUserSubscriptionStatus(currentUser.user.id);
 
-        if (data) setSubscription(data);
+        if (subscriptionStatus) setSubscription(subscriptionStatus);
 
-        if (error) {
+        if (subscriptionStatusError) {
           toast.error("Unexpected error. Please try again");
         }
       }

@@ -40,6 +40,7 @@ import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/w
 import "quill/dist/quill.snow.css";
 import { BannerRemove } from "./banner-remove";
 import { useBreadcrumbs } from "@/lib/hooks/useBreadcrumbs";
+import { DirectoryTitle } from "./directory-title";
 
 interface QuillEditorProps {
   dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -356,12 +357,7 @@ export const QuillEditor = ({
               />
             )}
           </div>
-          <span className="text-muted-foreground text-3xl font-bold h-9">
-            {details.title}
-          </span>
-          <span className="text-muted-foreground text-sm">
-            {dirType.toUpperCase()}
-          </span>
+          <DirectoryTitle details={details} dirType={dirType} />
         </div>
       </div>
       <div className="flex justify-center items-center flex-col mt-2 relative">

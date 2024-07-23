@@ -75,3 +75,35 @@ export const removeCollaborators = async (
     };
   }
 };
+
+export const getCollaborators = async (workspaceId: string) => {
+  const supabase = createServerClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("collaborators")
+      .select("users(*)")
+      .eq("workspace_id", workspaceId);
+
+    if (error) {
+      return {
+        data: null,
+        error,
+      };
+    }
+
+    const collaborators = data.map(
+      (collaborator) => collaborator.users
+    ) as Tables<"users">[];
+
+    return {
+      data: collaborators,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};

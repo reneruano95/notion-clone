@@ -28,9 +28,9 @@ import {
 } from "@/lib/server-actions/workspaces-actions";
 import { ImageUpload } from "../global/image-upload";
 import { CollaboratorsSearch } from "../global/collaborators-search";
-import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import {
   addCollaborators,
+  getCollaborators,
   removeCollaborators,
 } from "@/lib/server-actions/collaborators-actions";
 import { Alert, AlertDescription } from "../ui/alert";
@@ -59,6 +59,20 @@ export const SettingsForm = () => {
     );
     if (showingWorkspace) setWorkspaceDetails(showingWorkspace);
   }, [workspaceId, appWorkspaces]);
+
+  useEffect(() => {
+    if (!workspaceId) return;
+
+    const fetchCollaborators = async () => {
+      const { data, error } = await getCollaborators(workspaceId);
+      if (data) {
+        setPermissions("shared");
+        setCollaborators(data);
+      }
+    };
+
+    fetchCollaborators();
+  }, [workspaceId]);
 
   const addCollaborator = async (user: Tables<"users">) => {
     if (!workspaceId) return;
@@ -150,7 +164,7 @@ export const SettingsForm = () => {
           onValueChange={(val) => {
             setPermissions(val);
           }}
-          defaultValue={permissions}
+          value={permissions}
         >
           <SelectTrigger className="w-full h-26">
             <SelectValue />

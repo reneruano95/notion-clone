@@ -21,7 +21,12 @@ export const LogoutButton = ({ children }: LogoutButtonProps) => {
     setWorkspaces([]);
   };
   return (
-    <Button variant="ghost" size="icon" className="p-0" onClick={logout}>
+    <Button
+      variant="ghost"
+      size="icon"
+      className="rounded-full p-2"
+      onClick={logout}
+    >
       {children}
     </Button>
   );

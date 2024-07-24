@@ -291,15 +291,30 @@ export const QuillEditor = ({
             <span className="text-sm text-white">{details.in_trash}</span>
           </article>
         )}
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 p-8">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 p-6 gap-2">
           <div>{breadcrumbs}</div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center">
+            <div className="flex flex-row-reverse items-center justify-between gap-2 w-full">
+              {saving ? (
+                <Badge
+                  className="bg-orange-600 hover:bg-orange-700 text-white  z-50 animate-pulse"
+                  variant="secondary"
+                >
+                  Saving...
+                </Badge>
+              ) : (
+                <Badge
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white  z-50"
+                  variant="secondary"
+                >
+                  Saved
+                </Badge>
+              )}
               {collaborators?.map((collaborator) => (
                 <TooltipProvider key={collaborator.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Avatar className="-ml-3 bg-background border-2 flex items-center justify-center dark:border-white border-[#EB5757] h-8 w-8 rounded-full">
+                      <Avatar className="bg-background border-2 flex items-center justify-center dark:border-white border-[#EB5757] h-8 w-8 rounded-full">
                         <AvatarImage
                           className="rounded-full"
                           src={collaborator.avatar_url || ""}
@@ -314,32 +329,17 @@ export const QuillEditor = ({
                 </TooltipProvider>
               ))}
             </div>
-            {saving ? (
-              <Badge
-                className="bg-orange-600 hover:bg-orange-700 top-4 text-white right-4 z-50 animate-pulse"
-                variant="secondary"
-              >
-                Saving...
-              </Badge>
-            ) : (
-              <Badge
-                className="bg-emerald-600 hover:bg-emerald-700 top-4 text-white right-4 z-50"
-                variant="secondary"
-              >
-                Saved
-              </Badge>
-            )}
           </div>
         </div>
       </div>
 
       <BannerImage details={details} />
 
-      <div className="flex justify-center items-center flex-col mt-2 relative">
+      <div className="flex justify-center items-center flex-col relative">
         <div className="w-full self-center max-w-[800px] flex flex-col px-7">
-          <div className="text-[80px] text-center">
+          <div className="text-[80px] text-center -mt-[50px]">
             <IconPicker getValue={(emoji) => onEmojiChange(emoji)}>
-              <div className="w-[100px] cursor-pointer transition-colors h-[100px] flex items-center justify-center hover:bg-muted rounded-xl">
+              <div className="w-[100px] cursor-pointer transition-colors h-[100px] flex items-center justify-center hover:bg-muted  rounded-xl">
                 {details.emoji}
               </div>
             </IconPicker>

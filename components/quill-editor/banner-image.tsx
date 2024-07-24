@@ -28,15 +28,15 @@ export const BannerImage = ({ details }: BannerImageProps) => {
   return (
     <div
       className={cn(
-        "relative w-full h-48 overflow-hidden",
+        "relative w-full h-56 sm:h-64 overflow-hidden",
         !details.banner_url && "bg-muted"
       )}
     >
-      {isPending && <Skeleton className="w-full h-48 rounded-none" />}
+      {isPending && <Skeleton className="w-full h-56 sm:h-64 rounded-none" />}
 
       {details.banner_url && bannerUrl && !isPending && (
         <Image
-          className="w-full h-48 object-cover"
+          className="w-full h-56 sm:h-64 object-cover"
           alt="Banner Image"
           src={bannerUrl}
           fill

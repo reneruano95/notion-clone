@@ -1,6 +1,8 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { PostgrestError } from "@supabase/supabase-js";
+
 import { createServerClient } from "../supabase/server";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
@@ -26,10 +28,20 @@ export const getUserSubscriptionStatus = async (userId: string) => {
 
 export const getUsersFromSearch = async (email: string) => {
   const supabase = createServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   try {
     const { data, error } = await supabase
       .from("users")
       .select("*")
+      .neq("id", user.id)
       .ilike("email", `%${email}%`)
       .select();
 

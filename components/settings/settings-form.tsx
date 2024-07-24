@@ -155,10 +155,12 @@ export const SettingsForm = () => {
       }
     } else {
       setPermissions(val);
+      updateWorkspace({ is_private: val === "private" }, workspaceId);
+      await updateWorkspaceAction(
+        { is_private: val === "private" },
+        workspaceId
+      );
     }
-
-    updateWorkspace({ is_private: val === "private" }, workspaceId);
-    await updateWorkspaceAction({ is_private: val === "private" }, workspaceId);
 
     router.refresh();
   };

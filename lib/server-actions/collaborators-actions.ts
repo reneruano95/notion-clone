@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
@@ -79,11 +80,20 @@ export const removeCollaborators = async (
 export const getCollaborators = async (workspaceId: string) => {
   const supabase = createServerClient();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   try {
     const { data, error } = await supabase
       .from("collaborators")
       .select("users(*)")
-      .eq("workspace_id", workspaceId);
+      .eq("workspace_id", workspaceId)
+      .neq("user_id", user.id);
 
     if (error) {
       return {

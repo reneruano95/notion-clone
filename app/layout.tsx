@@ -24,7 +24,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AppStoreProvider>
             {children}
-            <Toaster theme="dark" richColors duration={3000} />
+            <Toaster richColors duration={3000} />
           </AppStoreProvider>
         </ThemeProvider>
       </body>

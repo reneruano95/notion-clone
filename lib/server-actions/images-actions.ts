@@ -11,9 +11,7 @@ export const getImageUrl = async ({
 }) => {
   const supabase = createBrowserClient();
 
-  const {
-    data: { user },
-  } = await getUser();
+  const { data: user } = await getUser();
 
   if (!user) return redirect("/sign-in");
 
@@ -33,9 +31,7 @@ export const uploadImage = async ({
 }) => {
   const supabase = createBrowserClient();
 
-  const {
-    data: { user },
-  } = await getUser();
+  const { data: user } = await getUser();
 
   if (!user) return redirect("/sign-in");
   if (!file) return;
@@ -63,9 +59,7 @@ export const deleteImage = async ({
 }) => {
   const supabase = createBrowserClient();
 
-  const {
-    data: { user },
-  } = await getUser();
+  const { data: user } = await getUser();
 
   if (!user) return redirect("/sign-in");
 

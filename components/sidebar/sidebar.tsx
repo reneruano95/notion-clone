@@ -22,9 +22,7 @@ interface SidebarProps {
 }
 
 export const Sidebar = async ({ params, className }: SidebarProps) => {
-  const {
-    data: { user },
-  } = await getUser();
+  const { data: user } = await getUser();
 
   if (!user) return redirect("/sign-in");
 

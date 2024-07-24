@@ -38,7 +38,7 @@ export const SupabaseUserProvider = ({
       if (currentUser) {
         setUser(user);
         const { data: subscriptionStatus, error: subscriptionStatusError } =
-          await getUserSubscriptionStatus(currentUser.user.id);
+          await getUserSubscriptionStatus(currentUser.id);
 
         if (subscriptionStatus) setSubscription(subscriptionStatus);
 

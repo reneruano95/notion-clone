@@ -7,9 +7,7 @@ import { getWorkspaces } from "@/lib/server-actions/workspaces-actions";
 import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
 
 export default async function DashboardPage() {
-  const {
-    data: { user },
-  } = await getUser();
+  const { data: user } = await getUser();
 
   if (!user) return redirect("/sign-in");
 

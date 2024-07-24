@@ -89,7 +89,7 @@ export const getUser = async () => {
     }
 
     return {
-      data,
+      data: data.user,
       error: null,
     };
   } catch (error) {

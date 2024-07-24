@@ -14,9 +14,7 @@ interface UserCardProps {
 }
 
 export const UserCard = async ({ subscription }: UserCardProps) => {
-  const {
-    data: { user },
-  } = await getUser();
+  const { data: user } = await getUser();
 
   if (!user) return;
 

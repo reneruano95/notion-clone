@@ -223,9 +223,7 @@ export const Dropdown = ({
   );
 
   const moveToTrash = useCallback(async () => {
-    const {
-      data: { user },
-    } = await getUser();
+    const { data: user } = await getUser();
 
     if (!user || !workspaceId) return;
 

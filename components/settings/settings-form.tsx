@@ -72,7 +72,7 @@ export const SettingsForm = () => {
       (workspace) => workspace.id === workspaceId
     );
     if (showingWorkspace) {
-      console.log(showingWorkspace);
+      // console.log(showingWorkspace);
       setWorkspaceDetails(showingWorkspace);
     }
   }, [workspaceId, appWorkspaces]);

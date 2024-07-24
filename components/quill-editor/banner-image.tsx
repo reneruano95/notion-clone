@@ -6,7 +6,6 @@ import { useEffect, useState, useTransition } from "react";
 import { getImageUrl } from "@/lib/server-actions/images-actions";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { cn } from "@/lib/utils";
-import { Loader } from "../global/loader";
 import { Skeleton } from "../ui/skeleton";
 
 interface BannerImageProps {
@@ -36,10 +35,11 @@ export const BannerImage = ({ details }: BannerImageProps) => {
       {isPending && <Skeleton className="w-full h-48 rounded-none" />}
 
       {details.banner_url && bannerUrl && !isPending && (
-        <img
+        <Image
           className="w-full h-48 object-cover"
           alt="Banner Image"
           src={bannerUrl}
+          fill
         />
       )}
     </div>

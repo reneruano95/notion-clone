@@ -118,19 +118,6 @@ export const WorkspaceDropdown = ({
               )}
               <hr />
             </div>
-
-            <CustomDialogTrigger
-              title="Create A Workspace"
-              content={<WorkspaceCreator />}
-              description="Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too."
-            >
-              <div className="flex rounded transition-all hover:bg-muted justify-center items-center p-2 gap-2 mx-2 mb-2">
-                <SquarePlus className="w-8 h-8 p-1" />
-                <p className="text-lg text-left w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
-                  Create Workspace
-                </p>
-              </div>
-            </CustomDialogTrigger>
           </div>
         </div>
       )}

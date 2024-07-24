@@ -18,7 +18,7 @@ export const BannerImage = ({ details }: BannerImageProps) => {
 
   useEffect(() => {
     startTransition(async () => {
-      getImageUrl({
+      await getImageUrl({
         bucketName: "file-banners",
         filePath: details.banner_url,
       }).then(setBannerUrl);
@@ -40,6 +40,8 @@ export const BannerImage = ({ details }: BannerImageProps) => {
           alt="Banner Image"
           src={bannerUrl}
           fill
+          quality={100}
+          priority
         />
       )}
     </div>

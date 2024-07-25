@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { ChevronsUpDown } from "lucide-react";
 
 import { Tables } from "@/lib/supabase/supabase.types";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import { cn } from "@/lib/utils";
 
-import { SelectedWorkspace } from "./selected-workspace";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import {
@@ -18,10 +17,10 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import Link from "next/link";
-import { getImageUrl } from "@/lib/server-actions/images-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Separator } from "../ui/separator";
+import { SelectedWorkspace } from "./selected-workspace";
+
+import { getImageUrl } from "@/lib/server-actions/images-actions";
 
 interface WorkspaceDropdownProps {
   privateWorkspaces: Tables<"workspaces">[] | [];
@@ -39,7 +38,6 @@ export const WorkspaceDropdown = ({
   const [selectedOption, setSelectedOption] = useState(defaultValue);
   const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState("");
   const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   const { appWorkspaces, setWorkspaces } = useAppsStore((store) => store);
 
@@ -89,18 +87,19 @@ export const WorkspaceDropdown = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="secondary"
+          variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between"
+          className="w-full flex items-center justify-between text-lg p-0 hover:bg-transparent overflow-hidden overflow-ellipsis"
         >
-          <Avatar className="h-6 w-6 mr-1">
+          <Avatar className="h-8 w-8 mr-1">
             <AvatarImage src={workspaceLogoUrl} />
             <AvatarFallback>{selectedOption?.title[0]}</AvatarFallback>
           </Avatar>
 
-          {selectedOption &&
-            appWorkspaces.find((w) => w === selectedOption)?.title}
+          {(selectedOption &&
+            appWorkspaces.find((w) => w === selectedOption)?.title) ||
+            "Select workspace..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -110,7 +109,7 @@ export const WorkspaceDropdown = ({
           <Command>
             <CommandInput placeholder="Search workspace..." className=" p-0" />
             <CommandEmpty>No workspace found.</CommandEmpty>
-            <CommandList>
+            <CommandList className="max-h-[450px]">
               <CommandGroup className="p-0">
                 {!!privateWorkspaces.length && (
                   <>
@@ -118,31 +117,31 @@ export const WorkspaceDropdown = ({
                       PRIVATE
                     </p>
                     {privateWorkspaces.map((w) => (
-                      <Link href={`/dashboard/${w.id}`}>
-                        <CommandItem
+                      <CommandItem
+                        key={w.id}
+                        value={w.id}
+                        onSelect={(currentValue) => {
+                          const workspace = privateWorkspaces.find(
+                            (w) => w.id === currentValue
+                          );
+
+                          if (workspace) {
+                            handleSelect(workspace);
+                          }
+                          setOpen(false);
+                        }}
+                        className="p-2"
+                        asChild
+                      >
+                        <SelectedWorkspace
                           key={w.id}
-                          value={w.id}
-                          onSelect={(currentValue) => {
-                            const workspace = privateWorkspaces.find(
-                              (w) => w.id === currentValue
-                            );
-                            if (workspace) {
-                              handleSelect(workspace);
-                            }
-                            setOpen(false);
-                          }}
-                          className="p-2"
-                        >
-                          <SelectedWorkspace
-                            key={w.id}
-                            workspace={w}
-                            onClick={() => handleSelect(w)}
-                            className={cn(
-                              selectedOption?.id === w.id ? "bg-muted" : ""
-                            )}
-                          />
-                        </CommandItem>
-                      </Link>
+                          workspace={w}
+                          onClick={() => handleSelect(w)}
+                          className={cn(
+                            selectedOption?.id === w.id ? "bg-muted" : ""
+                          )}
+                        />
+                      </CommandItem>
                     ))}
                   </>
                 )}
@@ -155,28 +154,30 @@ export const WorkspaceDropdown = ({
                       SHARED
                     </p>
                     {sharedWorkspaces.map((w) => (
-                      <Link href={`/dashboard/${w.id}`}>
-                        <CommandItem
+                      <CommandItem
+                        key={w.id}
+                        value={w.id}
+                        onSelect={(currentValue) => {
+                          const workspace = sharedWorkspaces.find(
+                            (w) => w.id === currentValue
+                          );
+                          if (workspace) {
+                            handleSelect(workspace);
+                          }
+                          setOpen(false);
+                        }}
+                        className="p-2"
+                        asChild
+                      >
+                        <SelectedWorkspace
                           key={w.id}
-                          value={w.id}
-                          onSelect={(currentValue) => {
-                            const workspace = sharedWorkspaces.find(
-                              (w) => w.id === currentValue
-                            );
-                            if (workspace) {
-                              handleSelect(workspace);
-                            }
-                            setOpen(false);
-                          }}
-                          className="p-2"
-                        >
-                          <SelectedWorkspace
-                            key={w.id}
-                            workspace={w}
-                            onClick={() => handleSelect(w)}
-                          />
-                        </CommandItem>
-                      </Link>
+                          workspace={w}
+                          onClick={() => handleSelect(w)}
+                          className={cn(
+                            selectedOption?.id === w.id ? "bg-muted" : ""
+                          )}
+                        />
+                      </CommandItem>
                     ))}
                   </>
                 )}
@@ -189,28 +190,30 @@ export const WorkspaceDropdown = ({
                       COLLABORATING
                     </p>
                     {collaboratingWorkspaces.map((w) => (
-                      <Link href={`/dashboard/${w.id}`}>
-                        <CommandItem
+                      <CommandItem
+                        key={w.id}
+                        value={w.id}
+                        onSelect={(currentValue) => {
+                          const workspace = collaboratingWorkspaces.find(
+                            (w) => w.id === currentValue
+                          );
+                          if (workspace) {
+                            handleSelect(workspace);
+                          }
+                          setOpen(false);
+                        }}
+                        className="p-2"
+                        asChild
+                      >
+                        <SelectedWorkspace
                           key={w.id}
-                          value={w.id}
-                          onSelect={(currentValue) => {
-                            const workspace = collaboratingWorkspaces.find(
-                              (w) => w.id === currentValue
-                            );
-                            if (workspace) {
-                              handleSelect(workspace);
-                            }
-                            setOpen(false);
-                          }}
-                          className="p-2"
-                        >
-                          <SelectedWorkspace
-                            key={w.id}
-                            workspace={w}
-                            onClick={() => handleSelect(w)}
-                          />
-                        </CommandItem>
-                      </Link>
+                          workspace={w}
+                          onClick={() => handleSelect(w)}
+                          className={cn(
+                            selectedOption?.id === w.id ? "bg-muted" : ""
+                          )}
+                        />
+                      </CommandItem>
                     ))}
                   </>
                 )}

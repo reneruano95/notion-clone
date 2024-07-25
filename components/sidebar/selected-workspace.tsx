@@ -1,22 +1,24 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import Link from "next/link";
 
-import { Tables } from "@/lib/supabase/supabase.types";
 import { getImageUrl } from "@/lib/server-actions/images-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface SelectedWorkspaceProps {
-  workspace: Tables<"workspaces">;
+  workspace: {
+    id: string;
+    logo?: string;
+    title: string;
+  };
   onClick?: () => void;
   className?: string;
 }
 
-export const SelectedWorkspace = ({
-  workspace,
-  onClick,
-  className,
-}: SelectedWorkspaceProps) => {
+export const SelectedWorkspace = forwardRef<
+  HTMLAnchorElement,
+  SelectedWorkspaceProps
+>(({ workspace, onClick, className }, ref) => {
   const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState("");
 
   useEffect(() => {
@@ -30,12 +32,13 @@ export const SelectedWorkspace = ({
 
   return (
     <Link
+      ref={ref}
       href={`/dashboard/${workspace.id}`}
       onClick={() => {
         if (onClick) onClick();
       }}
       className={cn(
-        "flex rounded-md hover:bg-muted transition-all gap-2 justify-center cursor-pointer items-center",
+        "flex rounded-md hover:bg-muted transition-all gap-2 justify-center cursor-pointer items-center my-1",
         className
       )}
     >
@@ -49,4 +52,4 @@ export const SelectedWorkspace = ({
       </p>
     </Link>
   );
-};
+});

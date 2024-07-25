@@ -33,7 +33,7 @@ export const UserCard = async ({ subscription }: UserCardProps) => {
   });
 
   return (
-    <article className="hidden sm:flex justify-between items-center px-4 py-2 dark:bg-Neutrals/neutrals-12 rounded-3xl">
+    <article className="hidden sm:flex justify-between items-center py-2">
       <aside className="flex justify-center items-center gap-2">
         <Avatar>
           <AvatarImage src={avatarUrl} />

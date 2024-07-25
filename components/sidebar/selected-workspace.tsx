@@ -4,15 +4,18 @@ import Link from "next/link";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { getImageUrl } from "@/lib/server-actions/images-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 interface SelectedWorkspaceProps {
   workspace: Tables<"workspaces">;
   onClick?: () => void;
+  className?: string;
 }
 
 export const SelectedWorkspace = ({
   workspace,
   onClick,
+  className,
 }: SelectedWorkspaceProps) => {
   const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState("");
 
@@ -31,14 +34,17 @@ export const SelectedWorkspace = ({
       onClick={() => {
         if (onClick) onClick();
       }}
-      className="flex rounded-md hover:bg-muted transition-all p-2 gap-2 justify-center cursor-pointer items-center my-2"
+      className={cn(
+        "flex rounded-md hover:bg-muted transition-all gap-2 justify-center cursor-pointer items-center",
+        className
+      )}
     >
-      <Avatar className="w-8 h-8">
+      <Avatar className="h-6 w-6 mr-1">
         <AvatarImage src={workspaceLogoUrl} />
         <AvatarFallback>{workspace.title[0]}</AvatarFallback>
       </Avatar>
 
-      <p className="text-lg w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
+      <p className="w-full overflow-hidden overflow-ellipsis whitespace-nowrap ">
         {workspace.title}
       </p>
     </Link>

@@ -1,14 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
-import { SquarePlus } from "lucide-react";
+import { useCallback, useEffect, useState, useTransition } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
 import { Tables } from "@/lib/supabase/supabase.types";
-import { SelectedWorkspace } from "./selected-workspace";
-import { CustomDialogTrigger } from "@/components/global/custom-dialog-trigger";
-import { WorkspaceCreator } from "@/components/global/workspace-creator";
 import { useAppsStore } from "@/lib/providers/store-provider";
+import { cn } from "@/lib/utils";
+
+import { SelectedWorkspace } from "./selected-workspace";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "../ui/command";
+import Link from "next/link";
+import { getImageUrl } from "@/lib/server-actions/images-actions";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Separator } from "../ui/separator";
 
 interface WorkspaceDropdownProps {
   privateWorkspaces: Tables<"workspaces">[] | [];
@@ -24,9 +37,20 @@ export const WorkspaceDropdown = ({
   defaultValue,
 }: WorkspaceDropdownProps) => {
   const [selectedOption, setSelectedOption] = useState(defaultValue);
-  const [isOpen, setIsOpen] = useState(false);
+  const [workspaceLogoUrl, setWorkspaceLogoUrl] = useState("");
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const { appWorkspaces, setWorkspaces } = useAppsStore((store) => store);
+
+  useEffect(() => {
+    if (selectedOption?.logo) {
+      getImageUrl({
+        bucketName: "workspaces-logos",
+        filePath: selectedOption.logo,
+      }).then(setWorkspaceLogoUrl);
+    }
+  }, [selectedOption]);
 
   useEffect(() => {
     if (!appWorkspaces.length) {
@@ -46,9 +70,9 @@ export const WorkspaceDropdown = ({
   const handleSelect = useCallback(
     (workspace: Tables<"workspaces">) => {
       setSelectedOption(workspace);
-      setIsOpen(false);
+      setOpen(false);
     },
-    [setIsOpen, setSelectedOption]
+    [setOpen, setSelectedOption]
   );
 
   useEffect(() => {
@@ -62,65 +86,139 @@ export const WorkspaceDropdown = ({
   }, [defaultValue, appWorkspaces]);
 
   return (
-    <div className="relative inline-block w-full">
-      <div onClick={() => setIsOpen(!isOpen)}>
-        {selectedOption ? (
-          <SelectedWorkspace workspace={selectedOption} />
-        ) : (
-          <p className="flex rounded-md hover:bg-muted transition-all p-2 gap-2 justify-center cursor-pointer items-center my-2">
-            Select a workspace
-          </p>
-        )}
-      </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="secondary"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between"
+        >
+          <Avatar className="h-6 w-6 mr-1">
+            <AvatarImage src={workspaceLogoUrl} />
+            <AvatarFallback>{selectedOption?.title[0]}</AvatarFallback>
+          </Avatar>
 
-      {isOpen && (
-        <div className="origin-top-right absolute w-full rounded-md shadow-md z-50 h-[220px] bg-black/10 backdrop-blur-lg group overflow-y-auto  border-[1px] border-muted">
-          <div className="rounded-md flex flex-col">
-            <div className="!p-2">
-              {!!privateWorkspaces?.length && (
-                <>
-                  <p className="text-muted-foreground">Private</p>
-                  <hr></hr>
-                  {privateWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={() => handleSelect(option)}
-                    />
-                  ))}
-                </>
-              )}
-              {!!sharedWorkspaces?.length && (
-                <>
-                  <p className="text-muted-foreground">Shared</p>
-                  <hr />
-                  {sharedWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={() => handleSelect(option)}
-                    />
-                  ))}
-                </>
-              )}
-              {!!collaboratingWorkspaces?.length && (
-                <>
-                  <p className="text-muted-foreground">Collaborating</p>
-                  <hr />
-                  {collaboratingWorkspaces.map((option) => (
-                    <SelectedWorkspace
-                      key={option.id}
-                      workspace={option}
-                      onClick={() => handleSelect(option)}
-                    />
-                  ))}
-                </>
-              )}
-              <hr />
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+          {selectedOption &&
+            appWorkspaces.find((w) => w === selectedOption)?.title}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+
+      <div className="relative mb-4">
+        <PopoverContent className="w-full p-1">
+          <Command>
+            <CommandInput placeholder="Search workspace..." className=" p-0" />
+            <CommandEmpty>No workspace found.</CommandEmpty>
+            <CommandList>
+              <CommandGroup className="p-0">
+                {!!privateWorkspaces.length && (
+                  <>
+                    <p className="text-muted-foreground font-bold text-sm border-b mt-4 mb-2">
+                      PRIVATE
+                    </p>
+                    {privateWorkspaces.map((w) => (
+                      <Link href={`/dashboard/${w.id}`}>
+                        <CommandItem
+                          key={w.id}
+                          value={w.id}
+                          onSelect={(currentValue) => {
+                            const workspace = privateWorkspaces.find(
+                              (w) => w.id === currentValue
+                            );
+                            if (workspace) {
+                              handleSelect(workspace);
+                            }
+                            setOpen(false);
+                          }}
+                          className="p-2"
+                        >
+                          <SelectedWorkspace
+                            key={w.id}
+                            workspace={w}
+                            onClick={() => handleSelect(w)}
+                            className={cn(
+                              selectedOption?.id === w.id ? "bg-muted" : ""
+                            )}
+                          />
+                        </CommandItem>
+                      </Link>
+                    ))}
+                  </>
+                )}
+              </CommandGroup>
+
+              <CommandGroup className="p-0">
+                {!!sharedWorkspaces.length && (
+                  <>
+                    <p className="text-muted-foreground font-bold text-sm border-b mt-4 mb-2">
+                      SHARED
+                    </p>
+                    {sharedWorkspaces.map((w) => (
+                      <Link href={`/dashboard/${w.id}`}>
+                        <CommandItem
+                          key={w.id}
+                          value={w.id}
+                          onSelect={(currentValue) => {
+                            const workspace = sharedWorkspaces.find(
+                              (w) => w.id === currentValue
+                            );
+                            if (workspace) {
+                              handleSelect(workspace);
+                            }
+                            setOpen(false);
+                          }}
+                          className="p-2"
+                        >
+                          <SelectedWorkspace
+                            key={w.id}
+                            workspace={w}
+                            onClick={() => handleSelect(w)}
+                          />
+                        </CommandItem>
+                      </Link>
+                    ))}
+                  </>
+                )}
+              </CommandGroup>
+
+              <CommandGroup className="p-0">
+                {!!collaboratingWorkspaces.length && (
+                  <>
+                    <p className="text-muted-foreground font-bold text-sm border-b mt-4 mb-2">
+                      COLLABORATING
+                    </p>
+                    {collaboratingWorkspaces.map((w) => (
+                      <Link href={`/dashboard/${w.id}`}>
+                        <CommandItem
+                          key={w.id}
+                          value={w.id}
+                          onSelect={(currentValue) => {
+                            const workspace = collaboratingWorkspaces.find(
+                              (w) => w.id === currentValue
+                            );
+                            if (workspace) {
+                              handleSelect(workspace);
+                            }
+                            setOpen(false);
+                          }}
+                          className="p-2"
+                        >
+                          <SelectedWorkspace
+                            key={w.id}
+                            workspace={w}
+                            onClick={() => handleSelect(w)}
+                          />
+                        </CommandItem>
+                      </Link>
+                    ))}
+                  </>
+                )}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </div>
+    </Popover>
   );
 };

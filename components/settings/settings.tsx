@@ -1,5 +1,5 @@
 import { CustomDialogTrigger } from "../global/custom-dialog-trigger";
-import { SettingsForm } from "./settings-form";
+import { SettingsForm } from "./workspace-settings";
 
 interface SettingsProps {
   children: React.ReactNode;

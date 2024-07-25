@@ -26,7 +26,7 @@ export const CustomDialogTrigger = ({
   return (
     <Dialog>
       <DialogTrigger className={cn(className)}>{children}</DialogTrigger>
-      <DialogContent className="h-screen block sm:h-[440px] overflow-y-auto max-w-2xl">
+      <DialogContent className="h-screen block sm:h-[440px] overflow-y-auto max-w-3xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

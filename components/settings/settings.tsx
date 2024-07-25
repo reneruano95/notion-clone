@@ -1,14 +1,24 @@
-import { CustomDialogTrigger } from "../global/custom-dialog-trigger";
-import { SettingsForm } from "./workspace-settings";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { WorkspaceSettings } from "./workspace-settings";
+import { ProfileSettings } from "./profile-settings";
 
-interface SettingsProps {
-  children: React.ReactNode;
-}
-
-export const Settings = ({ children }: SettingsProps) => {
+export const Settings = () => {
   return (
-    <CustomDialogTrigger title="Settings" content={<SettingsForm />}>
-      {children}
-    </CustomDialogTrigger>
+    <>
+      <Tabs defaultValue="profile" className="border-b border-muted">
+        <TabsList>
+          <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="workspaces">Settings</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="profile">
+          <ProfileSettings />
+        </TabsContent>
+
+        <TabsContent value="workspaces">
+          <WorkspaceSettings />
+        </TabsContent>
+      </Tabs>
+    </>
   );
 };

@@ -46,7 +46,7 @@ import {
 } from "@/lib/server-actions/collaborators-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 
-export const SettingsForm = () => {
+export const WorkspaceSettings = () => {
   const router = useRouter();
   const { workspaceId } = useId();
   const { appWorkspaces, updateWorkspace, deleteWorkspace } = useAppsStore(

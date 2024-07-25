@@ -51,12 +51,12 @@ export const NativeNavigation = ({
           </li>
         </CustomDialogTrigger>
 
-        <Settings>
+        <CustomDialogTrigger content={<Settings />}>
           <li className="group/native flex gap-2 text-Neutrals/neutrals-7 transition-all cursor-pointer">
             <SettingsIcon className="dark:fill-[#2B2939] fill-[#D3D3D3] dark:stroke-[#817EB5] stoke-Neutrals/neutrals-7 transition-all group-hover/native:fill-washed-purple-400 group-hover/native:stroke-washed-blue-500" />
             <span>Settings</span>
           </li>
-        </Settings>
+        </CustomDialogTrigger>
 
         <li>
           <Link

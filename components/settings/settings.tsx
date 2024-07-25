@@ -3,6 +3,9 @@ import { WorkspaceSettings } from "./workspace-settings";
 import { ProfileSettings } from "./profile-settings";
 
 export const Settings = () => {
+  // This component is a container for the ProfileSettings and WorkspaceSettings components.
+  // TODO: Implement the Tabs component for Permissions settings .
+
   return (
     <>
       <Tabs defaultValue="profile" className="border-b border-muted">

@@ -12,6 +12,7 @@ import {
 } from "../ui/select";
 
 export const ProfileSettings = () => {
+  // TODO:  Implement the ProfileSettings component.
   return (
     <div className="border-b border-muted pb-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

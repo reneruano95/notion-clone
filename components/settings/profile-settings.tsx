@@ -26,26 +26,24 @@ export const ProfileSettings = () => {
               mentioned. You can remove it at any time.
             </p>
           </div>
+
           <div>
-            <Label htmlFor="public-email" className="text-lg font-semibold">
-              Public email
+            <Label htmlFor="password" className="text-lg font-semibold">
+              Password
             </Label>
-            <Select>
-              <SelectTrigger id="public-email" aria-label="Public email">
-                <SelectValue placeholder="Select a verified email to display" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="email1">email1@example.com</SelectItem>
-                <SelectItem value="email2">email2@example.com</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              <Input id="password" type="password" className="mt-1" />
+              <Button variant="outline" size="sm">
+                <FilePenIcon className="mr-2 h-4 w-4" />
+                Change Password
+              </Button>
+            </div>
             <p className="text-sm text-muted-foreground mt-1">
-              You have set your email address to private. To toggle email
-              privacy, go to email settings and uncheck "Keep my email address
-              private."
+              You can change your password at any time.
             </p>
           </div>
         </div>
+
         <div className="flex flex-col items-center space-y-4">
           <Label className="text-lg font-semibold">Profile picture</Label>
           <Avatar className="w-32 h-32 rounded-full">

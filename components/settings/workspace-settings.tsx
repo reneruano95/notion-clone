@@ -73,6 +73,9 @@ export const WorkspaceSettings = () => {
     );
     if (showingWorkspace) {
       // console.log(showingWorkspace);
+      if (showingWorkspace.workspace_owner_id !== user?.id) {
+        console.log("You are not the owner of this workspace");
+      }
       setWorkspaceDetails(showingWorkspace);
     }
   }, [workspaceId, appWorkspaces]);
@@ -181,6 +184,21 @@ export const WorkspaceSettings = () => {
 
     router.push("/dashboard");
   };
+
+  if (!workspaceDetails) return null;
+  if (workspaceDetails.workspace_owner_id !== user?.id) {
+    // console.log(user?.id);
+
+    return (
+      <div className="flex justify-center items-center h-full w-full">
+        <p className="text-lg text-muted-foreground">
+          You are not the owner of this workspace. Only the owner can change the
+          workspace settings.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex gap-4 flex-col">

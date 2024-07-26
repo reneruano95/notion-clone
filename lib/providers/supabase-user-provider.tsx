@@ -36,7 +36,8 @@ export const SupabaseUserProvider = ({
       const { data: currentUser, error: userError } = await getUser();
 
       if (currentUser) {
-        setUser(user);
+        // console.log(currentUser);
+        setUser(currentUser);
         const { data: subscriptionStatus, error: subscriptionStatusError } =
           await getUserSubscriptionStatus(currentUser.id);
 

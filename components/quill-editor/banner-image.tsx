@@ -118,29 +118,27 @@ export const BannerImage = ({
         filePath: details.banner_url,
       });
 
-      if (dirType === "workspace") {
-        if (!workspaceId) return;
-
-        updateWorkspace({ banner_url: "" }, workspaceId);
-        await updateWorkspaceAction({ banner_url: "" }, workspaceId);
-      }
-
-      if (dirType === "folder") {
-        if (!folderId || !workspaceId) return;
-
-        updateFolder(workspaceId, folderId, { banner_url: "" });
-        await updateFolderAction({ banner_url: "" }, folderId);
-      }
-
-      if (dirType === "file") {
-        if (!fileId || !folderId || !workspaceId) return;
-
-        updateFile(workspaceId, folderId, fileId, { banner_url: "" });
-        await updateFileAction({ banner_url: "" }, fileId);
+      switch (dirType) {
+        case "workspace":
+          if (!workspaceId) return;
+          updateWorkspace({ banner_url: "" }, workspaceId);
+          await updateWorkspaceAction({ banner_url: "" }, workspaceId);
+          break;
+        case "folder":
+          if (!folderId || !workspaceId) return;
+          updateFolder(workspaceId, folderId, { banner_url: "" });
+          await updateFolderAction({ banner_url: "" }, folderId);
+          break;
+        case "file":
+          if (!fileId || !folderId || !workspaceId) return;
+          updateFile(workspaceId, folderId, fileId, { banner_url: "" });
+          await updateFileAction({ banner_url: "" }, fileId);
+          break;
+        default:
+          break;
       }
     } catch (error) {
       console.log("error deleting image", error);
-
       toast.error("An error occurred while deleting the image", {
         duration: 3000,
       });

@@ -85,7 +85,7 @@ export const DirectoryTitle = ({ details, dirType }: DirectoryTitleProps) => {
           value={details.title}
           onBlur={disableInput}
           onKeyDown={onKeydown}
-          className="text-muted-foreground text-3xl font-bold h-9 bg-transparent border-transparent focus:border-primary-foreground focus:outline-none"
+          className="text-muted-foreground text-3xl font-bold h-9 bg-transparent border-transparent focus:border-primary-foreground focus:outline-none mt-2"
           readOnly={!isEditing}
           onChange={
             (dirType === "folder" && folderTitleChange) || fileTitleChange
@@ -94,7 +94,7 @@ export const DirectoryTitle = ({ details, dirType }: DirectoryTitleProps) => {
       ) : (
         <span
           onClick={enableInput}
-          className="text-muted-foreground text-3xl font-bold h-9"
+          className="text-muted-foreground text-3xl font-bold h-9 mt-2"
         >
           {details.title}
         </span>

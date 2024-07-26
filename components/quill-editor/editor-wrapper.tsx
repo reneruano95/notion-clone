@@ -51,7 +51,6 @@ export const EditorWrapper = ({
   const { workspaceId, folderId } = useId();
 
   const {
-    appWorkspaces,
     updateWorkspace,
     updateFolder,
     updateFile,
@@ -204,7 +203,7 @@ export const EditorWrapper = ({
           </article>
         )}
 
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 p-6 gap-2">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:items-center sm:p-2 px-4 py-2 gap-2">
           <div>{breadcrumbs}</div>
           <div className="flex items-center gap-4">
             <div className="flex flex-row-reverse items-center justify-between gap-2 w-full">

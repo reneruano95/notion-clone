@@ -36,6 +36,7 @@ export const BannerImage = ({
 }: BannerImageProps) => {
   const router = useRouter();
   const [bannerUrl, setBannerUrl] = useState("");
+  const [onBlur, setOnBlur] = useState(false);
   const [isPending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,10 +47,14 @@ export const BannerImage = ({
 
   useEffect(() => {
     startTransition(async () => {
-      await getImageUrl({
-        bucketName: "file-banners",
-        filePath: details.banner_url,
-      }).then(setBannerUrl);
+      const filePath = details.banner_url;
+      if (filePath) {
+        const url = await getImageUrl({
+          bucketName: "file-banners",
+          filePath,
+        });
+        setBannerUrl(url);
+      }
     });
   }, [details.banner_url]);
 
@@ -64,29 +69,27 @@ export const BannerImage = ({
           file,
         });
 
-        if (dirType === "workspace") {
-          if (!workspaceId) return;
-
-          updateWorkspace({ banner_url: filePath }, workspaceId);
-          await updateWorkspaceAction({ banner_url: filePath }, workspaceId);
-        }
-
-        if (dirType === "folder") {
-          if (!folderId || !workspaceId) return;
-
-          updateFolder(workspaceId, folderId, { banner_url: filePath });
-          await updateFolderAction({ banner_url: filePath }, folderId);
-        }
-
-        if (dirType === "file") {
-          if (!fileId || !folderId || !workspaceId) return;
-
-          updateFile(workspaceId, folderId, fileId, { banner_url: filePath });
-          await updateFileAction({ banner_url: filePath }, fileId);
+        switch (dirType) {
+          case "workspace":
+            if (!workspaceId) return;
+            updateWorkspace({ banner_url: filePath }, workspaceId);
+            await updateWorkspaceAction({ banner_url: filePath }, workspaceId);
+            break;
+          case "folder":
+            if (!folderId || !workspaceId) return;
+            updateFolder(workspaceId, folderId, { banner_url: filePath });
+            await updateFolderAction({ banner_url: filePath }, folderId);
+            break;
+          case "file":
+            if (!fileId || !folderId || !workspaceId) return;
+            updateFile(workspaceId, folderId, fileId, { banner_url: filePath });
+            await updateFileAction({ banner_url: filePath }, fileId);
+            break;
+          default:
+            break;
         }
       } catch (error) {
         console.log("error uploading image", error);
-
         toast.error("An error occurred while uploading the image", {
           duration: 3000,
         });
@@ -172,7 +175,11 @@ export const BannerImage = ({
 
         {details.banner_url && bannerUrl && !isPending && (
           <Image
-            className="w-full h-56 sm:h-64 object-cover"
+            className={cn(
+              "object-cover w-full h-56 sm:h-64 rounded-none absolute top-0 left-0 z-0 filter brightness-75",
+              onBlur &&
+                "filter brightness-100 blur-sm transition-all duration-700 ease-in-out"
+            )}
             alt="Banner Image"
             src={bannerUrl}
             fill
@@ -182,11 +189,16 @@ export const BannerImage = ({
         )}
       </div>
 
-      <div className=" flex items-center gap-1 absolute right-2 bottom-2">
+      <div
+        className=" flex items-center gap-1 absolute right-2 bottom-2"
+        onMouseOver={() => setOnBlur(true)}
+        onMouseOut={() => setOnBlur(false)}
+      >
         <>
           <Button
             onClick={() => inputRef.current?.click()}
             variant={"outline"}
+            size={"sm"}
             className="hover:bg-background border-none flex item-center justify-center text-sm text-muted-foreground gap-2 p-2 shadow z-50"
           >
             <ImageIcon size={20} />
@@ -208,8 +220,9 @@ export const BannerImage = ({
         {details.banner_url && (
           <Button
             variant={"outline"}
+            size={"sm"}
             onClick={removeBanner}
-            className="hover:bg-red-500 border-none flex item-center justify-center text-sm gap-2 p-2 shadow z-50"
+            className="hover:bg-red-500 hover:text-white border-none flex item-center justify-center text-sm gap-2 p-2 shadow z-50 text-red-500 dark:text-white"
           >
             <Trash size={20} />
             <span className="hidden sm:block whitespace-nowrap font-normal">

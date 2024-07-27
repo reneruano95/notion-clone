@@ -16,6 +16,7 @@ import { getUser } from "@/lib/server-actions/auth-actions";
 import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
 import { createFolder } from "@/lib/server-actions/folder-actions";
 import { createRoom } from "@/lib/server-actions/liveblock-actions";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 
 interface FoldersDropdownListProps {
   workspaceFolders: Tables<"folders">[];
@@ -28,6 +29,7 @@ export const FoldersDropdownList = ({
   const router = useRouter();
 
   const { folderId } = useId();
+  const { user } = useSupabaseUser();
   const { appWorkspaces, setFolders, addFolder } = useAppsStore(
     (store) => store
   );
@@ -57,10 +59,8 @@ export const FoldersDropdownList = ({
   }, [appWorkspaces, workspaceId]);
 
   const addFolderHandler = useCallback(async () => {
-    const { data: user } = await getUser();
-
-    const { data: subscription, error: subscriptionError } =
-      await getUserSubscriptionStatus(user?.id || "");
+    // const { data: subscription, error: subscriptionError } =
+    //   await getUserSubscriptionStatus(user?.id || "");
 
     // if (folderState.length > 0 && !subscription) {
     // }
@@ -78,7 +78,7 @@ export const FoldersDropdownList = ({
 
       addFolder(workspaceId, { ...newFolder, files: [] });
 
-      const { data, error } = await createFolder(newFolder);
+      const { error } = await createFolder(newFolder);
       await createRoom({
         userId: user.id,
         email: user.email!,
@@ -94,7 +94,7 @@ export const FoldersDropdownList = ({
       }
       router.refresh();
     }
-  }, [workspaceId, folderState, router]);
+  }, [workspaceId, user?.id, router]);
 
   return (
     <>

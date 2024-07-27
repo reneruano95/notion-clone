@@ -24,6 +24,8 @@ import { TooltipComponent } from "@/components/global/tooltip-component";
 import { Tables } from "@/lib/supabase/supabase.types";
 import { createFile } from "@/lib/server-actions/file-actions";
 import { getUser } from "@/lib/server-actions/auth-actions";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { createRoom } from "@/lib/server-actions/liveblock-actions";
 
 interface DropdownProps {
   title: string;
@@ -46,6 +48,7 @@ export const Dropdown = ({
   const router = useRouter();
 
   const { folderId, workspaceId } = useId();
+  const { user } = useSupabaseUser();
   const { appWorkspaces, updateFolder, addFile, updateFile } = useAppsStore(
     (store) => store
   );
@@ -282,28 +285,36 @@ export const Dropdown = ({
 
   const addNewFile = useCallback(async () => {
     if (!workspaceId) return;
-    const newFile: Tables<"files"> = {
-      id: uuidv4(),
-      data: "",
-      created_at: new Date().toISOString(),
-      in_trash: "",
-      title: "Unnamed File",
-      emoji: "📄",
-      banner_url: "",
-      workspace_id: workspaceId,
-      folder_id: id,
-    };
-    addFile(workspaceId, id, newFile);
-    const { error } = await createFile(newFile);
+    if (user?.id) {
+      const newFile: Tables<"files"> = {
+        id: uuidv4(),
+        data: "",
+        created_at: new Date().toISOString(),
+        in_trash: "",
+        title: "Unnamed File",
+        emoji: "📄",
+        banner_url: "",
+        workspace_id: workspaceId,
+        folder_id: id,
+      };
+      addFile(workspaceId, id, newFile);
+      await createRoom({
+        userId: user.id,
+        email: user.email!,
+        roomId: newFile.id,
+      });
+      const { error } = await createFile(newFile);
 
-    if (error) {
-      return toast.error(
-        "An error occurred while creating a new file. Please try again."
-      );
-    } else {
-      return toast.success("File created successfully");
+      if (error) {
+        toast.error(
+          "An error occurred while creating a new file. Please try again."
+        );
+      } else {
+        toast.success("File created successfully");
+      }
+      router.refresh();
     }
-  }, [workspaceId, id]);
+  }, [workspaceId, user?.id, id, router]);
 
   return (
     <AccordionItem

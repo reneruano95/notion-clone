@@ -88,7 +88,7 @@ export const WorkspaceCreator = () => {
         router.push(`/dashboard/${workspaceId}`);
       }
     });
-  }, [collaborators, permissions, router, title, user?.id]);
+  }, [collaborators, permissions, router, title, user?.id, createRoom]);
 
   return (
     <div className="flex gap-4 flex-col">

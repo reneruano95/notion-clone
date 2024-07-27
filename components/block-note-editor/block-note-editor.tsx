@@ -4,7 +4,7 @@ import { BlockNoteEditor } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
-import { useRoom } from "@liveblocks/react/suspense";
+import { useRoom, useSelf } from "@liveblocks/react/suspense";
 import { BlockNoteView } from "@blocknote/mantine";
 
 import "@blocknote/mantine/style.css";
@@ -43,6 +43,9 @@ export const CollaborativeEditor = () => {
 const BlockNote = ({ doc, provider }: EditorProps) => {
   const { theme } = useTheme();
 
+  // Get user info from Liveblocks authentication endpoint
+  const userInfo = useSelf((me) => me.info);
+
   const editor: BlockNoteEditor = useCreateBlockNote({
     collaboration: {
       provider,
@@ -52,8 +55,8 @@ const BlockNote = ({ doc, provider }: EditorProps) => {
 
       // Information for this user:
       user: {
-        name: "My Username",
-        color: "#ff0000",
+        name: userInfo?.name,
+        color: userInfo?.color,
       },
     },
   });

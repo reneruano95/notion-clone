@@ -6,7 +6,7 @@ export const ActiveCollaborators = () => {
   const currentUser = useSelf();
 
   const collaborators = others.map((other) => other.info);
-  console.log(collaborators);
+  // console.log(collaborators);
 
   return (
     <ul className="flex px-3">

@@ -24,7 +24,6 @@ export default async function WorkspaceIdPage({
     roomId: params.workspace_id,
     userId: user?.id,
   });
-
   if (!room) return redirect("/dashboard");
 
   return (

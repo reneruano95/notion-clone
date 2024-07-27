@@ -15,6 +15,7 @@ import { useAppsStore } from "@/lib/providers/store-provider";
 import { getUser } from "@/lib/server-actions/auth-actions";
 import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
 import { createFolder } from "@/lib/server-actions/folder-actions";
+import { createRoom } from "@/lib/server-actions/liveblock-actions";
 
 interface FoldersDropdownListProps {
   workspaceFolders: Tables<"folders">[];
@@ -56,39 +57,43 @@ export const FoldersDropdownList = ({
   }, [appWorkspaces, workspaceId]);
 
   const addFolderHandler = useCallback(async () => {
-    const {
-      data: { user },
-    } = await getUser();
+    const { data: user } = await getUser();
 
     const { data: subscription, error: subscriptionError } =
       await getUserSubscriptionStatus(user?.id || "");
 
     // if (folderState.length > 0 && !subscription) {
     // }
+    if (user?.id) {
+      const newFolder: Tables<"folders"> = {
+        data: "",
+        id: uuidv4(),
+        workspace_id: workspaceId,
+        created_at: new Date().toISOString(),
+        banner_url: "",
+        emoji: "📁",
+        in_trash: "",
+        title: "New Folder",
+      };
 
-    const newFolder: Tables<"folders"> = {
-      data: "",
-      id: uuidv4(),
-      workspace_id: workspaceId,
-      created_at: new Date().toISOString(),
-      banner_url: "",
-      emoji: "📁",
-      in_trash: "",
-      title: "New Folder",
-    };
+      addFolder(workspaceId, { ...newFolder, files: [] });
 
-    addFolder(workspaceId, { ...newFolder, files: [] });
+      const { data, error } = await createFolder(newFolder);
+      await createRoom({
+        userId: user.id,
+        email: user.email!,
+        roomId: newFolder.id,
+      });
 
-    const { data, error } = await createFolder(newFolder);
-
-    if (error) {
-      toast.error(
-        "An error occurred while creating the folder. Please try again."
-      );
-    } else {
-      toast.success("A new folder has been created successfully.");
+      if (error) {
+        toast.error(
+          "An error occurred while creating the folder. Please try again."
+        );
+      } else {
+        toast.success("A new folder has been created successfully.");
+      }
+      router.refresh();
     }
-    router.refresh();
   }, [workspaceId, folderState, router]);
 
   return (

@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/lib/providers/next-theme-provider";
-import "./globals.css";
+
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/lib/providers/next-theme-provider";
 import { AppStoreProvider } from "@/lib/providers/store-provider";
+import { LiveblocksProvider } from "@/lib/providers/liveblocks-provider";
+
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,10 +25,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning={true}>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <AppStoreProvider>
-            {children}
-            <Toaster richColors duration={3000} />
-          </AppStoreProvider>
+          <LiveblocksProvider>
+            <AppStoreProvider>
+              {children}
+              <Toaster richColors duration={3000} />
+            </AppStoreProvider>
+          </LiveblocksProvider>
         </ThemeProvider>
       </body>
     </html>

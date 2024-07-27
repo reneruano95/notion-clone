@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { getWorkspaceDetails } from "@/lib/server-actions/workspaces-actions";
-import { QuillEditor } from "@/components/quill-editor/quill-editor";
+import { Editor } from "@/components/block-note-editor/editor";
+import { CollaborativeRoom } from "@/components/liveblocks/collaborative-room";
 
 export default async function WorkspaceIdPage({
   params,
@@ -15,11 +16,13 @@ export default async function WorkspaceIdPage({
 
   return (
     <div className="relative">
-      <QuillEditor
-        dirDetails={data[0]}
-        dirType="workspace"
-        actualDirId={data[0].id}
-      />
+      <CollaborativeRoom>
+        <Editor
+          dirDetails={data[0]}
+          dirType="workspace"
+          actualDirId={data[0].id}
+        />
+      </CollaborativeRoom>
     </div>
   );
 }

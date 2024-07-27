@@ -2,8 +2,9 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 
-import { QuillEditor } from "@/components/quill-editor/quill-editor";
+import { Editor } from "@/components/block-note-editor/editor";
 import { getFolderDetails } from "@/lib/server-actions/folder-actions";
+import { CollaborativeRoom } from "@/components/liveblocks/collaborative-room";
 
 export default async function FolderIdPage({
   params,
@@ -16,11 +17,13 @@ export default async function FolderIdPage({
 
   return (
     <div className="relative">
-      <QuillEditor
-        dirDetails={data[0]}
-        dirType="folder"
-        actualDirId={data[0].id}
-      />
+      <CollaborativeRoom>
+        <Editor
+          dirDetails={data[0]}
+          dirType="folder"
+          actualDirId={data[0].id}
+        />
+      </CollaborativeRoom>
     </div>
   );
 }

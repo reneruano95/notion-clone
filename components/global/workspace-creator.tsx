@@ -23,6 +23,7 @@ import { addCollaborators } from "@/lib/server-actions/collaborators-actions";
 import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { useAppsStore } from "@/lib/providers/store-provider";
+import { createRoom } from "@/lib/server-actions/liveblock-actions";
 
 export const WorkspaceCreator = () => {
   const router = useRouter();
@@ -82,6 +83,11 @@ export const WorkspaceCreator = () => {
         if (permissions === "shared") {
           toast.success(" Successfully created shared workspace");
 
+          await createRoom({
+            userId: user.id,
+            email: user.email!,
+            roomId: workspaceId,
+          });
           await createWorkspace(newWorkspace);
           await addCollaborators(workspaceId, collaborators);
 

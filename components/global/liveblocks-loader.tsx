@@ -10,6 +10,7 @@ export const LiveblocksLoader = () => {
           className="animate-spin dark:filter dark:invert"
           width={100}
           height={100}
+          priority
         />
         <span className="sr-only">Loading…</span>
       </div>

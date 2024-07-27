@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { PostgrestError } from "@supabase/supabase-js";
 
 import { createServerClient } from "../supabase/server";
+import { parseStringify } from "../utils";
 
 export const getUserSubscriptionStatus = async (userId: string) => {
   const supabase = createServerClient();
@@ -76,6 +77,41 @@ export const getUserDetails = async (userId: string) => {
 
     return {
       data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error as PostgrestError,
+    };
+  }
+};
+
+export const getUsers = async ({ userIds }: { userIds: string[] }) => {
+  const supabase = createServerClient();
+  try {
+    const { data, error } = await supabase
+      .from("users")
+      .select("*")
+      .in("id", userIds)
+      .select();
+
+    if (error) {
+      return { data: null, error };
+    }
+    const users = data.map((user) => ({
+      id: user.id,
+      name: user.full_name!,
+      email: user.email!,
+      avatar: user.avatar_url!,
+    }));
+
+    const sortedUsers = userIds.map((email) =>
+      users.find((u) => u.email === email)
+    );
+
+    return {
+      data: parseStringify(sortedUsers),
       error: null,
     };
   } catch (error) {

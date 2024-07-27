@@ -29,6 +29,7 @@ import {
   deleteFolder as deleteFolderAction,
 } from "@/lib/server-actions/folder-actions";
 import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/workspaces-actions";
+import { ActiveCollaborators } from "../liveblocks/active-collaborators";
 
 interface EditorWrapperProps {
   details: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -222,7 +223,7 @@ export const EditorWrapper = ({
                   Saved
                 </Badge>
               )}
-              {collaborators?.map((collaborator) => (
+              {/* {collaborators?.map((collaborator) => (
                 <TooltipProvider key={collaborator.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -239,7 +240,8 @@ export const EditorWrapper = ({
                     <TooltipContent>{collaborator.email}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-              ))}
+              ))} */}
+              <ActiveCollaborators />
             </div>
           </div>
         </div>

@@ -9,16 +9,19 @@ export const createRoom = async ({
   userId,
   email,
   roomId,
+  roomType,
 }: {
   userId: string;
   email: string;
   roomId: string;
+  roomType: "workspace" | "folder" | "file";
 }) => {
   try {
     const metadata = {
       creatorId: userId,
+      roomType: roomType,
       creatorEmail: email,
-      title: "New Room",
+      title: `New ${roomType}`,
     };
 
     const usersAccesses: RoomAccesses = {

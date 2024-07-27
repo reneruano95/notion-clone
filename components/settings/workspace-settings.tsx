@@ -45,6 +45,7 @@ import {
   removeCollaborators,
 } from "@/lib/server-actions/collaborators-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { updateRoom } from "@/lib/server-actions/liveblock-actions";
 
 export const WorkspaceSettings = () => {
   const router = useRouter();
@@ -127,8 +128,9 @@ export const WorkspaceSettings = () => {
       clearTimeout(titleTimerRef.current);
     }
 
-    titleTimerRef.current = setTimeout(() => {
-      updateWorkspaceAction({ title: e.target.value }, workspaceId);
+    titleTimerRef.current = setTimeout(async () => {
+      await updateRoom(workspaceId, e.target.value);
+      await updateWorkspaceAction({ title: e.target.value }, workspaceId);
     }, 500);
 
     router.refresh();

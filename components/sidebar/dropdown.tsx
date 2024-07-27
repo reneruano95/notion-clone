@@ -25,7 +25,7 @@ import { Tables } from "@/lib/supabase/supabase.types";
 import { createFile } from "@/lib/server-actions/file-actions";
 import { getUser } from "@/lib/server-actions/auth-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { createRoom } from "@/lib/server-actions/liveblock-actions";
+import { createRoom, updateRoom } from "@/lib/server-actions/liveblock-actions";
 
 interface DropdownProps {
   title: string;
@@ -107,6 +107,7 @@ export const Dropdown = ({
     if (fId?.length === 1) {
       if (!folderTitle) return;
 
+      await updateRoom(fId[0], folderTitle);
       const { error } = await updateFolderAction(
         { title: folderTitle },
         fId[0]
@@ -115,7 +116,7 @@ export const Dropdown = ({
       toast.success("Folder name updated successfully");
 
       if (error) {
-        return toast.error(
+        toast.error(
           "An error occurred while updating the folder name. Please try again."
         );
       }
@@ -124,12 +125,13 @@ export const Dropdown = ({
     if (fId?.length === 2) {
       if (!fileTitle) return;
 
+      await updateRoom(fId[1], fileTitle);
       const { error } = await updateFileAction({ title: fileTitle }, fId[1]);
 
       toast.success("File name updated successfully");
 
       if (error) {
-        return toast.error(
+        toast.error(
           "An error occurred while updating the file name. Please try again."
         );
       }

@@ -6,6 +6,8 @@ import { useAppsStore } from "@/lib/providers/store-provider";
 import { useId } from "@/lib/hooks/useId";
 import { updateFolder as updateFolderAction } from "@/lib/server-actions/folder-actions";
 import { updateFile as updateFileAction } from "@/lib/server-actions/file-actions";
+import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { updateRoom } from "@/lib/server-actions/liveblock-actions";
 
 interface DirectoryTitleProps {
   details: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -17,6 +19,7 @@ export const DirectoryTitle = ({ details, dirType }: DirectoryTitleProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(details.title);
 
+  const { user } = useSupabaseUser();
   const { fileId, folderId, workspaceId } = useId();
   const { updateFile, updateFolder } = useAppsStore((store) => store);
 
@@ -40,6 +43,7 @@ export const DirectoryTitle = ({ details, dirType }: DirectoryTitleProps) => {
     updateFolder(workspaceId, folderId, {
       title: e.target.value || "Untitled Folder",
     });
+    await updateRoom(folderId, e.target.value || "Untitled Folder");
     const { error } = await updateFolderAction(
       { title: e.target.value || "Untitled Folder" },
       folderId
@@ -58,6 +62,7 @@ export const DirectoryTitle = ({ details, dirType }: DirectoryTitleProps) => {
     updateFile(workspaceId, folderId, fileId, {
       title: e.target.value || "Untitled File",
     });
+    await updateRoom(fileId, e.target.value || "Untitled File");
     const { error } = await updateFileAction(
       { title: e.target.value || "Untitled File" },
       fileId

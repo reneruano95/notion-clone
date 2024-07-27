@@ -45,7 +45,10 @@ import {
   removeCollaborators,
 } from "@/lib/server-actions/collaborators-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
-import { updateRoom } from "@/lib/server-actions/liveblock-actions";
+import {
+  deleteRooms,
+  updateRoom,
+} from "@/lib/server-actions/liveblock-actions";
 
 export const WorkspaceSettings = () => {
   const router = useRouter();
@@ -176,6 +179,18 @@ export const WorkspaceSettings = () => {
     if (!workspaceId) return;
     deleteWorkspace(workspaceId);
     const { error } = await deleteWorkspaceAction(workspaceId);
+
+    const workspace = appWorkspaces.find(
+      (workspace) => workspace.id === workspaceId
+    );
+
+    await deleteRooms([
+      workspace?.id as string,
+      ...workspace?.folders.map((f) => f.id)!,
+      ...(workspace?.folders
+        .map((f) => f.files.map((file) => file.id))
+        .flat() as string[]),
+    ]);
 
     if (error) {
       toast.error(

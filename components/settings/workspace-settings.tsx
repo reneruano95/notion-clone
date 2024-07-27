@@ -108,6 +108,8 @@ export const WorkspaceSettings = () => {
 
     if (collaborators.length === 1) {
       setPermissions("private");
+      updateWorkspace({ is_private: true }, workspaceId);
+      await updateWorkspaceAction({ is_private: true }, workspaceId);
     }
 
     await removeCollaborators(workspaceId, [collaborator]);

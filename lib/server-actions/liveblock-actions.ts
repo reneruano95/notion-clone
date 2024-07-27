@@ -10,18 +10,20 @@ export const createRoom = async ({
   email,
   roomId,
   roomType,
+  title,
 }: {
   userId: string;
   email: string;
   roomId: string;
   roomType: "workspace" | "folder" | "file";
+  title: string;
 }) => {
   try {
     const metadata = {
       creatorId: userId,
       roomType: roomType,
       creatorEmail: email,
-      title: `New ${roomType}`,
+      title: title,
     };
 
     const usersAccesses: RoomAccesses = {

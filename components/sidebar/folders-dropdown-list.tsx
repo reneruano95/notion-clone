@@ -84,6 +84,7 @@ export const FoldersDropdownList = ({
         email: user.email!,
         roomId: newFolder.id,
         roomType: "folder",
+        title: newFolder.title,
       });
 
       if (error) {

@@ -75,6 +75,7 @@ export const WorkspaceCreator = () => {
           email: user.email!,
           roomId: workspaceId,
           roomType: "workspace",
+          title,
         });
         await createWorkspace(newWorkspace);
         addWorkspace({

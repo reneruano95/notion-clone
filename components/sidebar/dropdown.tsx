@@ -303,6 +303,7 @@ export const Dropdown = ({
         email: user.email!,
         roomId: newFile.id,
         roomType: "file",
+        title: newFile.title,
       });
       const { error } = await createFile(newFile);
 

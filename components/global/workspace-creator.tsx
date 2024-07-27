@@ -68,36 +68,24 @@ export const WorkspaceCreator = () => {
           logo: "",
         };
 
-        if (permissions === "private") {
-          toast.success("Successfully created private workspace ");
+        toast.success(`Successfully created ${permissions} workspace`);
 
-          await createWorkspace(newWorkspace);
-          addWorkspace({
-            ...newWorkspace,
-            folders: [],
-          });
-
-          router.push(`/dashboard/${workspaceId}`);
-        }
+        await createRoom({
+          userId: user.id,
+          email: user.email!,
+          roomId: workspaceId,
+        });
+        await createWorkspace(newWorkspace);
+        addWorkspace({
+          ...newWorkspace,
+          folders: [],
+        });
 
         if (permissions === "shared") {
-          toast.success(" Successfully created shared workspace");
-
-          await createRoom({
-            userId: user.id,
-            email: user.email!,
-            roomId: workspaceId,
-          });
-          await createWorkspace(newWorkspace);
           await addCollaborators(workspaceId, collaborators);
-
-          addWorkspace({
-            ...newWorkspace,
-            folders: [],
-          });
-
-          router.push(`/dashboard/${workspaceId}`);
         }
+
+        router.push(`/dashboard/${workspaceId}`);
       }
     });
   }, [collaborators, permissions, router, title, user?.id]);

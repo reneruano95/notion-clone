@@ -33,6 +33,7 @@ import { ImageUpload } from "../global/image-upload";
 import { Loader } from "../global/loader";
 import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
 import { useAppsStore } from "@/lib/providers/store-provider";
+import { createRoom } from "@/lib/server-actions/liveblock-actions";
 
 const createWorkspaceSchema = z.object({
   workspaceName: z
@@ -69,7 +70,7 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: CreateWorkspaceFormValues) => {
-    console.log("onSubmit", values);
+    // console.log("onSubmit", values);
     try {
       const newWorkspace: Tables<"workspaces"> = {
         id: uuidv4(),
@@ -93,6 +94,14 @@ export const DashboardSetup = ({ user, subscription }: DashboardSetupProps) => {
       addWorkspace({
         ...newWorkspace,
         folders: [],
+      });
+
+      await createRoom({
+        userId: user.id,
+        email: user.email!,
+        roomId: newWorkspace.id,
+        roomType: "workspace",
+        title: newWorkspace.title,
       });
 
       toast.success(`${newWorkspace.title} has been created successfully.`);

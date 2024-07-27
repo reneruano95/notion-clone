@@ -7,19 +7,16 @@ import { getUserColor } from "@/lib/utils";
 
 export async function POST(request: Request) {
   // Get the current user from your database
-  //   const user = __getUserFromDB__(request);
   const { data: supabaseUser, error: supabaseUserError } = await getUser();
-
+  if (!supabaseUser) {
+    return redirect("/sign-in");
+  }
   const { data: userDetails, error: userDetailsError } = await getUserDetails(
-    supabaseUser?.id as string
+    supabaseUser?.id
   );
 
   if (supabaseUserError || userDetailsError) {
     console.error(supabaseUserError, userDetailsError);
-  }
-
-  if (!supabaseUser) {
-    return redirect("/sign-in");
   }
 
   const { id, full_name, email, avatar_url } = userDetails!;

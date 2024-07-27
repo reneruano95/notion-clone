@@ -27,7 +27,7 @@ export default async function FileIdPage({
 
   return (
     <div className="relative">
-      <CollaborativeRoom roomId={params.file_id} roomMetadata={room.metadata}>
+      <CollaborativeRoom roomId={params.file_id}>
         <Editor
           dirDetails={fileDetails[0]}
           dirType="file"

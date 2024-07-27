@@ -15,10 +15,10 @@ export default async function WorkspaceIdPage({
   const { data: user } = await getUser();
   if (!user) return redirect("/sign-in");
 
-  const { data: workspaceDetails, error } = await getWorkspaceDetails(
-    params.workspace_id
-  );
-  if (!workspaceDetails?.length || error) return redirect("/dashboard");
+  const { data: workspaceDetails, error: workspaceDetailsError } =
+    await getWorkspaceDetails(params.workspace_id);
+  if (!workspaceDetails?.length || workspaceDetailsError)
+    return redirect("/dashboard");
 
   const room = await getRoom({
     roomId: params.workspace_id,
@@ -28,10 +28,7 @@ export default async function WorkspaceIdPage({
 
   return (
     <div className="relative">
-      <CollaborativeRoom
-        roomId={params.workspace_id}
-        roomMetadata={room.metadata}
-      >
+      <CollaborativeRoom roomId={params.workspace_id}>
         <Editor
           dirDetails={workspaceDetails[0]}
           dirType="workspace"

@@ -6,12 +6,10 @@ import { LiveblocksLoader } from "../global/liveblocks-loader";
 interface CollaborativeRoomProps {
   children: React.ReactNode;
   roomId: string;
-  roomMetadata: RoomMetadata;
 }
 export const CollaborativeRoom = ({
   children,
   roomId,
-  roomMetadata,
 }: CollaborativeRoomProps) => {
   return (
     <RoomProvider id={roomId}>

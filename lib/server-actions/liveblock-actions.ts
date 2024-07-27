@@ -39,7 +39,7 @@ export const createRoom = async ({
 
     revalidatePath("/dashboard");
 
-    return parseStringify(room);
+    return parseStringify(room) as RoomMetadata;
   } catch (error) {
     console.error(error);
     return { error: "Error creating the room" };
@@ -56,13 +56,13 @@ export const getRoom = async ({
   try {
     const room = await liveblocks.getRoom(roomId);
 
-    const hasAccess = Object.keys(room.usersAccesses).includes(userId);
+    const hasAccess = room.usersAccesses.hasOwnProperty(userId);
 
     if (!hasAccess) {
-      return { error: "You don't have access to this room" };
+      return new Error("You don't have access to this room");
     }
 
-    return parseStringify(room);
+    return parseStringify(room) as RoomMetadata;
   } catch (error) {
     console.error(error);
     return { error: "Error getting the room" };
@@ -79,7 +79,7 @@ export const updateRoom = async (roomId: string, title: string) => {
 
     revalidatePath("/dashboard");
 
-    return parseStringify(updatedRoom);
+    return parseStringify(updatedRoom) as RoomMetadata;
   } catch (error) {
     console.error(error);
     return { error: "Error updating the room" };
@@ -90,7 +90,7 @@ export const getRooms = async () => {
   try {
     const rooms = await liveblocks.getRooms();
 
-    return parseStringify(rooms);
+    return rooms;
   } catch (error) {
     console.error(error);
     return { error: "Error getting the rooms" };
@@ -140,7 +140,7 @@ export const addCollaborators = async (
 
     revalidatePath("/dashboard");
 
-    return parseStringify(room);
+    return parseStringify(room) as RoomMetadata;
   } catch (error) {
     console.error(error);
     return { error: "Error adding collaborators" };

@@ -25,11 +25,12 @@ export default async function FolderIdPage({
     roomId: params.folder_id,
     userId: user?.id,
   });
+
   if (!room) return redirect("/dashboard");
 
   return (
     <div className="relative">
-      <CollaborativeRoom roomId={params.folder_id} roomMetadata={room.metadata}>
+      <CollaborativeRoom roomId={params.folder_id}>
         <Editor
           dirDetails={folderDetails[0]}
           dirType="folder"

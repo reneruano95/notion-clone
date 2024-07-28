@@ -19,9 +19,9 @@ export default async function FileIdPage({
   const { data: fileDetails, error } = await getFileDetails(params.file_id);
   if (!fileDetails || error) return redirect("/dashboard");
 
-  const room = await getRoom({
+  const { data: room } = await getRoom({
     roomId: params.file_id,
-    userId: user?.id,
+    userId: user?.email!,
   });
   if (!room) return redirect("/dashboard");
 

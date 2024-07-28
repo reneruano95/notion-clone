@@ -1,7 +1,11 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { BlockNoteEditor } from "@blocknote/core";
-import { useCreateBlockNote } from "@blocknote/react";
+import {
+  FormattingToolbar,
+  FormattingToolbarController,
+  useCreateBlockNote,
+} from "@blocknote/react";
 import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
 import { useRoom, useSelf } from "@liveblocks/react/suspense";
@@ -9,6 +13,7 @@ import { BlockNoteView } from "@blocknote/mantine";
 
 import "@blocknote/mantine/style.css";
 import "@blocknote/core/style.css";
+import { CommentsButton } from "./comments-button";
 
 type EditorProps = {
   doc: Y.Doc;
@@ -65,6 +70,8 @@ const BlockNote = ({ doc, provider }: EditorProps) => {
     <BlockNoteView
       editor={editor}
       theme={theme === "dark" ? "dark" : "light"}
+      // formattingToolbar={false}
+      editable={false}
     />
   );
 };

@@ -21,9 +21,9 @@ export default async function FolderIdPage({
   );
   if (!folderDetails || error) return redirect("/dashboard");
 
-  const room = await getRoom({
+  const { data: room } = await getRoom({
     roomId: params.folder_id,
-    userId: user?.id,
+    userId: user?.email!,
   });
 
   if (!room) return redirect("/dashboard");

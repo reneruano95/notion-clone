@@ -93,7 +93,7 @@ export const getUsers = async ({ userIds }: { userIds: string[] }) => {
     const { data, error } = await supabase
       .from("users")
       .select("*")
-      .in("id", userIds)
+      .in("email", userIds)
       .select();
 
     if (error) {
@@ -111,7 +111,7 @@ export const getUsers = async ({ userIds }: { userIds: string[] }) => {
     );
 
     return {
-      data: parseStringify(sortedUsers),
+      data: sortedUsers,
       error: null,
     };
   } catch (error) {

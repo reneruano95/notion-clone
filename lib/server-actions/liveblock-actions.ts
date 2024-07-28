@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { RoomData } from "@liveblocks/node";
 
 import { liveblocks } from "../liveblock";
 import { parseStringify } from "../utils";
 import { Tables } from "../supabase/supabase.types";
+import { error } from "console";
 
 export const createRoom = async ({
   userId,
@@ -39,7 +41,7 @@ export const createRoom = async ({
 
     revalidatePath("/dashboard");
 
-    return parseStringify(room) as RoomMetadata;
+    return parseStringify(room) as RoomData;
   } catch (error) {
     console.error(error);
     return { error: "Error creating the room" };
@@ -56,16 +58,25 @@ export const getRoom = async ({
   try {
     const room = await liveblocks.getRoom(roomId);
 
-    const hasAccess = room.usersAccesses.hasOwnProperty(userId);
+    const hasAccess = Object.keys(room.usersAccesses).includes(userId);
 
     if (!hasAccess) {
-      return new Error("You don't have access to this room");
+      return {
+        data: null,
+        error: "You don't have access to this room",
+      };
     }
 
-    return parseStringify(room) as RoomMetadata;
+    return {
+      data: parseStringify(room) as RoomData,
+      error: null,
+    };
   } catch (error) {
     console.error(error);
-    return { error: "Error getting the room" };
+    return {
+      data: null,
+      error: "Error getting the room",
+    };
   }
 };
 
@@ -79,7 +90,7 @@ export const updateRoom = async (roomId: string, title: string) => {
 
     revalidatePath("/dashboard");
 
-    return parseStringify(updatedRoom) as RoomMetadata;
+    return parseStringify(updatedRoom) as RoomData;
   } catch (error) {
     console.error(error);
     return { error: "Error updating the room" };
@@ -140,7 +151,7 @@ export const addCollaborators = async (
 
     revalidatePath("/dashboard");
 
-    return parseStringify(room) as RoomMetadata;
+    return parseStringify(room) as RoomData;
   } catch (error) {
     console.error(error);
     return { error: "Error adding collaborators" };

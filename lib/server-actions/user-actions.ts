@@ -15,6 +15,10 @@ export const getUserSubscriptionStatus = async (userId: string) => {
       .eq("user_id", userId)
       .single();
 
+    // if (error) {
+    //   return { data: null, error };
+    // }
+
     return {
       data,
       error: null,

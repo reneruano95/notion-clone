@@ -50,13 +50,15 @@ export default async function WorkspaceIdPage({
         : "viewer",
     })) as Array<CollaborativeUser>) || [];
 
-  console.log("usersData", usersData);
+  // console.log("usersData", usersData);
 
-  const currenUserType = (
+  const currentUserType = (
     room.usersAccesses[user?.email!] as string[]
   )?.includes("room:write")
     ? "editor"
     : "viewer";
+
+  // console.log("currenUserType", currenUserType);
 
   return (
     <div className="relative">
@@ -65,6 +67,9 @@ export default async function WorkspaceIdPage({
           dirDetails={workspaceDetails[0]}
           dirType="workspace"
           actualDirId={workspaceDetails[0].id}
+          roomId={params.workspace_id}
+          users={usersData}
+          currentUserType={currentUserType}
         />
       </CollaborativeRoom>
     </div>

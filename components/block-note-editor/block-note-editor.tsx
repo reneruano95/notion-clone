@@ -1,26 +1,70 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { BlockNoteEditor } from "@blocknote/core";
 import {
-  FormattingToolbar,
-  FormattingToolbarController,
+  BlockNoteEditor,
+  BlockNoteSchema,
+  defaultInlineContentSpecs,
+  filterSuggestionItems,
+} from "@blocknote/core";
+import {
+  DefaultReactSuggestionItem,
+  SuggestionMenuController,
   useCreateBlockNote,
 } from "@blocknote/react";
 import * as Y from "yjs";
 import { LiveblocksYjsProvider } from "@liveblocks/yjs";
-import { useRoom, useSelf } from "@liveblocks/react/suspense";
+import { useOthers, useRoom, useSelf } from "@liveblocks/react/suspense";
 import { BlockNoteView } from "@blocknote/mantine";
 
 import "@blocknote/mantine/style.css";
 import "@blocknote/core/style.css";
 import { CommentsButton } from "./comments-button";
+import { Mention } from "./mention";
 
+interface CollaborativeEditorProps {
+  roomId: string;
+  currentType: UserType;
+}
 type EditorProps = {
   doc: Y.Doc;
   provider: any;
+  currentType: UserType;
 };
 
-export const CollaborativeEditor = () => {
+const schema = BlockNoteSchema.create({
+  inlineContentSpecs: {
+    // Adds all default inline content.
+    ...defaultInlineContentSpecs,
+    // Adds the mention tag.
+    mention: Mention,
+  },
+});
+
+const getMentionMenuItems = (
+  editor: typeof schema.BlockNoteEditor,
+  others: CollaborativeUser[]
+): DefaultReactSuggestionItem[] => {
+  return others.map((other) => ({
+    group: "Mentions",
+    title: other.name,
+    onItemClick: () => {
+      editor.insertInlineContent([
+        {
+          type: "mention",
+          props: {
+            user: other.name,
+          },
+        },
+        " ", // add a space after the mention
+      ]);
+    },
+  }));
+};
+
+export const CollaborativeEditor = ({
+  roomId,
+  currentType,
+}: CollaborativeEditorProps) => {
   const room = useRoom();
   const [doc, setDoc] = useState<Y.Doc>();
   const [provider, setProvider] = useState<any>();
@@ -42,16 +86,18 @@ export const CollaborativeEditor = () => {
     return null;
   }
 
-  return <BlockNote doc={doc} provider={provider} />;
+  return <BlockNote doc={doc} provider={provider} currentType={currentType} />;
 };
 
-const BlockNote = ({ doc, provider }: EditorProps) => {
+const BlockNote = ({ doc, provider, currentType }: EditorProps) => {
   const { theme } = useTheme();
 
   // Get user info from Liveblocks authentication endpoint
   const userInfo = useSelf((me) => me.info);
+  const others = useOthers().map((other) => other.info);
 
-  const editor: BlockNoteEditor = useCreateBlockNote({
+  const editor = useCreateBlockNote({
+    schema,
     collaboration: {
       provider,
 
@@ -71,7 +117,16 @@ const BlockNote = ({ doc, provider }: EditorProps) => {
       editor={editor}
       theme={theme === "dark" ? "dark" : "light"}
       // formattingToolbar={false}
-      editable={false}
-    />
+      editable={currentType === "editor"}
+    >
+      {/* Adds a mentions menu which opens with the "@" key */}
+      <SuggestionMenuController
+        triggerCharacter={"@"}
+        getItems={async (query) =>
+          // Gets the mentions menu items
+          filterSuggestionItems(getMentionMenuItems(editor, others), query)
+        }
+      />
+    </BlockNoteView>
   );
 };

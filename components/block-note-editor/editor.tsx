@@ -12,9 +12,19 @@ interface EditorProps {
   dirDetails: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
   dirType: "workspace" | "folder" | "file";
   actualDirId: string;
+  users?: CollaborativeUser[];
+  currentUserType?: UserType;
+  roomId: string;
 }
 
-export const Editor = ({ dirDetails, dirType, actualDirId }: EditorProps) => {
+export const Editor = ({
+  dirDetails,
+  dirType,
+  actualDirId,
+  currentUserType,
+  roomId,
+  users,
+}: EditorProps) => {
   const { workspaceId, folderId } = useId();
   const { appWorkspaces } = useAppsStore((store) => store);
 
@@ -64,7 +74,10 @@ export const Editor = ({ dirDetails, dirType, actualDirId }: EditorProps) => {
       >
         <div className="flex justify-center items-center flex-col mt-2 relative">
           <div className="max-w-[800px] w-full">
-            <CollaborativeEditor />
+            <CollaborativeEditor
+              roomId={roomId}
+              currentType={currentUserType!}
+            />
           </div>
         </div>
       </EditorWrapper>

@@ -30,6 +30,10 @@ import {
 } from "@/lib/server-actions/folder-actions";
 import { updateWorkspace as updateWorkspaceAction } from "@/lib/server-actions/workspaces-actions";
 import { ActiveCollaborators } from "../liveblocks/active-collaborators";
+import {
+  deleteRoom,
+  deleteRooms,
+} from "@/lib/server-actions/liveblock-actions";
 
 interface EditorWrapperProps {
   details: Tables<"workspaces"> | Tables<"folders"> | Tables<"files">;
@@ -52,6 +56,7 @@ export const EditorWrapper = ({
   const { workspaceId, folderId } = useId();
 
   const {
+    appWorkspaces,
     updateWorkspace,
     updateFolder,
     updateFile,
@@ -112,6 +117,7 @@ export const EditorWrapper = ({
 
       deleteFile(workspaceId, folderId, actualDirId);
       await deleteFileAction(actualDirId);
+      await deleteRoom(actualDirId);
 
       toast.success("File deleted successfully");
       router.replace(`/dashboard/${workspaceId}/`);
@@ -122,8 +128,14 @@ export const EditorWrapper = ({
 
       deleteFolder(workspaceId, folderId);
       await deleteFolderAction(folderId);
+      await deleteRooms([
+        folderId,
+        ...(appWorkspaces.flatMap((w) =>
+          w.folders?.flatMap((f) => f.files?.map((file) => file.id))
+        ) as string[]),
+      ]);
 
-      toast.success("Folder  and its files deleted successfully");
+      toast.success("Folder and its files deleted successfully");
       router.replace(`/dashboard/${workspaceId}/`);
     }
   };

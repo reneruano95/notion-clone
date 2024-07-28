@@ -32,9 +32,9 @@ export default async function WorkspaceIdPage({
     return redirect("/dashboard");
   }
 
-  const userIds = Object.keys(room.usersAccesses);
+  const userEmails = Object.keys(room.usersAccesses);
+  const { data: users, error: usersError } = await getUsers({ userEmails });
 
-  const { data: users, error: usersError } = await getUsers({ userIds });
   if (!users || usersError) {
     console.log("Error fetching users", usersError);
   }

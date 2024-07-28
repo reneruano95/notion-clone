@@ -87,13 +87,13 @@ export const getUserDetails = async (userId: string) => {
   }
 };
 
-export const getUsers = async ({ userIds }: { userIds: string[] }) => {
+export const getUsers = async ({ userEmails }: { userEmails: string[] }) => {
   const supabase = createServerClient();
   try {
     const { data, error } = await supabase
       .from("users")
       .select("*")
-      .in("email", userIds)
+      .in("email", userEmails)
       .select();
 
     if (error) {
@@ -106,7 +106,7 @@ export const getUsers = async ({ userIds }: { userIds: string[] }) => {
       avatar: user.avatar_url!,
     }));
 
-    const sortedUsers = userIds.map((email) =>
+    const sortedUsers = userEmails.map((email) =>
       users.find((u) => u.email === email)
     );
 

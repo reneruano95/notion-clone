@@ -15,8 +15,8 @@ export const LiveblocksProvider = ({ children }: LiveblocksProviderProps) => {
   return (
     <Provider
       authEndpoint={"/api/liveblocks-auth"}
-      resolveUsers={async (userIds) => {
-        const { data: users, error } = await getUsers(userIds);
+      resolveUsers={async ({ userIds }) => {
+        const { data: users, error } = await getUsers({ userEmails: userIds });
 
         return users;
       }}

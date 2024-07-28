@@ -111,7 +111,7 @@ export const getUsers = async ({ userEmails }: { userEmails: string[] }) => {
     );
 
     return {
-      data: sortedUsers,
+      data: parseStringify(sortedUsers),
       error: null,
     };
   } catch (error) {

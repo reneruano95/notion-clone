@@ -6,7 +6,6 @@ import { RoomData } from "@liveblocks/node";
 import { liveblocks } from "../liveblock";
 import { parseStringify } from "../utils";
 import { Tables } from "../supabase/supabase.types";
-import { error } from "console";
 
 export const createRoom = async ({
   userId,

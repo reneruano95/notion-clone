@@ -53,3 +53,5 @@ export const SelectedWorkspace = forwardRef<
     </Link>
   );
 });
+
+SelectedWorkspace.displayName = "SelectedWorkspace";

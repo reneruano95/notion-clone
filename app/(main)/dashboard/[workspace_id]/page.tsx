@@ -40,12 +40,14 @@ export default async function WorkspaceIdPage({
     console.log("Error fetching users", usersError);
   }
 
-  const usersData = users?.map((user: any | undefined) => ({
-    ...user,
-    userType: room.usersAccesses[user?.email!].includes("room:write")
-      ? "editor"
-      : "viewer",
-  }));
+  const usersData =
+    (users?.map((user: any) => ({
+      ...user,
+      // @ts-ignore
+      userType: room.usersAccesses[user?.email!].includes("room:write")
+        ? "editor"
+        : "viewer",
+    })) as Array<CollaborativeUser>) || [];
 
   console.log(usersData);
 

@@ -17,6 +17,7 @@ import { getUserSubscriptionStatus } from "@/lib/server-actions/user-actions";
 import { createFolder } from "@/lib/server-actions/folder-actions";
 import { createRoom } from "@/lib/server-actions/liveblock-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
+import { getCollaborators } from "@/lib/server-actions/collaborators-actions";
 
 interface FoldersDropdownListProps {
   workspaceFolders: Tables<"folders">[];
@@ -76,16 +77,36 @@ export const FoldersDropdownList = ({
         title: "New Folder",
       };
 
+      const isPrivate = appWorkspaces.find(
+        (workspace) => workspace.id === workspaceId
+      )?.is_private!;
+      // console.log(isPrivate);
+
       addFolder(workspaceId, { ...newFolder, files: [] });
 
       const { error } = await createFolder(newFolder);
-      await createRoom({
-        userId: user.id,
-        email: user.email!,
-        roomId: newFolder.id,
-        roomType: "folder",
-        title: newFolder.title,
-      });
+      if (isPrivate) {
+        await createRoom({
+          userId: user.id,
+          email: user.email!,
+          roomId: newFolder.id,
+          roomType: "folder",
+          title: newFolder.title,
+        });
+      } else {
+        const { data: collaborators } = await getCollaborators(workspaceId);
+        const usersAccessesEmails = collaborators?.map(
+          (collaborator) => collaborator.email
+        );
+        await createRoom({
+          userId: user.id,
+          email: user.email!,
+          roomId: newFolder.id,
+          roomType: "folder",
+          title: newFolder.title,
+          usersAccessesEmails: [...(usersAccessesEmails as string[])],
+        });
+      }
 
       if (error) {
         toast.error(

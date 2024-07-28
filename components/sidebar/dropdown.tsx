@@ -26,6 +26,7 @@ import { createFile } from "@/lib/server-actions/file-actions";
 import { getUser } from "@/lib/server-actions/auth-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { createRoom, updateRoom } from "@/lib/server-actions/liveblock-actions";
+import { getCollaborators } from "@/lib/server-actions/collaborators-actions";
 
 interface DropdownProps {
   title: string;
@@ -299,15 +300,37 @@ export const Dropdown = ({
         workspace_id: workspaceId,
         folder_id: id,
       };
+      const isPrivate = appWorkspaces.find(
+        (workspace) => workspace.id === workspaceId
+      )?.is_private!;
+      // console.log(isPrivate);
+
       addFile(workspaceId, id, newFile);
-      await createRoom({
-        userId: user.id,
-        email: user.email!,
-        roomId: newFile.id,
-        roomType: "file",
-        title: newFile.title,
-      });
+
       const { error } = await createFile(newFile);
+
+      if (isPrivate) {
+        await createRoom({
+          userId: user.id,
+          email: user.email!,
+          roomId: newFile.id,
+          roomType: "file",
+          title: newFile.title,
+        });
+      } else {
+        const { data: collaborators } = await getCollaborators(workspaceId);
+        const usersAccessesEmails = collaborators?.map(
+          (collaborator) => collaborator.email
+        );
+        await createRoom({
+          userId: user.id,
+          email: user.email!,
+          roomId: newFile.id,
+          roomType: "file",
+          title: newFile.title,
+          usersAccessesEmails: [...(usersAccessesEmails as string[])],
+        });
+      }
 
       if (error) {
         toast.error(

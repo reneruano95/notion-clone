@@ -3,11 +3,16 @@ import { useEffect, useState } from "react";
 import {
   BlockNoteEditor,
   BlockNoteSchema,
+  defaultBlockSpecs,
   defaultInlineContentSpecs,
   filterSuggestionItems,
 } from "@blocknote/core";
 import {
+  BlockTypeSelectItem,
+  blockTypeSelectItems,
   DefaultReactSuggestionItem,
+  FormattingToolbar,
+  FormattingToolbarController,
   SuggestionMenuController,
   useCreateBlockNote,
 } from "@blocknote/react";
@@ -18,8 +23,10 @@ import { BlockNoteView } from "@blocknote/mantine";
 
 import "@blocknote/mantine/style.css";
 import "@blocknote/core/style.css";
-import { CommentsButton } from "./comments-button";
-import { Mention } from "./mention";
+import { CommentsButton } from "./plugins/comments-button";
+import { Mention } from "./plugins/mention";
+import { Alert } from "./plugins/alert";
+import { RiAlertFill } from "react-icons/ri";
 
 interface CollaborativeEditorProps {
   roomId: string;
@@ -37,6 +44,12 @@ const schema = BlockNoteSchema.create({
     ...defaultInlineContentSpecs,
     // Adds the mention tag.
     mention: Mention,
+  },
+  blockSpecs: {
+    // Adds all default blocks.
+    ...defaultBlockSpecs,
+    // Adds the Alert block.
+    alert: Alert,
   },
 });
 
@@ -116,8 +129,9 @@ const BlockNote = ({ doc, provider, currentType }: EditorProps) => {
     <BlockNoteView
       editor={editor}
       theme={theme === "dark" ? "dark" : "light"}
-      // formattingToolbar={false}
+      formattingToolbar={false}
       editable={currentType === "editor"}
+      className="px-3 md:px-1"
     >
       {/* Adds a mentions menu which opens with the "@" key */}
       <SuggestionMenuController
@@ -126,6 +140,21 @@ const BlockNote = ({ doc, provider, currentType }: EditorProps) => {
           // Gets the mentions menu items
           filterSuggestionItems(getMentionMenuItems(editor, others), query)
         }
+      />
+      <FormattingToolbarController
+        formattingToolbar={() => (
+          <FormattingToolbar
+            blockTypeSelectItems={[
+              ...blockTypeSelectItems(editor.dictionary),
+              {
+                name: "Alert",
+                type: "alert",
+                icon: RiAlertFill,
+                isSelected: (block) => block.type === "alert",
+              } satisfies BlockTypeSelectItem,
+            ]}
+          />
+        )}
       />
     </BlockNoteView>
   );

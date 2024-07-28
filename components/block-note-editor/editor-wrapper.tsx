@@ -268,8 +268,8 @@ export const EditorWrapper = ({
       </div>
 
       <div className="flex justify-center items-center flex-col relative">
-        <div className="w-full self-center max-w-[800px] flex flex-col px-7">
-          <div className="text-[80px] text-center -mt-[50px]">
+        <div className="w-full self-center max-w-[800px] flex flex-col px-14">
+          <div className="text-[80px] text-center -mt-[50px] inline-flex">
             <IconPicker getValue={(emoji) => onEmojiChange(emoji)}>
               <div className="w-[100px] cursor-pointer transition-colors h-[100px] flex items-center justify-center hover:bg-muted  rounded-xl">
                 {details.emoji}

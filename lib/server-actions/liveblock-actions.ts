@@ -14,12 +14,14 @@ export const createRoom = async ({
   roomId,
   roomType,
   title,
+  usersAccessesEmails,
 }: {
   userId: string;
   email: string;
   roomId: string;
   roomType: "workspace" | "folder" | "file";
   title: string;
+  usersAccessesEmails?: string[];
 }) => {
   try {
     const metadata = {
@@ -32,6 +34,12 @@ export const createRoom = async ({
     const usersAccesses: RoomAccesses = {
       [email]: ["room:write"],
     };
+
+    if (usersAccessesEmails && usersAccessesEmails.length > 0) {
+      usersAccessesEmails.forEach((email) => {
+        usersAccesses[email] = ["room:write"];
+      });
+    }
 
     const room = await liveblocks.createRoom(roomId, {
       metadata,
@@ -63,7 +71,9 @@ export const getRoom = async ({
     if (!hasAccess) {
       return {
         data: null,
-        error: "You don't have access to this room",
+        error: {
+          message: "You don't have access to this room",
+        },
       };
     }
 
@@ -75,7 +85,9 @@ export const getRoom = async ({
     console.error(error);
     return {
       data: null,
-      error: "Error getting the room",
+      error: {
+        message: "Error getting the room",
+      },
     };
   }
 };

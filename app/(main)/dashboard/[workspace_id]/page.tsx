@@ -29,6 +29,7 @@ export default async function WorkspaceIdPage({
     userId: user?.email!,
   });
   if (!room || error) {
+    console.log("Error fetching room", error);
     return redirect("/dashboard");
   }
 
@@ -38,6 +39,15 @@ export default async function WorkspaceIdPage({
   if (!users || usersError) {
     console.log("Error fetching users", usersError);
   }
+
+  const usersData = users?.map((user: any | undefined) => ({
+    ...user,
+    userType: room.usersAccesses[user?.email!].includes("room:write")
+      ? "editor"
+      : "viewer",
+  }));
+
+  console.log(usersData);
 
   return (
     <div className="relative">

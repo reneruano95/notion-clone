@@ -41,15 +41,22 @@ export default async function WorkspaceIdPage({
   }
 
   const usersData =
-    (users?.map((user: any) => ({
-      ...user,
-      // @ts-ignore
-      userType: room.usersAccesses[user?.email!].includes("room:write")
+    (users?.map((u) => ({
+      ...u,
+      userType: (room.usersAccesses[u?.email!] as string[]).includes(
+        "room:write"
+      )
         ? "editor"
         : "viewer",
     })) as Array<CollaborativeUser>) || [];
 
-  console.log(usersData);
+  console.log("usersData", usersData);
+
+  const currenUserType = (
+    room.usersAccesses[user?.email!] as string[]
+  )?.includes("room:write")
+    ? "editor"
+    : "viewer";
 
   return (
     <div className="relative">

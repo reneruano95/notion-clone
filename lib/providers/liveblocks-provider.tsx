@@ -6,6 +6,7 @@ import {
 } from "@liveblocks/react";
 import { LiveblocksLoader } from "@/components/global/liveblocks-loader";
 import { getUsers } from "../server-actions/user-actions";
+import { getUserColor } from "../utils";
 
 interface LiveblocksProviderProps {
   children: React.ReactNode;
@@ -18,7 +19,15 @@ export const LiveblocksProvider = ({ children }: LiveblocksProviderProps) => {
       resolveUsers={async ({ userIds }) => {
         const { data: users, error } = await getUsers({ userEmails: userIds });
 
-        return users;
+        const resolvedUsers = users?.map((user) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+          color: getUserColor(user.id),
+        }));
+
+        return resolvedUsers;
       }}
     >
       <ClientSideSuspense fallback={<LiveblocksLoader />}>

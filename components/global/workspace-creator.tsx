@@ -24,6 +24,7 @@ import { createWorkspace } from "@/lib/server-actions/workspaces-actions";
 import { useSupabaseUser } from "@/lib/providers/supabase-user-provider";
 import { useAppsStore } from "@/lib/providers/store-provider";
 import { createRoom } from "@/lib/server-actions/liveblock-actions";
+import { create } from "domain";
 
 export const WorkspaceCreator = () => {
   const router = useRouter();
@@ -87,6 +88,14 @@ export const WorkspaceCreator = () => {
         addWorkspace({
           ...newWorkspace,
           folders: [],
+        });
+
+        await createRoom({
+          userId: user.id,
+          email: user.email!,
+          roomId: workspaceId,
+          roomType: "workspace",
+          title,
         });
 
         router.push(`/dashboard/${workspaceId}`);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MessagesSquare } from "lucide-react";
 import {
   useBlockNoteEditor,
   useComponentsContext,
@@ -25,7 +26,7 @@ export const CommentsButton = () => {
 
   return (
     <Components.FormattingToolbar.Button
-      mainTooltip={"Blue Text & Background"}
+      mainTooltip={"Comments"}
       onClick={() => {
         editor.toggleStyles({
           textColor: "blue",
@@ -34,7 +35,7 @@ export const CommentsButton = () => {
       }}
       isSelected={isSelected}
     >
-      Comments
+      <MessagesSquare size={18} />
     </Components.FormattingToolbar.Button>
   );
 };

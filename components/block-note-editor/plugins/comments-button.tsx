@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { MessagesSquare } from "lucide-react";
 import {
   useBlockNoteEditor,
@@ -24,18 +24,24 @@ export const CommentsButton = () => {
     );
   }, editor);
 
+  const handleClick = useCallback(async () => {
+    editor.toggleStyles({
+      textColor: "blue",
+      backgroundColor: "blue",
+    });
+  }, [editor]);
+
   return (
     <Components.FormattingToolbar.Button
       mainTooltip={"Comments"}
       onClick={() => {
-        editor.toggleStyles({
-          textColor: "blue",
-          backgroundColor: "blue",
-        });
+        handleClick();
       }}
       isSelected={isSelected}
-    >
-      <MessagesSquare size={18} />
-    </Components.FormattingToolbar.Button>
+      label="Comments"
+      icon={<MessagesSquare size={18} />}
+      secondaryTooltip="Add a comment"
+      isDisabled={!editor.isFocused()}
+    />
   );
 };

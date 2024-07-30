@@ -8,12 +8,21 @@ import {
   filterSuggestionItems,
 } from "@blocknote/core";
 import {
+  BasicTextStyleButton,
+  BlockTypeSelect,
   BlockTypeSelectItem,
   blockTypeSelectItems,
+  ColorStyleButton,
+  CreateLinkButton,
   DefaultReactSuggestionItem,
+  FileCaptionButton,
+  FileReplaceButton,
   FormattingToolbar,
   FormattingToolbarController,
+  NestBlockButton,
   SuggestionMenuController,
+  TextAlignButton,
+  UnnestBlockButton,
   useCreateBlockNote,
 } from "@blocknote/react";
 import * as Y from "yjs";
@@ -27,6 +36,7 @@ import { CommentsButton } from "./plugins/comments-button";
 import { Mention } from "./plugins/mention";
 import { Alert } from "./plugins/alert";
 import { RiAlertFill } from "react-icons/ri";
+import { Separator } from "../ui/separator";
 
 interface CollaborativeEditorProps {
   roomId: string;
@@ -143,17 +153,67 @@ const BlockNote = ({ doc, provider, currentType }: EditorProps) => {
       />
       <FormattingToolbarController
         formattingToolbar={() => (
-          <FormattingToolbar
-            blockTypeSelectItems={[
-              ...blockTypeSelectItems(editor.dictionary),
-              {
-                name: "Alert",
-                type: "alert",
-                icon: RiAlertFill,
-                isSelected: (block) => block.type === "alert",
-              } satisfies BlockTypeSelectItem,
-            ]}
-          />
+          <FormattingToolbar>
+            <BlockTypeSelect
+              key={"blockTypeSelect"}
+              items={[
+                ...blockTypeSelectItems(editor.dictionary),
+                {
+                  name: "Alert",
+                  type: "alert",
+                  icon: RiAlertFill,
+                  isSelected: (block) => block.type === "alert",
+                } satisfies BlockTypeSelectItem,
+              ]}
+            />
+            <Separator orientation="vertical" />
+            <FileCaptionButton key={"fileCaptionButton"} />
+            <FileReplaceButton key={"replaceFileButton"} />
+            <BasicTextStyleButton
+              basicTextStyle={"bold"}
+              key={"boldStyleButton"}
+            />
+            <BasicTextStyleButton
+              basicTextStyle={"italic"}
+              key={"italicStyleButton"}
+            />
+            <BasicTextStyleButton
+              basicTextStyle={"underline"}
+              key={"underlineStyleButton"}
+            />
+            <BasicTextStyleButton
+              basicTextStyle={"strike"}
+              key={"strikeStyleButton"}
+            />
+
+            {/* Extra button to toggle code styles */}
+            <BasicTextStyleButton
+              key={"codeStyleButton"}
+              basicTextStyle={"code"}
+            />
+            <Separator orientation="vertical" />
+            <TextAlignButton
+              textAlignment={"left"}
+              key={"textAlignLeftButton"}
+            />
+            <TextAlignButton
+              textAlignment={"center"}
+              key={"textAlignCenterButton"}
+            />
+            <TextAlignButton
+              textAlignment={"right"}
+              key={"textAlignRightButton"}
+            />
+            <ColorStyleButton key={"colorStyleButton"} />
+
+            <NestBlockButton key={"nestBlockButton"} />
+            <UnnestBlockButton key={"unnestBlockButton"} />
+
+            <CreateLinkButton key={"createLinkButton"} />
+
+            <Separator orientation="vertical" />
+            <CommentsButton key={"customButton"} />
+          </FormattingToolbar>
         )}
       />
     </BlockNoteView>

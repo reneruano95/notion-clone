@@ -52,6 +52,7 @@ export const BannerImage = ({
         const url = await getImageUrl({
           bucketName: "file-banners",
           filePath,
+          id: actualDirId,
         });
         setBannerUrl(url);
       }
@@ -67,6 +68,7 @@ export const BannerImage = ({
         const filePath = await uploadImage({
           bucketName: "file-banners",
           file,
+          id: actualDirId,
         });
 
         switch (dirType) {
@@ -116,6 +118,7 @@ export const BannerImage = ({
       await deleteImage({
         bucketName: "file-banners",
         filePath: details.banner_url,
+        id: actualDirId,
       });
 
       switch (dirType) {

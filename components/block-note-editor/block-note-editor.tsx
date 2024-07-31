@@ -5,6 +5,7 @@ import {
   BlockNoteSchema,
   defaultBlockSpecs,
   defaultInlineContentSpecs,
+  defaultStyleSpecs,
   filterSuggestionItems,
 } from "@blocknote/core";
 import {
@@ -37,6 +38,8 @@ import { Mention } from "./plugins/mention";
 import { Alert } from "./plugins/alert";
 import { RiAlertFill } from "react-icons/ri";
 import { Separator } from "../ui/separator";
+import { LiveblocksCommentsHighlight } from "@/lib/comment-highlight";
+import { CommentHighlight } from "./plugins/comment";
 
 interface CollaborativeEditorProps {
   roomId: string;
@@ -60,6 +63,11 @@ const schema = BlockNoteSchema.create({
     ...defaultBlockSpecs,
     // Adds the Alert block.
     alert: Alert,
+  },
+  styleSpecs: {
+    ...defaultStyleSpecs,
+    // Adds the comment highlight style.
+    commentHighlight: CommentHighlight,
   },
 });
 
@@ -132,6 +140,16 @@ const BlockNote = ({ doc, provider, currentType }: EditorProps) => {
         name: userInfo?.name,
         color: userInfo?.color,
       },
+    },
+
+    _tiptapOptions: {
+      extensions: [
+        LiveblocksCommentsHighlight.configure({
+          HTMLAttributes: {
+            class: "comment-highlight",
+          },
+        }),
+      ],
     },
   });
 

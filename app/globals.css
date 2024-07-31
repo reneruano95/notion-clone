@@ -52,6 +52,13 @@ body {
     --input: 220 13% 91%;
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.5rem;
+
+    --comment-highlight-composing: #ffff00;
+    --comment-highlight-composing-border: #ffff00;
+    --comment-highlight-complete: #ffffcd;
+    --comment-highlight-complete-border: #f4d037;
+    --comment-highlight-selected: #ffff00;
+    --comment-highlight-selected-border: #f4d037;
   }
 
   .dark {
@@ -74,6 +81,13 @@ body {
     --border: 247, 18.3%, 18.2%;
     --input: 215 27.9% 16.9%;
     --ring: 263.4 70% 50.4%;
+
+    --comment-highlight-composing: #0079a2;
+    --comment-highlight-composing-border: #0079a2;
+    --comment-highlight-complete: #2d414b;
+    --comment-highlight-complete-border: #00748d;
+    --comment-highlight-selected: #0079a2;
+    --comment-highlight-selected-border: #009cd3;
   }
 }
 

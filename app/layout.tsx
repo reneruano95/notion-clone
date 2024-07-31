@@ -7,6 +7,7 @@ import { AppStoreProvider } from "@/lib/providers/store-provider";
 import { LiveblocksProvider } from "@/lib/providers/liveblocks-provider";
 
 import "./globals.css";
+import "./comment-styles.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

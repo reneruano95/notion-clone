@@ -5,6 +5,7 @@ import {
   useComponentsContext,
   useEditorContentOrSelectionChange,
 } from "@blocknote/react";
+import { v4 as uuidv4 } from "uuid";
 
 import "@blocknote/mantine/style.css";
 
@@ -12,23 +13,15 @@ export const CommentsButton = () => {
   const editor = useBlockNoteEditor();
   const Components = useComponentsContext()!;
 
-  const [isSelected, setIsSelected] = useState<boolean>(
-    editor.getActiveStyles().textColor === "blue" &&
-      editor.getActiveStyles().backgroundColor === "blue"
-  );
-
-  useEditorContentOrSelectionChange(() => {
-    setIsSelected(
-      editor.getActiveStyles().textColor === "blue" &&
-        editor.getActiveStyles().backgroundColor === "blue"
-    );
-  }, editor);
-
   const handleClick = useCallback(async () => {
-    editor.toggleStyles({
-      textColor: "blue",
-      backgroundColor: "blue",
-    });
+    editor._tiptapEditor
+      .chain()
+      .focus()
+      .setCommentHighlight({
+        highlightId: uuidv4(),
+        state: "composing",
+      })
+      .run();
   }, [editor]);
 
   return (
@@ -37,11 +30,10 @@ export const CommentsButton = () => {
       onClick={() => {
         handleClick();
       }}
-      isSelected={isSelected}
       label="Comments"
-      icon={<MessagesSquare size={18} />}
       secondaryTooltip="Add a comment"
-      isDisabled={!editor.isFocused()}
+      icon={<MessagesSquare size={18} />}
+      isDisabled={editor._tiptapEditor.isActive("commentHighlight")}
     />
   );
 };
